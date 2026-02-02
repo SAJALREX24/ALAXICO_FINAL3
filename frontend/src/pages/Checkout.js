@@ -115,7 +115,9 @@ const Checkout = () => {
               razorpay_signature: razorpayResponse.razorpay_signature,
             });
             
-            toast.success('Payment successful!');
+            toast.success('Payment successful!', {
+              description: 'Your order has been placed',
+            });
             navigate('/dashboard?tab=orders');
           } catch (error) {
             toast.error('Payment verification failed');
@@ -138,7 +140,18 @@ const Checkout = () => {
       razorpay.open();
     } catch (error) {
       console.error('Payment error:', error);
-      toast.error('Failed to process payment');
+      
+      // Check if it's a Razorpay authentication error
+      if (error.response?.status === 500 || error.response?.data?.detail?.includes('Authentication')) {
+        toast.error('Payment Gateway Configuration Required', {
+          description: 'Please contact admin to configure valid Razorpay API keys. This is a demo environment with test keys.',
+          duration: 8000,
+        });
+      } else {
+        toast.error('Failed to process payment', {
+          description: error.response?.data?.detail || 'Please try again',
+        });
+      }
     } finally {
       setProcessing(false);
     }
