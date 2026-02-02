@@ -7,19 +7,21 @@ import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 
 const Cart = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [cart, setCart] = useState({ items: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
+    
     if (!user) {
       navigate('/login?redirect=/cart');
       return;
     }
     fetchCart();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, authLoading]);
 
   const fetchCart = async () => {
     try {
