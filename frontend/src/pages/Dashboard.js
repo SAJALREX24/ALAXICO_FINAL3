@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import VerificationBadge from '../components/VerificationBadge';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'orders');
@@ -27,13 +27,15 @@ const Dashboard = () => {
   const [documentInfo, setDocumentInfo] = useState('');
 
   useEffect(() => {
+    if (authLoading) return;
+    
     if (!user) {
       navigate('/login?redirect=/dashboard');
       return;
     }
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, authLoading]);
 
   const fetchData = async () => {
     try {
