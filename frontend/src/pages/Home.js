@@ -231,18 +231,18 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             {[
-              { icon: ShieldCheck, title: 'ISO Certified', desc: 'All products meet international standards', color: 'blue' },
-              { icon: Truck, title: 'Fast Delivery', desc: 'Express shipping on all orders', color: 'green' },
-              { icon: UserCheck, title: 'Verified Sellers', desc: 'Trusted and verified suppliers', color: 'teal' },
-              { icon: Activity, title: '24/7 Support', desc: 'Round-the-clock customer service', color: 'blue' },
+              { icon: ShieldCheck, title: 'ISO Certified', desc: 'All products meet international standards', bgColor: 'from-blue-100 to-blue-200', iconColor: 'text-blue-600' },
+              { icon: Truck, title: 'Fast Delivery', desc: 'Express shipping on all orders', bgColor: 'from-green-100 to-green-200', iconColor: 'text-green-600' },
+              { icon: UserCheck, title: 'Verified Sellers', desc: 'Trusted and verified suppliers', bgColor: 'from-teal-100 to-teal-200', iconColor: 'text-teal-600' },
+              { icon: Activity, title: '24/7 Support', desc: 'Round-the-clock customer service', bgColor: 'from-blue-100 to-blue-200', iconColor: 'text-blue-600' },
             ].map((feature, i) => (
               <div 
                 key={i} 
                 className="group text-center p-6 rounded-2xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-green-50 transition-all duration-300 hover:shadow-xl hover:-translate-y-2"
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
-                <div className={`w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-${feature.color}-100 to-${feature.color}-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                  <feature.icon className={`w-8 h-8 text-${feature.color}-600`} />
+                <div className={`w-16 h-16 mx-auto mb-4 bg-gradient-to-br ${feature.bgColor} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                  <feature.icon className={`w-8 h-8 ${feature.iconColor}`} />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
                 <p className="text-sm text-slate-600">{feature.desc}</p>
