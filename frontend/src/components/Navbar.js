@@ -68,8 +68,8 @@ const Navbar = ({ cartCount = 0 }) => {
               Products
             </Link>
             
-            <Link to="/bulk-enquiry" data-testid="bulk-enquiry-button">
-              <Button variant="default" size="sm" className="hidden md:flex">
+            <Link to="/bulk-order" data-testid="bulk-enquiry-button">
+              <Button variant="default" size="sm" className="hidden md:flex bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600">
                 Bulk Enquiry
               </Button>
             </Link>
