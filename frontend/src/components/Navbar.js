@@ -96,11 +96,6 @@ const Navbar = ({ cartCount = 0 }) => {
                   <DropdownMenuItem onClick={() => navigate('/dashboard')} data-testid="dashboard-menu-item">
                     Dashboard
                   </DropdownMenuItem>
-                  {user.role === 'admin' && (
-                    <DropdownMenuItem onClick={() => navigate('/admin')} data-testid="admin-menu-item">
-                      Admin Panel
-                    </DropdownMenuItem>
-                  )}
                   <DropdownMenuItem onClick={handleLogout} data-testid="logout-menu-item">
                     Logout
                   </DropdownMenuItem>
