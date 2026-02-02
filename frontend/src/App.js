@@ -48,8 +48,7 @@ function AppContent() {
           <Route path="/login" element={<Auth />} />
           <Route path="/register" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/bulk-enquiry" element={<Products />} />
+          <Route path="/bulk-order" element={<BulkOrder />} />
         </Routes>
         <Footer />
         <WhatsAppButton />
