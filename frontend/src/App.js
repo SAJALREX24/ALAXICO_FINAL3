@@ -53,7 +53,38 @@ function AppContent() {
         </Routes>
         <Footer />
         <WhatsAppButton />
-        <Toaster position="top-right" />
+        <Toaster 
+          position="bottom-right" 
+          toastOptions={{
+            style: {
+              background: 'white',
+              color: '#0F172A',
+              border: '2px solid #3B82F6',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              fontSize: '14px',
+              maxWidth: '350px',
+            },
+            success: {
+              style: {
+                border: '2px solid #10B981',
+              },
+              iconTheme: {
+                primary: '#10B981',
+                secondary: '#FFFFFF',
+              },
+            },
+            error: {
+              style: {
+                border: '2px solid #EF4444',
+              },
+              iconTheme: {
+                primary: '#EF4444',
+                secondary: '#FFFFFF',
+              },
+            },
+          }}
+        />
       </div>
     </BrowserRouter>
   );
