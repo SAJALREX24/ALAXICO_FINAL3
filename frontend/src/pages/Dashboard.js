@@ -32,7 +32,8 @@ const Dashboard = () => {
       return;
     }
     fetchData();
-  }, [user]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchData = async () => {
     try {
