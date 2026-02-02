@@ -157,11 +157,11 @@ const Home = () => {
                   <Link
                     key={category}
                     to={`/products?category=${category}`}
-                    className="category-card group bg-gradient-to-br from-blue-50 to-green-50 hover:from-blue-100 hover:to-green-100 border-2 border-blue-200 hover:border-blue-400 rounded-xl p-6 transition-all duration-300 hover:shadow-xl min-w-[200px]"
+                    className="category-card group bg-gradient-to-br from-blue-50 to-green-50 hover:from-blue-100 hover:to-green-100 border-2 border-blue-200 hover:border-blue-400 rounded-xl p-6 transition-all duration-300 hover:shadow-xl min-w-[220px] flex-shrink-0"
                     data-testid={`category-card-${category.toLowerCase().replace(/\s+/g, '-')}`}
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
-                    <IconComponent className="h-10 w-10 text-blue-600 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
+                    <IconComponent className="h-10 w-10 text-blue-600 mx-auto mb-3 group-hover:scale-105 transition-transform duration-300" />
                     <h3 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors text-center">
                       {category}
                     </h3>
