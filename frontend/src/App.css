@@ -74,62 +74,19 @@
   font-weight: 500;
 }
 
-.hero-gradient {
-  background: linear-gradient(135deg, #E0F2FE 0%, #F0FDF4 50%, #DBEAFE 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-gradient::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -10%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-  animation: float 6s ease-in-out infinite;
-}
-
-.hero-gradient::after {
-  content: '';
-  position: absolute;
-  bottom: -30%;
-  left: -5%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
-  animation: float 8s ease-in-out infinite reverse;
-}
-
-@keyframes float {
+/* 3D Float Animation */
+@keyframes float3d {
   0%, 100% {
-    transform: translateY(0) translateX(0);
-  }
-  50% {
-    transform: translateY(-30px) translateX(20px);
-  }
-}
-
-.medical-icon-float {
-  position: absolute;
-  opacity: 0.1;
-  animation: floatAround 15s infinite;
-  pointer-events: none;
-}
-
-@keyframes floatAround {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translateY(0) translateZ(0) rotateZ(0deg);
   }
   25% {
-    transform: translate(50px, -30px) rotate(90deg);
+    transform: translateY(-20px) translateZ(20px) rotateZ(5deg);
   }
   50% {
-    transform: translate(0, -60px) rotate(180deg);
+    transform: translateY(0) translateZ(40px) rotateZ(0deg);
   }
   75% {
-    transform: translate(-50px, -30px) rotate(270deg);
+    transform: translateY(20px) translateZ(20px) rotateZ(-5deg);
   }
 }
 
@@ -222,37 +179,24 @@
   background: #94A3B8;
 }
 
-.hero-image-wrapper {
-  position: relative;
-  animation: slideInRight 1s ease-out;
+/* 3D Perspective */
+.perspective-1000 {
+  perspective: 1000px;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.preserve-3d {
+  transform-style: preserve-3d;
 }
 
-.pulse-ring {
-  position: absolute;
-  border: 3px solid #3B82F6;
-  border-radius: 50%;
-  animation: pulseRing 2s ease-out infinite;
-  pointer-events: none;
+/* Hero 3D Effects */
+.hero-3d {
+  perspective: 1200px;
+  transform-style: preserve-3d;
 }
 
-@keyframes pulseRing {
-  0% {
-    transform: scale(0.8);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
+/* Glassmorphism Effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }

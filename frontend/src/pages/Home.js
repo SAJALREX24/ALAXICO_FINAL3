@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
-import { Activity, ShieldCheck, Truck, UserCheck, ArrowRight, Star, Stethoscope, BedDouble, Scissors, Heart, Microscope } from 'lucide-react';
+import { Activity, ShieldCheck, Truck, UserCheck, ArrowRight, Star, Stethoscope, BedDouble, Scissors, Heart, Microscope, Plus } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import VerificationBadge from '../components/VerificationBadge';
@@ -20,9 +20,21 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [featuredReviews, setFeaturedReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     fetchData();
+    
+    // Mouse move handler for parallax effect
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20,
+      });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   const fetchData = async () => {
@@ -74,112 +86,175 @@ const Home = () => {
 
   return (
     <div className="animate-fade-in" data-testid="home-page">
-      {/* Hero Section */}
-      <section className="hero-gradient py-16 md:py-24 relative overflow-hidden" data-testid="hero-section">
-        {/* 3D Floating Medical Icons - Multiple layers for depth */}
-        <div className="absolute inset-0 pointer-events-none">
-          <Stethoscope className="medical-icon-float text-blue-400 opacity-20" style={{top: '10%', right: '15%', width: '80px', height: '80px', animationDelay: '0s', transform: 'rotate(15deg)'}} />
-          <Heart className="medical-icon-float text-green-400 opacity-15" style={{bottom: '25%', left: '8%', width: '70px', height: '70px', animationDelay: '2s', transform: 'rotate(-20deg)'}} />
-          <Activity className="medical-icon-float text-teal-400 opacity-20" style={{top: '35%', right: '5%', width: '65px', height: '65px', animationDelay: '4s', transform: 'rotate(10deg)'}} />
-          <Scissors className="medical-icon-float text-blue-500 opacity-15" style={{top: '60%', left: '12%', width: '60px', height: '60px', animationDelay: '6s', transform: 'rotate(-15deg)'}} />
-          <Microscope className="medical-icon-float text-green-500 opacity-20" style={{bottom: '15%', right: '20%', width: '75px', height: '75px', animationDelay: '8s', transform: 'rotate(25deg)'}} />
-        </div>
+      {/* 3D Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden" data-testid="hero-section">
+        {/* 3D Background Layers */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-green-50"></div>
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-slate-900 mb-6 animate-fade-in" data-testid="hero-title">
-                Premium Medical Equipment for Healthcare Excellence
-              </h1>
-              <p className="text-lg text-slate-600 mb-8 leading-relaxed" data-testid="hero-description">
-                Trusted by hospitals, clinics, and healthcare professionals across India. 
-                Quality equipment with certified standards.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link to="/products" data-testid="browse-products-button">
-                  <Button size="lg" className="shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                    Browse Products
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link to="/bulk-order" data-testid="hero-bulk-enquiry-button">
-                  <Button size="lg" variant="outline" className="hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 border-2">
-                    Bulk Orders
-                  </Button>
-                </Link>
+        {/* Animated Medical Cross - 3D Center */}
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96"
+          style={{
+            transform: `translate(-50%, -50%) rotateX(${mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg)`,
+            transformStyle: 'preserve-3d',
+            transition: 'transform 0.1s ease-out',
+          }}
+        >
+          {/* 3D Medical Cross */}
+          <div className="absolute inset-0 flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
+            <div className="relative w-64 h-64">
+              {/* Vertical bar */}
+              <div 
+                className="absolute left-1/2 top-0 w-20 h-64 bg-gradient-to-b from-blue-400 to-blue-600 rounded-lg -translate-x-1/2"
+                style={{
+                  transform: `translateX(-50%) translateZ(30px)`,
+                  boxShadow: '0 25px 50px rgba(59, 130, 246, 0.4)',
+                }}
+              ></div>
+              {/* Horizontal bar */}
+              <div 
+                className="absolute top-1/2 left-0 w-64 h-20 bg-gradient-to-r from-green-400 to-green-600 rounded-lg -translate-y-1/2"
+                style={{
+                  transform: `translateY(-50%) translateZ(30px)`,
+                  boxShadow: '0 25px 50px rgba(16, 185, 129, 0.4)',
+                }}
+              ></div>
+              {/* Center Circle */}
+              <div 
+                className="absolute top-1/2 left-1/2 w-24 h-24 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+                style={{
+                  transform: `translate(-50%, -50%) translateZ(60px)`,
+                  boxShadow: '0 30px 60px rgba(0, 0, 0, 0.3)',
+                }}
+              >
+                <Plus className="w-12 h-12 text-blue-600" />
               </div>
-              
-              {/* Trust Badges */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-                <div className="text-center trust-badge" data-testid="trust-badge-1">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-blue-100 rounded-full flex items-center justify-center">
-                    <ShieldCheck className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-700">Certified</p>
-                </div>
-                <div className="text-center trust-badge" data-testid="trust-badge-2" style={{animationDelay: '0.1s'}}>
-                  <div className="w-12 h-12 mx-auto mb-2 bg-green-100 rounded-full flex items-center justify-center">
-                    <Truck className="h-6 w-6 text-green-600" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-700">Fast Delivery</p>
-                </div>
-                <div className="text-center trust-badge" data-testid="trust-badge-3" style={{animationDelay: '0.2s'}}>
-                  <div className="w-12 h-12 mx-auto mb-2 bg-teal-100 rounded-full flex items-center justify-center">
-                    <UserCheck className="h-6 w-6 text-teal-600" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-700">Verified Sellers</p>
-                </div>
-                <div className="text-center trust-badge" data-testid="trust-badge-4" style={{animationDelay: '0.3s'}}>
-                  <div className="w-12 h-12 mx-auto mb-2 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Activity className="h-6 w-6 text-blue-700" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-700">24/7 Support</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating 3D Medical Icons */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(8)].map((_, i) => {
+            const icons = [Stethoscope, Heart, Activity, Microscope, Scissors];
+            const Icon = icons[i % icons.length];
+            const positions = [
+              { top: '15%', left: '10%', delay: 0 },
+              { top: '20%', right: '15%', delay: 1 },
+              { bottom: '25%', left: '8%', delay: 2 },
+              { bottom: '30%', right: '12%', delay: 3 },
+              { top: '45%', left: '5%', delay: 4 },
+              { top: '50%', right: '8%', delay: 5 },
+              { top: '70%', left: '15%', delay: 6 },
+              { bottom: '15%', right: '20%', delay: 7 },
+            ];
+            const pos = positions[i];
+            
+            return (
+              <div
+                key={i}
+                className="absolute"
+                style={{
+                  ...pos,
+                  transform: `translateZ(${(i % 3) * 20}px) rotateY(${mousePosition.x * (i % 2 ? 1 : -1)}deg)`,
+                  transformStyle: 'preserve-3d',
+                  animation: `float3d ${3 + i * 0.5}s ease-in-out infinite`,
+                  animationDelay: `${pos.delay * 0.5}s`,
+                }}
+              >
+                <div 
+                  className="w-16 h-16 bg-gradient-to-br from-blue-100 to-green-100 rounded-2xl flex items-center justify-center shadow-2xl backdrop-blur-sm"
+                  style={{
+                    boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3)',
+                  }}
+                >
+                  <Icon className="w-8 h-8 text-blue-600" />
                 </div>
               </div>
+            );
+          })}
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center">
+            <h1 
+              className="text-5xl md:text-7xl font-bold tracking-tighter text-slate-900 mb-6"
+              data-testid="hero-title"
+              style={{
+                textShadow: '0 2px 10px rgba(0,0,0,0.1)',
+              }}
+            >
+              Premium Medical
+              <br />
+              <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                Equipment Hub
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed" data-testid="hero-description">
+              Trusted by 1000+ hospitals, clinics, and healthcare professionals across India.
+              <br />
+              Quality equipment with certified standards.
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-4 mb-16">
+              <Link to="/products" data-testid="browse-products-button">
+                <Button 
+                  size="lg" 
+                  className="text-lg px-8 py-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-2xl hover:shadow-blue-500/50 transform hover:scale-105 transition-all duration-300"
+                >
+                  Browse Products
+                  <ArrowRight className="ml-2 h-6 w-6" />
+                </Button>
+              </Link>
+              <Link to="/bulk-order" data-testid="hero-bulk-enquiry-button">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-lg px-8 py-6 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 shadow-xl transform hover:scale-105 transition-all duration-300"
+                >
+                  Bulk Orders
+                </Button>
+              </Link>
             </div>
             
-            <div className="hero-image-wrapper relative perspective-1000">
-              {/* Multiple pulse rings for 3D effect */}
-              <div className="pulse-ring" style={{width: '100%', height: '100%', top: '0', left: '0', animationDelay: '0s'}}></div>
-              <div className="pulse-ring" style={{width: '100%', height: '100%', top: '0', left: '0', animationDelay: '1s'}}></div>
-              
-              <div className="relative transform hover:scale-105 transition-transform duration-500">
-                <img
-                  src="https://images.unsplash.com/photo-1565594090530-d1ebc05b54b1?crop=entropy&cs=srgb&fm=jpg&q=85"
-                  alt="Medical Equipment"
-                  className="rounded-2xl shadow-2xl relative z-10"
-                  data-testid="hero-image"
+            {/* 3D Trust Badges */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+              {[
+                { Icon: ShieldCheck, text: 'ISO Certified', color: 'blue' },
+                { Icon: Truck, text: 'Fast Delivery', color: 'green' },
+                { Icon: UserCheck, text: 'Verified Sellers', color: 'teal' },
+                { Icon: Activity, text: '24/7 Support', color: 'blue' },
+              ].map((badge, i) => (
+                <div
+                  key={i}
+                  className="relative group"
                   style={{
-                    boxShadow: '0 25px 50px -12px rgba(59, 130, 246, 0.25)',
+                    animation: `fadeInUp 0.8s ease-out ${i * 0.1}s both`,
                   }}
-                />
-                
-                {/* 3D Floating badges */}
-                <div className="absolute -top-4 -left-4 bg-white rounded-lg shadow-xl p-3 animate-bounce z-20" style={{animationDuration: '3s'}}>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <ShieldCheck className="h-6 w-6 text-green-600" />
+                >
+                  <div 
+                    className="bg-white rounded-2xl p-6 shadow-xl border border-slate-100 transform transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl"
+                    style={{
+                      transformStyle: 'preserve-3d',
+                    }}
+                  >
+                    <div className={`w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-${badge.color}-100 to-${badge.color}-200 rounded-xl flex items-center justify-center`}>
+                      <badge.Icon className={`h-7 w-7 text-${badge.color}-600`} />
                     </div>
-                    <div>
-                      <p className="text-xs font-semibold text-slate-900">ISO Certified</p>
-                      <p className="text-xs text-slate-600">Quality Assured</p>
-                    </div>
+                    <p className="text-sm font-semibold text-slate-900">{badge.text}</p>
                   </div>
                 </div>
-                
-                <div className="absolute -bottom-4 -right-4 bg-white rounded-lg shadow-xl p-3 animate-bounce z-20" style={{animationDuration: '4s', animationDelay: '1s'}}>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Truck className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-slate-900">Free Shipping</p>
-                      <p className="text-xs text-slate-600">On Bulk Orders</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-8 h-12 border-2 border-blue-600 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-blue-600 rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
       </section>
@@ -265,7 +340,7 @@ const Home = () => {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-5 w-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300'}`}
+                        className={`h-5 w-5 ${i < review.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-300'}`}
                       />
                     ))}
                   </div>
@@ -300,7 +375,7 @@ const Home = () => {
           <p className="text-lg text-white/90 mb-8">
             Get special pricing for hospitals, clinics, and distributors. Contact us for custom quotes.
           </p>
-          <Link to="/bulk-enquiry" data-testid="cta-bulk-enquiry-button">
+          <Link to="/bulk-order" data-testid="cta-bulk-enquiry-button">
             <Button size="lg" variant="secondary" className="shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
               Request Bulk Quote
               <ArrowRight className="ml-2 h-5 w-5" />
