@@ -42,7 +42,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4" data-testid="auth-page">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 py-12 px-4" data-testid="auth-page">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-4">
@@ -57,7 +57,7 @@ const Auth = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+        <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-blue-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
@@ -68,6 +68,7 @@ const Auth = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  className="mt-2 border-2 border-slate-200 focus:border-blue-500"
                   data-testid="name-input"
                 />
               </div>
@@ -81,6 +82,7 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="mt-2 border-2 border-slate-200 focus:border-blue-500"
                 data-testid="email-input"
               />
             </div>
@@ -94,6 +96,7 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                className="mt-2 border-2 border-slate-200 focus:border-blue-500"
                 data-testid="password-input"
               />
             </div>
@@ -106,6 +109,7 @@ const Auth = () => {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  className="mt-2 border-2 border-slate-200 focus:border-blue-500"
                   data-testid="phone-input"
                 />
               </div>
@@ -113,7 +117,7 @@ const Auth = () => {
             
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
               size="lg"
               disabled={loading}
               data-testid="auth-submit-button"
@@ -125,7 +129,7 @@ const Auth = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:underline"
+              className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
               data-testid="toggle-auth-mode-button"
             >
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
