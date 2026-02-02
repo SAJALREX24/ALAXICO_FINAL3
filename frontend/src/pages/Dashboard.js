@@ -119,13 +119,6 @@ const Dashboard = () => {
               Profile
             </TabsTrigger>
           </TabsList>
-          
-          {user?.role === 'admin' && (
-            <div className="mt-4 p-4 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg">
-              <p className="text-white font-semibold">Admin Access Enabled</p>
-              <p className="text-white/90 text-sm">You have full administrative privileges</p>
-            </div>
-          )}
 
           {/* Orders Tab */}
           <TabsContent value="orders" data-testid="orders-content">
