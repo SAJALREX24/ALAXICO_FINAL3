@@ -9,7 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { toast } from 'sonner';
 
 const Checkout = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [cart, setCart] = useState({ items: [] });
   const [loading, setLoading] = useState(true);
@@ -25,13 +25,15 @@ const Checkout = () => {
   });
 
   useEffect(() => {
+    if (authLoading) return;
+    
     if (!user) {
       navigate('/login?redirect=/checkout');
       return;
     }
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, authLoading]);
 
   const fetchData = async () => {
     try {
