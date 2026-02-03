@@ -254,6 +254,15 @@ const ProductDetail = () => {
                 </Button>
               </Link>
             </div>
+
+            {/* EMI Calculator for products >= ₹50,000 */}
+            {product.price >= 50000 && (
+              <EMICalculator 
+                productId={product.id} 
+                productPrice={product.price} 
+                productName={product.name}
+              />
+            )}
           </div>
         </div>
 
