@@ -7,7 +7,6 @@ import { Activity, ShieldCheck, Truck, UserCheck, ArrowRight, Star, Stethoscope,
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import VerificationBadge from '../components/VerificationBadge';
-import LottieIcon from '../components/LottieIcon';
 
 const categoryIcons = {
   'Diagnostic Equipment': Stethoscope,
