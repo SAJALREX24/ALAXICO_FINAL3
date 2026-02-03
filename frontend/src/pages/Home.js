@@ -158,30 +158,30 @@ const Home = () => {
                   </Button>
                 </Link>
                 <Link to="/bulk-order" data-testid="hero-bulk-enquiry-button" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="border-2 border-blue-600 hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 text-lg px-8 py-6">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-blue-600 hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
                     Get Bulk Quote
                   </Button>
                 </Link>
               </div>
               
               {/* Trust Stats */}
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-3 gap-3 sm:gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-1">1000+</div>
-                  <div className="text-sm text-slate-600">Happy Clients</div>
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 mb-1">1000+</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Happy Clients</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600 mb-1">5000+</div>
-                  <div className="text-sm text-slate-600">Products Sold</div>
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">5000+</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Products Sold</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-teal-600 mb-1">100%</div>
-                  <div className="text-sm text-slate-600">ISO Certified</div>
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-teal-600 mb-1">100%</div>
+                  <div className="text-xs sm:text-sm text-slate-600">ISO Certified</div>
                 </div>
               </div>
             </div>
             
-            <div className="relative">
+            <div className="relative hidden lg:block">
               {/* Hero Image without rotation */}
               <div className="relative">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl">
