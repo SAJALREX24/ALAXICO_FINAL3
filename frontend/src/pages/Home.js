@@ -376,7 +376,7 @@ const Home = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-slate-700 mb-6 leading-relaxed text-lg">"{review.comment}"</p>
+                  <p className="text-slate-700 mb-6 leading-relaxed text-lg">&ldquo;{review.comment}&rdquo;</p>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-bold text-slate-900">{review.user?.name}</p>
