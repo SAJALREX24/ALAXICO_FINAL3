@@ -263,16 +263,26 @@ const Home = () => {
             <div className="flex gap-6 pb-4" style={{minWidth: 'max-content'}}>
               {categories.map((category, index) => {
                 const IconComponent = categoryIcons[category] || Activity;
+                // Define category-specific colors
+                const categoryColors = {
+                  'Diagnostic Equipment': 'from-blue-500 to-cyan-500',
+                  'Hospital Furniture': 'from-green-500 to-emerald-500',
+                  'Surgical Instruments': 'from-purple-500 to-indigo-500',
+                  'Patient Monitoring': 'from-red-500 to-pink-500',
+                  'Lab Equipment': 'from-teal-500 to-cyan-500',
+                };
+                const gradientColor = categoryColors[category] || 'from-blue-500 to-green-500';
+                
                 return (
                   <Link
                     key={category}
                     to={`/products?category=${category}`}
-                    className="category-card group bg-white hover:bg-gradient-to-br hover:from-blue-100 hover:to-green-100 border-2 border-slate-200 hover:border-blue-400 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl min-w-[240px] flex-shrink-0"
+                    className="category-card group bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-green-50 border-2 border-slate-200 hover:border-blue-400 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl min-w-[240px] flex-shrink-0"
                     data-testid={`category-card-${category.toLowerCase().replace(/\s+/g, '-')}`}
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
-                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg overflow-hidden">
-                      <LottieIcon category={category} className="w-16 h-16" />
+                    <div className={`w-20 h-20 mx-auto mb-4 bg-gradient-to-br ${gradientColor} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                      <IconComponent className="h-10 w-10 text-white animate-pulse" />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors text-center mb-2">
                       {category}
