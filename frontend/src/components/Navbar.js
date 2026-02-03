@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { getMedicalAvatar } from '../utils/avatars';
 
 const Navbar = ({ cartCount = 0 }) => {
   const { user, logout } = useAuth();
@@ -37,6 +38,9 @@ const Navbar = ({ cartCount = 0 }) => {
     navigate('/');
     setIsLoggingOut(false);
   };
+
+  // Get medical avatar for logged-in user
+  const userAvatar = user ? getMedicalAvatar(user.id, user.email) : null;
 
   return (
     <nav className="glass-nav sticky top-0 z-50" data-testid="main-navbar">
