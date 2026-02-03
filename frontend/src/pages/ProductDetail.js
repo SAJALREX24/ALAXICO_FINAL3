@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
-import { ShoppingCart, Star, Package } from 'lucide-react';
+import { ShoppingCart, Star, Package, CreditCard } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 import VerificationBadge from '../components/VerificationBadge';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
+import EMICalculator from '../components/EMICalculator';
 
 const ProductDetail = () => {
   const { id } = useParams();
