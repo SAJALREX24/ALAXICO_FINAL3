@@ -270,8 +270,8 @@ const Home = () => {
                     data-testid={`category-card-${category.toLowerCase().replace(/\s+/g, '-')}`}
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
-                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-100 to-green-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                      <IconComponent className="h-8 w-8 text-blue-600" />
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg overflow-hidden">
+                      <LottieIcon category={category} className="w-16 h-16" />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors text-center mb-2">
                       {category}
