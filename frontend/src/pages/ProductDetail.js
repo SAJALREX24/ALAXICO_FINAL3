@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 import VerificationBadge from '../components/VerificationBadge';
+import useRecentlyViewed from '../hooks/useRecentlyViewed';
 
 const ProductDetail = () => {
   const { id } = useParams();
