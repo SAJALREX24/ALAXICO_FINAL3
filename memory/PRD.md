@@ -41,6 +41,7 @@ Build a medical equipment e-commerce website inspired by Dr. Orgs with:
 | WhatsApp Chat | ✅ Complete | Floating button with pre-filled message |
 | Lottie Animations | ✅ Complete | Category icons animated |
 | Featured Products | ✅ Complete | 8 products displayed on home |
+| Recently Viewed | ✅ Complete | Tracks viewed products with localStorage |
 | Customer Reviews | ✅ Complete | Display approved reviews |
 
 ### ✅ Admin Panel Features
