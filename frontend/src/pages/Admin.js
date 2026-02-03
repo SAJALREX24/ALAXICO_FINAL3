@@ -9,8 +9,9 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { Package, ShoppingCart, FileText, Star, ShieldCheck, Users } from 'lucide-react';
+import { Package, ShoppingCart, FileText, Star, ShieldCheck, Users, Plus, Percent, Box, Tag } from 'lucide-react';
 import { toast } from 'sonner';
+import { Switch } from '../components/ui/switch';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -24,15 +25,21 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [productDialogOpen, setProductDialogOpen] = useState(false);
   
-  // Product form
+  // Enhanced Product form with more fields
   const [productForm, setProductForm] = useState({
     name: '',
     description: '',
     category: '',
     price: '',
+    originalPrice: '',
+    discount: '',
     image: '',
+    stockQuantity: '',
+    minOrderQuantity: '1',
     specifications: {},
     availability: true,
+    featured: false,
+    limitedStock: false,
   });
 
   useEffect(() => {
@@ -70,10 +77,25 @@ const Admin = () => {
   const handleCreateProduct = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/admin/products', {
-        ...productForm,
+      const productData = {
+        name: productForm.name,
+        description: productForm.description,
+        category: productForm.category,
         price: parseFloat(productForm.price),
-      });
+        image: productForm.image,
+        availability: productForm.availability,
+        specifications: {
+          ...productForm.specifications,
+          ...(productForm.originalPrice && { originalPrice: parseFloat(productForm.originalPrice) }),
+          ...(productForm.discount && { discount: parseFloat(productForm.discount) }),
+          ...(productForm.stockQuantity && { stockQuantity: parseInt(productForm.stockQuantity) }),
+          ...(productForm.minOrderQuantity && { minOrderQuantity: parseInt(productForm.minOrderQuantity) }),
+          featured: productForm.featured,
+          limitedStock: productForm.limitedStock,
+        },
+      };
+      
+      await api.post('/admin/products', productData);
       toast.success('Product created successfully!');
       setProductDialogOpen(false);
       fetchData();
@@ -82,9 +104,15 @@ const Admin = () => {
         description: '',
         category: '',
         price: '',
+        originalPrice: '',
+        discount: '',
         image: '',
+        stockQuantity: '',
+        minOrderQuantity: '1',
         specifications: {},
         availability: true,
+        featured: false,
+        limitedStock: false,
       });
     } catch (error) {
       toast.error('Failed to create product');
