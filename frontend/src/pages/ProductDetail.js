@@ -48,6 +48,11 @@ const ProductDetail = () => {
       ]);
       setProduct(productRes.data);
       setReviews(reviewsRes.data);
+      
+      // Add to recently viewed
+      if (productRes.data) {
+        addToRecentlyViewed(productRes.data);
+      }
     } catch (error) {
       console.error('Error fetching product:', error);
       toast.error('Failed to load product');
