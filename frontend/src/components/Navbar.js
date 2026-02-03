@@ -95,12 +95,14 @@ const Navbar = ({ cartCount = 0 }) => {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2 flex-shrink-0" data-testid="logo-link">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center">
-                <Package className="h-6 w-6 lg:h-7 lg:w-7 text-white" />
-              </div>
+              <img 
+                src="https://static.prod-images.emergentagent.com/jobs/18121d0d-07b9-456d-9efc-f03e49982856/images/0ffe5f9b594652398609141703f71ec1ed3b9e07e2c5ca5ff3c9373b5bfb8aab.png" 
+                alt="Alaxico Logo" 
+                className="h-10 lg:h-12 w-auto"
+              />
               <div className="hidden sm:block">
-                <span className="text-xl lg:text-2xl font-bold text-slate-900">MedEquip</span>
-                <span className="text-xl lg:text-2xl font-bold text-blue-600">Mart</span>
+                <span className="text-xl lg:text-2xl font-bold text-purple-800">Alaxico</span>
+                <p className="text-[10px] text-purple-600 -mt-1">Trusted Healthcare Partner</p>
               </div>
             </Link>
 
