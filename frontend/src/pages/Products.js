@@ -69,41 +69,41 @@ const Products = () => {
     <div className="min-h-screen py-8" data-testid="products-page">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2" data-testid="products-title">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2" data-testid="products-title">
             Medical Equipment
           </h1>
-          <p className="text-slate-600">Browse our complete range of professional medical equipment</p>
+          <p className="text-sm sm:text-base text-slate-600">Browse our complete range of professional medical equipment</p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar */}
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
+          {/* Filters Sidebar - Horizontal on mobile */}
           <aside className="lg:w-64 shrink-0" data-testid="filters-sidebar">
-            <div className="bg-white border border-slate-200 rounded-xl p-6">
-              <div className="flex items-center mb-4">
-                <Filter className="h-5 w-5 text-slate-600 mr-2" />
-                <h2 className="font-semibold text-slate-900">Filters</h2>
+            <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600 mr-2" />
+                <h2 className="font-semibold text-slate-900 text-sm sm:text-base">Filters</h2>
               </div>
               
-              {/* Category Filter */}
-              <div className="mb-6">
-                <h3 className="text-sm font-medium text-slate-900 mb-3">Category</h3>
-                <div className="space-y-2">
+              {/* Category Filter - Horizontal scroll on mobile */}
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-xs sm:text-sm font-medium text-slate-900 mb-2 sm:mb-3">Category</h3>
+                <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-2 px-2 lg:mx-0 lg:px-0">
                   <button
                     onClick={() => setSelectedCategory('')}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                      selectedCategory === '' ? 'bg-primary text-white' : 'hover:bg-slate-100'
+                    className={`whitespace-nowrap px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm transition-colors flex-shrink-0 lg:w-full lg:text-left ${
+                      selectedCategory === '' ? 'bg-primary text-white' : 'bg-slate-100 hover:bg-slate-200 lg:bg-transparent'
                     }`}
                     data-testid="category-all"
                   >
-                    All Categories
+                    All
                   </button>
                   {categories.map((category) => (
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                        selectedCategory === category ? 'bg-primary text-white' : 'hover:bg-slate-100'
+                      className={`whitespace-nowrap px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm transition-colors flex-shrink-0 lg:w-full lg:text-left ${
+                        selectedCategory === category ? 'bg-primary text-white' : 'bg-slate-100 hover:bg-slate-200 lg:bg-transparent lg:hover:bg-slate-100'
                       }`}
                       data-testid={`category-${category.toLowerCase().replace(/\s+/g, '-')}`}
                     >
@@ -116,7 +116,7 @@ const Products = () => {
               {selectedCategory && (
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full text-xs sm:text-sm h-8 sm:h-10"
                   onClick={() => setSelectedCategory('')}
                   data-testid="clear-filters-button"
                 >
