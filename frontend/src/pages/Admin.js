@@ -205,13 +205,22 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="dashboard" data-testid="admin-dashboard-tab">
+              <BarChart3 className="w-4 h-4 mr-1" />
+              Dashboard
+            </TabsTrigger>
             <TabsTrigger value="products" data-testid="admin-products-tab">Products</TabsTrigger>
             <TabsTrigger value="orders" data-testid="admin-orders-tab">Orders</TabsTrigger>
-            <TabsTrigger value="enquiries" data-testid="admin-enquiries-tab">Bulk Enquiries</TabsTrigger>
+            <TabsTrigger value="enquiries" data-testid="admin-enquiries-tab">Enquiries</TabsTrigger>
             <TabsTrigger value="reviews" data-testid="admin-reviews-tab">Reviews</TabsTrigger>
             <TabsTrigger value="verifications" data-testid="admin-verifications-tab">Verifications</TabsTrigger>
           </TabsList>
+
+          {/* Sales Dashboard Tab */}
+          <TabsContent value="dashboard">
+            <SalesDashboard />
+          </TabsContent>
 
           {/* Products Tab */}
           <TabsContent value="products">
