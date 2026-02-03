@@ -398,9 +398,9 @@ const Navbar = ({ cartCount = 0 }) => {
                 <Phone className="w-4 h-4 mr-2 text-blue-600" />
                 +91 9045660485
               </a>
-              <a href="mailto:support@medequipmart.com" className="flex items-center text-sm text-slate-700">
+              <a href="mailto:support@alaxico.com" className="flex items-center text-sm text-slate-700">
                 <Mail className="w-4 h-4 mr-2 text-blue-600" />
-                support@medequipmart.com
+                support@alaxico.com
               </a>
             </div>
           </div>
