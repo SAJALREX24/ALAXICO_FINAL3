@@ -176,9 +176,21 @@ const Dashboard = () => {
                           </div>
                         ))}
                       </div>
-                      <div className="border-t border-slate-200 pt-3 flex justify-between font-semibold">
-                        <span>Total</span>
-                        <span className="text-primary">₹{order.total_amount.toLocaleString()}</span>
+                      <div className="border-t border-slate-200 pt-3 flex justify-between items-center">
+                        <div className="font-semibold">
+                          <span>Total: </span>
+                          <span className="text-primary">₹{order.total_amount.toLocaleString()}</span>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => downloadInvoice(order.id)}
+                          className="flex items-center space-x-1"
+                          data-testid={`download-invoice-${order.id}`}
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Invoice</span>
+                        </Button>
                       </div>
                     </div>
                   ))}
