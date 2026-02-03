@@ -14,6 +14,7 @@ const Navbar = ({ cartCount = 0 }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -22,11 +23,19 @@ const Navbar = ({ cartCount = 0 }) => {
     }
   };
 
-  const handleLogout = () => {
-    // Navigate first to avoid rendering issues during state change
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    
+    // Clear auth state first
+    logout();
+    
+    // Small delay to allow React to process state change
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // Navigate to home
     navigate('/');
-    // Then logout after navigation starts
-    setTimeout(() => logout(), 0);
+    setIsLoggingOut(false);
   };
 
   return (
