@@ -192,12 +192,25 @@ const Admin = () => {
       featureHighlights: featureHighlights,
       warrantyInfo: product.warranty_info || '',
       shippingInfo: product.shipping_info || '',
+      paymentMethods: product.payment_methods || ['razorpay', 'cod', 'bank_transfer', 'emi', 'pay_later'],
       availability: product.availability ?? true,
       featured: product.specifications?.featured ?? false,
       limitedStock: product.specifications?.limitedStock ?? false,
     });
     
     setProductDialogOpen(true);
+  };
+
+  // Toggle payment method selection
+  const togglePaymentMethod = (methodId) => {
+    setProductForm(prev => {
+      const methods = prev.paymentMethods || [];
+      if (methods.includes(methodId)) {
+        return { ...prev, paymentMethods: methods.filter(m => m !== methodId) };
+      } else {
+        return { ...prev, paymentMethods: [...methods, methodId] };
+      }
+    });
   };
 
   // Close dialog and reset form
