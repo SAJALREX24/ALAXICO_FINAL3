@@ -151,21 +151,33 @@ const Checkout = () => {
         },
       };
       
-      // If UPI is selected, configure to show UPI options first
+      // If UPI is selected, configure to show UPI options first with QR code
       if (preferredMethod === 'upi') {
         options.config = {
           display: {
             blocks: {
-              upi: {
-                name: "UPI Payment",
+              utib: {
+                name: "Pay using UPI",
                 instruments: [
-                  { method: "upi", flows: ["qrcode", "collect", "intent"] }
+                  {
+                    method: "upi",
+                    flows: ["qrcode", "collect", "intent"],
+                    apps: ["google_pay", "phonepe", "paytm"]
+                  }
+                ]
+              },
+              other: {
+                name: "Other Payment Methods",
+                instruments: [
+                  { method: "card" },
+                  { method: "netbanking" },
+                  { method: "wallet" }
                 ]
               }
             },
-            sequence: ["block.upi"],
+            sequence: ["block.utib", "block.other"],
             preferences: {
-              show_default_blocks: true
+              show_default_blocks: false
             }
           }
         };
