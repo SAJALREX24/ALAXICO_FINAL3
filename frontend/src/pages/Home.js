@@ -107,13 +107,13 @@ const Home = () => {
       </section>
 
       {/* Categories Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-50 to-blue-50" data-testid="categories-section">
+      <section className="py-12 sm:py-16 lg:py-20 bg-[#F5F3FF]" data-testid="categories-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-2 sm:mb-4" data-testid="categories-title">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-[#374151] mb-2 sm:mb-4" data-testid="categories-title">
               Browse by Category
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600">Find the right equipment for your healthcare facility</p>
+            <p className="text-base sm:text-lg lg:text-xl text-[#6B7280]">Find the right equipment for your healthcare facility</p>
           </div>
           
           <div className="category-scroll overflow-x-auto -mx-4 px-4">
@@ -121,29 +121,29 @@ const Home = () => {
               {categories.map((category, index) => {
                 const IconComponent = categoryIcons[category] || Activity;
                 const categoryColors = {
-                  'Diagnostic Equipment': 'from-blue-500 to-cyan-500',
-                  'Hospital Furniture': 'from-green-500 to-emerald-500',
-                  'Surgical Instruments': 'from-purple-500 to-indigo-500',
-                  'Patient Monitoring': 'from-red-500 to-pink-500',
-                  'Lab Equipment': 'from-teal-500 to-cyan-500',
+                  'Diagnostic Equipment': 'bg-[#2563EB]',
+                  'Hospital Furniture': 'bg-[#10B981]',
+                  'Surgical Instruments': 'bg-[#2563EB]',
+                  'Patient Monitoring': 'bg-[#2563EB]',
+                  'Lab Equipment': 'bg-[#10B981]',
                 };
-                const gradientColor = categoryColors[category] || 'from-blue-500 to-green-500';
+                const bgColor = categoryColors[category] || 'bg-[#2563EB]';
                 
                 return (
                   <Link
                     key={category}
                     to={`/products?category=${category}`}
-                    className="category-card group bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-green-50 border-2 border-slate-200 hover:border-blue-400 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 transition-all duration-300 hover:shadow-2xl min-w-[160px] sm:min-w-[200px] lg:min-w-[240px] flex-shrink-0"
+                    className="category-card group bg-white hover:bg-[#F5F3FF] border-2 border-[#E5E7EB] hover:border-[#2563EB] rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 transition-all duration-300 hover:shadow-2xl min-w-[160px] sm:min-w-[200px] lg:min-w-[240px] flex-shrink-0"
                     data-testid={`category-card-${category.toLowerCase().replace(/\s+/g, '-')}`}
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
-                    <div className={`w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 bg-gradient-to-br ${gradientColor} rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <div className={`w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 ${bgColor} rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                       <IconComponent className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
                     </div>
-                    <h3 className="text-sm sm:text-base lg:text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors text-center mb-1 sm:mb-2">
+                    <h3 className="text-sm sm:text-base lg:text-xl font-semibold text-[#374151] group-hover:text-[#2563EB] transition-colors text-center mb-1 sm:mb-2">
                       {category}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 text-center hidden sm:block">Explore products →</p>
+                    <p className="text-xs sm:text-sm text-[#6B7280] text-center hidden sm:block">Explore products →</p>
                   </Link>
                 );
               })}
