@@ -1,158 +1,117 @@
-# Alaxico - Medical Equipment E-Commerce Platform
+# Alaxico Medical Equipment E-Commerce Platform - PRD
 
-## Project Overview
-A professional, trustworthy, and scalable medical equipment e-commerce platform targeting hospitals, clinics, doctors, diagnostic centers, distributors, and individual buyers. **Branded as "Alaxico - Trusted Healthcare Partner"**.
+## Project Title
+Medical Equipment E-Commerce Website (Branded as "Alaxico")
 
 ## Original Problem Statement
-Build a medical equipment e-commerce website inspired by Dr. Orgs with:
-- Product catalog with category browsing
-- Bulk order generation (B2B) for hospitals/clinics
-- Retail cart & checkout with Razorpay integration
-- Admin panel for full management
-- User accounts with verification badges
-- WhatsApp chat integration
+Build a professional, trustworthy, and scalable medical equipment e-commerce platform targeting hospitals, clinics, doctors, diagnostic centers, distributors, and individual buyers.
 
-## Target Users
-- **Hospitals** - Bulk equipment purchases
-- **Clinics** - Medium-scale equipment needs
-- **Doctors** - Personal practice equipment
-- **Distributors** - Wholesale purchases
-- **Individual Buyers** - Retail medical devices
+## User Personas
+- **Hospitals/Clinics**: Large volume B2B buyers needing bulk orders
+- **Doctors/Healthcare Professionals**: Individual buyers for clinic equipment
+- **Distributors**: B2B resellers needing wholesale pricing
+- **Individual Buyers**: Home healthcare equipment purchasers
+
+## Core Requirements
+
+### User-Facing Features
+- ✅ Homepage with professional medical design, hero carousel, featured products, trust indicators
+- ✅ Product Catalog with category browsing and listings
+- ✅ Rich Product Detail Page with galleries, feature highlights, specs, expandable sections
+- ✅ Functional Like/Share buttons on product pages
+- ✅ Bulk Order Generation (B2B) via form
+- ✅ Search & Filter capabilities
+- ✅ Retail Cart & Checkout
+- ✅ Multiple Payment Methods (Razorpay, COD, Bank Transfer, EMI, Pay Later)
+- ✅ User Accounts (Email/Password & Google Login)
+- ✅ User Dashboard with order history
+- ✅ Verified customer reviews and testimonials
+- ✅ Floating WhatsApp chat integration
+- ✅ EMI Calculator for high-value products
+
+### Admin Panel Features
+- ✅ Full Product Management (Create/Edit/Delete)
+- ✅ Rich product content editing (galleries, highlights, specifications)
+- ✅ Payment method configuration per product
+- ✅ Category Management
+- ✅ Order Management (Retail & Bulk)
+- ✅ User and Verification Management
+- ✅ Customer Reviews Management (Approve/Reject)
+- ✅ Sales Analytics Dashboard
 
 ## Tech Stack
-- **Frontend**: React 18, Tailwind CSS, Shadcn/UI, Embla Carousel
-- **Backend**: FastAPI (Python), Pydantic
-- **Database**: MongoDB
-- **Authentication**: JWT (72-hour expiry) + Emergent Google OAuth
-- **Payments**: Razorpay (needs real API keys)
-- **Charts**: Recharts (for admin dashboard)
+- **Frontend**: React, Tailwind CSS, Shadcn/UI, Lucide Icons
+- **Backend**: FastAPI, Pydantic
+- **Database**: MongoDB (Motor async driver)
+- **Authentication**: JWT + Emergent Google OAuth
+- **Payments**: Razorpay (requires user API keys), COD, Bank Transfer, Pay Later
 
-## Design Theme
-**Current Theme**: Professional Light Purple (#8B5CF6)
-- Primary: Light purple (#8B5CF6)
-- Background: White / Light purple tint (#FAF5FF, #F5F3FF)
-- Borders: Purple-100 (#E9D5FF)
-- Text: Gray-900, Gray-500, Gray-600
-- Style: Clean, minimal, professional healthcare aesthetic
+## What's Been Implemented
 
-## Core Features Implemented
+### December 2025
+- Complete UI overhaul to professional "light purple" theme
+- Rich Product Detail Page v2 with:
+  - Thumbnail gallery
+  - Key features with checkmarks
+  - Feature highlights with icons
+  - Expandable description/specs/warranty/shipping sections
+  - Functional Like button (wishlist)
+  - Functional Share button (WhatsApp, Facebook, Twitter, Copy Link)
+  - "You May Also Like" related products section
+- Multi-Payment Method System:
+  - Backend support for 5 payment methods
+  - Admin panel toggles for per-product payment configuration
+  - Checkout page with dynamic payment method display
+  - COD, Bank Transfer, Pay Later order creation APIs
+- Admin Panel Enhancements:
+  - Edit existing products
+  - Manage rich product content
+  - Payment method configuration per product
+- Full test suite for payment methods and like/share features
 
-### ✅ User-Facing Features
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Homepage with Hero Slider | ✅ Complete | 6-slide carousel with Alaxico products |
-| Product Catalog | ✅ Complete | Category filtering, search |
-| Product Detail Page | ✅ Complete | Enhanced with Dr Trust-style layout |
-| Bulk Order Form (B2B) | ✅ Complete | Full form with submission to DB |
-| Cart & Checkout | ✅ Complete | Add/remove items, quantity management |
-| User Authentication | ✅ Complete | JWT + Google OAuth |
-| User Dashboard | ✅ Complete | Orders history, PDF invoice download |
-| Verification Badges | ✅ Complete | Hospital, Clinic, Doctor, Distributor |
-| WhatsApp Integration | ✅ Complete | Floating chat button |
-| Customer Reviews | ✅ Complete | With admin approval system |
-| Recently Viewed Products | ✅ Complete | Local storage based |
-| Product Like/Wishlist | ✅ Complete | Working like button |
-| Share to Social | ✅ Complete | WhatsApp, Facebook, Twitter, Copy Link |
-| Related Products | ✅ Complete | "You May Also Like" section |
+## Known Limitations
+- **Razorpay Integration**: Uses placeholder test keys - requires user to provide real API keys for online payments
+- **Product Data**: Currently using placeholder product data - needs real Alaxico catalog
 
-### ✅ Product Detail Page Features (NEW)
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Thumbnail Gallery | ✅ Complete | Multiple product images |
-| Discount Badge | ✅ Complete | Shows % off |
-| Key Features (Checkmarks) | ✅ Complete | Customizable per product |
-| Feature Highlights | ✅ Complete | Icons + title + description |
-| Quantity Selector | ✅ Complete | +/- buttons |
-| EMI Option | ✅ Complete | For products ≥₹3000 |
-| Delivery Timeline | ✅ Complete | Visual timeline |
-| Expandable Sections | ✅ Complete | Description, Specs, Warranty, Shipping |
-| Trust Badges | ✅ Complete | Genuine, Free Shipping, etc. |
-| Like Button | ✅ Complete | Add to wishlist functionality |
-| Share Button | ✅ Complete | WhatsApp, FB, Twitter, Copy |
-| Related Products | ✅ Complete | "You May Also Like" section |
+## P0 - Critical (Completed)
+- ✅ Multi-payment method feature
+- ✅ Like/Share buttons on product detail page
+- ✅ Admin product editing with payment methods
 
-### ✅ Admin Features
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Products Management | ✅ Complete | Enhanced with new fields |
-| Orders Management | ✅ Complete | View all orders |
-| Bulk Enquiries Management | ✅ Complete | Status updates |
-| Reviews Management | ✅ Complete | Approval/rejection |
-| Verification Management | ✅ Complete | Approve/reject user verification |
-| Sales Dashboard | ✅ Complete | Revenue charts, metrics |
+## P1 - High Priority (Pending)
+- ⏳ Razorpay integration with real API keys (blocked on user input)
+- ⏳ Add real Alaxico products from catalog with correct pricing/specs
 
-### ✅ Enhanced Admin Product Form (NEW)
-| Field | Description |
-|-------|-------------|
-| Gallery Images | Comma-separated URLs for multiple images |
-| Key Features | Comma-separated features (checkmarks on page) |
-| Feature Highlights | 4 highlights with icon, title, description |
-| Original Price | MRP for discount calculation |
-| Warranty Info | Custom warranty text |
-| Shipping Info | Custom shipping text |
+## P2 - Medium Priority (Backlog)
+- Email notifications for order status updates
+- Wishlist / "Save for Later" functionality
+- Product Comparison feature
+- Invoice PDF downloads
 
-## Pending/Blocked Items
-
-### 🔴 Blocked
-- **Razorpay Payment**: Non-functional - awaiting real API keys from user
-
-### 🟡 Upcoming Tasks
-- Add Alaxico products from catalog to database with full specs
-- Deploy to alaxico.com domain
-
-### 🔵 Future/Backlog
-- Email notifications for order status
-- Wishlist page (dedicated page for liked products)
-- Product Comparison
-- Advanced RFQ system for B2B
-- Advanced search filters
+## P3 - Low Priority (Future)
+- Advanced "Request for Quote" (RFQ) system for B2B
+- Advanced search with filters for price, brand, availability
 
 ## Test Credentials
 - **Admin**: admin@medequipmart.com / admin123
 - **User**: clinic@example.com / demo123
 
+## Test Files
+- `/app/backend/tests/test_payment_methods.py`
+- `/app/backend/tests/test_medequipmart_api.py`
+
 ## API Endpoints
-```
-Auth:
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/google-callback
 
-Products:
-GET /api/products
-GET /api/products/{id}
-POST /api/products/{id}/like (NEW)
-GET /api/products/{id}/liked (NEW)
-GET /api/products/{id}/related (NEW)
-POST /api/admin/products
-PUT /api/admin/products/{id}
-DELETE /api/admin/products/{id}
+### Payment Methods
+- `GET /api/payment-methods` - List all available payment methods
+- `GET /api/cart/payment-methods` - Get available methods for cart items
+- `POST /api/orders/create-cod-order` - Create COD/Bank Transfer/Pay Later order
 
-Cart:
-GET /api/cart
-POST /api/cart/add
-PUT /api/cart/update
-DELETE /api/cart/remove/{product_id}
+### Product Features
+- `POST /api/products/{id}/like` - Toggle like on product
+- `GET /api/products/{id}/liked` - Check if user liked product
+- `GET /api/products/{id}/related` - Get related products
 
-Orders:
-POST /api/orders/create-razorpay-order
-POST /api/orders/verify-payment
-GET /api/orders/my-orders
-GET /api/orders/{id}/invoice
-
-Bulk Enquiries:
-POST /api/bulk-enquiries
-GET /api/bulk-enquiries/my-enquiries
-
-Reviews:
-POST /api/reviews
-GET /api/reviews/product/{product_id}
-GET /api/reviews/featured
-```
-
-## Last Updated
-February 4, 2026 - Enhanced Product Detail page with:
-- Working Like and Share buttons
-- Product Highlights section
-- "You May Also Like" related products
-- Updated Admin panel with new product fields
+### Admin
+- `POST /api/admin/products` - Create product with payment methods
+- `PUT /api/admin/products/{id}` - Update product with payment methods
