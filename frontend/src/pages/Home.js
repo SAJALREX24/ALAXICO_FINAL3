@@ -188,10 +188,10 @@ const Home = () => {
       <RecentlyViewed />
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-gradient-to-br from-blue-600 to-green-600">
+      <section className="py-20 bg-[#2563EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold text-white mb-4">
               Why Healthcare Professionals Choose Us
             </h2>
             <p className="text-xl text-white/90">Join 1000+ satisfied healthcare facilities</p>
