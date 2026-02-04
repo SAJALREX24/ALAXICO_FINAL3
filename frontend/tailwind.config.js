@@ -13,40 +13,51 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "#E5E7EB",
+        input: "#E5E7EB",
+        ring: "#2563EB",
+        background: "#FFFFFF",
+        foreground: "#374151",
         primary: {
-          DEFAULT: "#0F67B1",
+          DEFAULT: "#2563EB",
           foreground: "#FFFFFF",
-          hover: "#0A4D8C",
+          hover: "#1D4ED8",
         },
         secondary: {
-          DEFAULT: "#3FA2F6",
-          foreground: "#FFFFFF",
+          DEFAULT: "#F5F3FF",
+          foreground: "#374151",
         },
         accent: {
-          DEFAULT: "#96C9F4",
-          foreground: "#0F172A",
+          DEFAULT: "#E9D5FF",
+          foreground: "#374151",
+        },
+        success: {
+          DEFAULT: "#10B981",
+          foreground: "#FFFFFF",
+        },
+        warning: {
+          DEFAULT: "#FACC15",
+          foreground: "#374151",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#EF4444",
+          foreground: "#FFFFFF",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#F5F3FF",
+          foreground: "#6B7280",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "#FFFFFF",
+          foreground: "#374151",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#FFFFFF",
+          foreground: "#374151",
         },
       },
       borderRadius: {
