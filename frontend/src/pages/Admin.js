@@ -129,6 +129,7 @@ const Admin = () => {
         feature_highlights: featureHighlightsArray.length > 0 ? featureHighlightsArray : null,
         warranty_info: productForm.warrantyInfo || null,
         shipping_info: productForm.shippingInfo || null,
+        payment_methods: productForm.paymentMethods.length > 0 ? productForm.paymentMethods : null,
         availability: productForm.availability,
         specifications: {
           ...productForm.specifications,
