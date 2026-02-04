@@ -29,7 +29,8 @@ const Admin = () => {
   
   // Available payment methods
   const PAYMENT_METHODS = [
-    { id: 'razorpay', name: 'Online Payment', description: 'Cards, UPI, NetBanking' },
+    { id: 'razorpay', name: 'Card Payment', description: 'Debit/Credit Cards, NetBanking' },
+    { id: 'upi', name: 'UPI Payment', description: 'GPay, PhonePe, Paytm, BHIM' },
     { id: 'cod', name: 'Cash on Delivery', description: 'Pay when you receive' },
     { id: 'bank_transfer', name: 'Bank Transfer', description: 'NEFT/RTGS/IMPS' },
     { id: 'emi', name: 'EMI', description: 'Monthly installments' },
