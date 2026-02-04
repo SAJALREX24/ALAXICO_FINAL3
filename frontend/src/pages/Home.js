@@ -207,7 +207,7 @@ const Home = () => {
                 <div className="w-20 h-20 mx-auto mb-6 bg-white/20 rounded-2xl flex items-center justify-center">
                   <item.icon className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
+                <h3 className="text-2xl font-semibold mb-3">{item.title}</h3>
                 <p className="text-white/90">{item.desc}</p>
               </div>
             ))}
@@ -220,17 +220,17 @@ const Home = () => {
         <section className="py-20 bg-white" data-testid="reviews-section">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4" data-testid="reviews-title">
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#374151] mb-4" data-testid="reviews-title">
                 What Our Customers Say
               </h2>
-              <p className="text-xl text-slate-600">Trusted by healthcare professionals across India</p>
+              <p className="text-xl text-[#6B7280]">Trusted by healthcare professionals across India</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredReviews.map((review, index) => (
                 <div
                   key={review.id}
-                  className="bg-gradient-to-br from-blue-50 to-green-50 border-2 border-blue-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                  className="bg-[#F5F3FF] border-2 border-[#E9D5FF] rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                   data-testid={`review-card-${review.id}`}
                   style={{animationDelay: `${index * 0.15}s`}}
                 >
@@ -238,16 +238,16 @@ const Home = () => {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-5 w-5 ${i < review.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-300'}`}
+                        className={`h-5 w-5 ${i < review.rating ? 'text-[#FACC15] fill-[#FACC15]' : 'text-[#E5E7EB]'}`}
                       />
                     ))}
                   </div>
-                  <p className="text-slate-700 mb-6 leading-relaxed text-lg">&ldquo;{review.comment}&rdquo;</p>
+                  <p className="text-[#374151] mb-6 leading-relaxed text-lg">&ldquo;{review.comment}&rdquo;</p>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-bold text-slate-900">{review.user?.name}</p>
+                      <p className="font-semibold text-[#374151]">{review.user?.name}</p>
                       {review.product && (
-                        <p className="text-sm text-slate-500">{review.product.name}</p>
+                        <p className="text-sm text-[#6B7280]">{review.product.name}</p>
                       )}
                     </div>
                     {review.user && (
@@ -265,9 +265,9 @@ const Home = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 to-blue-900" data-testid="cta-section">
+      <section className="py-20 bg-[#374151]" data-testid="cta-section">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" data-testid="cta-title">
+          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6" data-testid="cta-title">
             Ready to Get Started?
           </h2>
           <p className="text-xl text-white/90 mb-8">
@@ -275,7 +275,7 @@ const Home = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/bulk-order" data-testid="cta-bulk-enquiry-button">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 shadow-2xl hover:shadow-white/20 transform hover:scale-105 transition-all duration-300 text-lg px-8 py-6">
+              <Button size="lg" className="bg-[#2563EB] text-white hover:bg-[#1D4ED8] shadow-2xl hover:shadow-white/20 transform hover:scale-105 transition-all duration-300 text-lg px-8 py-6">
                 Request Bulk Quote
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
