@@ -72,6 +72,17 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class FeatureHighlight(BaseModel):
+    icon: str = ""  # Icon name or URL
+    title: str
+    description: str
+
+class RichContentSection(BaseModel):
+    title: str
+    description: str
+    image: Optional[str] = None
+    features: Optional[List[str]] = None
+
 class Product(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -80,8 +91,16 @@ class Product(BaseModel):
     category: str
     price: float
     image: str
+    images: Optional[List[str]] = None  # Gallery images
+    original_price: Optional[float] = None  # MRP for discount display
     specifications: Optional[dict] = None
+    key_features: Optional[List[str]] = None  # Checkmark features
+    feature_highlights: Optional[List[dict]] = None  # Icon + title + description
+    rich_content: Optional[List[dict]] = None  # Sections with images
+    warranty_info: Optional[str] = None
+    shipping_info: Optional[str] = None
     availability: bool = True
+    likes_count: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ProductCreate(BaseModel):
@@ -90,7 +109,14 @@ class ProductCreate(BaseModel):
     category: str
     price: float
     image: str
+    images: Optional[List[str]] = None
+    original_price: Optional[float] = None
     specifications: Optional[dict] = None
+    key_features: Optional[List[str]] = None
+    feature_highlights: Optional[List[dict]] = None
+    rich_content: Optional[List[dict]] = None
+    warranty_info: Optional[str] = None
+    shipping_info: Optional[str] = None
     availability: bool = True
 
 class CartItem(BaseModel):
