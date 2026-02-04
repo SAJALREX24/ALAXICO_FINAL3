@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
-import { ShoppingCart, Star, Package, ChevronDown, ChevronUp, Check, Truck, Shield, Award, Clock, Heart, Share2, Minus, Plus } from 'lucide-react';
+import { ShoppingCart, Star, Package, ChevronDown, ChevronUp, Check, Truck, Shield, Award, Clock, Heart, Share2, Minus, Plus, Zap, ThermometerSun, Timer, Volume2, BadgeCheck, Copy, Facebook, Twitter, MessageCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
@@ -11,6 +11,7 @@ import { useAuth } from '../contexts/AuthContext';
 import VerificationBadge from '../components/VerificationBadge';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
 import EMICalculator from '../components/EMICalculator';
+import ProductCard from '../components/ProductCard';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -18,10 +19,14 @@ const ProductDetail = () => {
   const { addToRecentlyViewed } = useRecentlyViewed();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
   
   // Expandable sections
   const [expandedSections, setExpandedSections] = useState({
@@ -41,16 +46,29 @@ const ProductDetail = () => {
 
   const fetchProductData = async () => {
     try {
-      const [productRes, reviewsRes] = await Promise.all([
+      const [productRes, reviewsRes, relatedRes] = await Promise.all([
         api.get(`/products/${id}`),
         api.get(`/reviews/product/${id}`),
+        api.get(`/products/${id}/related`),
       ]);
       setProduct(productRes.data);
       setReviews(reviewsRes.data);
+      setRelatedProducts(relatedRes.data);
+      setLikesCount(productRes.data.likes_count || 0);
       
       // Add to recently viewed
       if (productRes.data) {
         addToRecentlyViewed(productRes.data);
+      }
+
+      // Check if user has liked this product
+      if (user) {
+        try {
+          const likedRes = await api.get(`/products/${id}/liked`);
+          setIsLiked(likedRes.data.liked);
+        } catch (e) {
+          // Ignore if not logged in
+        }
       }
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -74,6 +92,50 @@ const ProductDetail = () => {
         toast.error('Failed to add to cart');
       }
     }
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error('Please login to like products');
+      return;
+    }
+    
+    try {
+      const response = await api.post(`/products/${id}/like`);
+      setIsLiked(response.data.liked);
+      setLikesCount(prev => response.data.liked ? prev + 1 : prev - 1);
+      toast.success(response.data.liked ? 'Added to wishlist!' : 'Removed from wishlist');
+    } catch (error) {
+      toast.error('Failed to update wishlist');
+    }
+  };
+
+  const handleShare = (platform) => {
+    const url = window.location.href;
+    const text = `Check out ${product.name} on Alaxico!`;
+    
+    let shareUrl = '';
+    switch (platform) {
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(url);
+        toast.success('Link copied to clipboard!');
+        setShareOpen(false);
+        return;
+      default:
+        return;
+    }
+    
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+    setShareOpen(false);
   };
 
   const handleSubmitReview = async (e) => {
@@ -115,6 +177,22 @@ const ProductDetail = () => {
     setQuantity(quantity + 1);
   };
 
+  const handleAddRelatedToCart = async (relatedProduct) => {
+    try {
+      await api.post('/cart/add', {
+        product_id: relatedProduct.id,
+        quantity: 1,
+      });
+      toast.success('Added to cart!');
+    } catch (error) {
+      if (error.response?.status === 401) {
+        toast.error('Please login to add items to cart');
+      } else {
+        toast.error('Failed to add to cart');
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-purple-50">
@@ -142,10 +220,12 @@ const ProductDetail = () => {
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-    : 0;
+    : 4.5;
 
-  // Generate multiple images for gallery (using same image for demo)
-  const productImages = [product.image, product.image, product.image, product.image];
+  // Generate gallery images
+  const productImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image, product.image, product.image, product.image];
 
   // Default specifications if not provided
   const defaultSpecs = product.specifications || {
@@ -156,16 +236,41 @@ const ProductDetail = () => {
   };
 
   // Key features for the product
-  const keyFeatures = [
+  const keyFeatures = product.key_features || [
     'Premium Quality',
     'ISO Certified',
     'Easy to Use',
     '1 Year Warranty',
   ];
 
-  // Calculate discount if original price exists
-  const originalPrice = product.originalPrice || Math.round(product.price * 1.2);
+  // Feature highlights with icons
+  const featureHighlights = product.feature_highlights || [
+    { icon: 'zap', title: 'Fast Performance', description: 'Quick and accurate results' },
+    { icon: 'shield', title: 'Medical Grade', description: 'Certified quality materials' },
+    { icon: 'timer', title: 'Auto Shutoff', description: 'Energy saving feature' },
+    { icon: 'award', title: 'Warranty', description: '1 Year manufacturer warranty' },
+  ];
+
+  // Rich content sections
+  const richContent = product.rich_content || [];
+
+  // Calculate discount
+  const originalPrice = product.original_price || Math.round(product.price * 1.2);
   const discountPercent = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+
+  // Icon mapping
+  const getIcon = (iconName) => {
+    const icons = {
+      zap: Zap,
+      shield: Shield,
+      timer: Timer,
+      award: Award,
+      thermometer: ThermometerSun,
+      volume: Volume2,
+      check: BadgeCheck,
+    };
+    return icons[iconName] || Zap;
+  };
 
   return (
     <div className="min-h-screen bg-white" data-testid="product-detail-page">
@@ -188,7 +293,7 @@ const ProductDetail = () => {
           <div className="flex gap-4">
             {/* Thumbnail Gallery */}
             <div className="hidden sm:flex flex-col gap-2 w-20">
-              {productImages.map((img, idx) => (
+              {productImages.slice(0, 4).map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
@@ -216,15 +321,80 @@ const ProductDetail = () => {
                   data-testid="product-detail-image"
                 />
               </div>
-              {/* Action Buttons */}
+              {/* Action Buttons - Now Functional */}
               <div className="absolute top-4 right-4 flex flex-col gap-2">
-                <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-purple-50 transition-colors">
-                  <Heart className="w-5 h-5 text-gray-500" />
+                <button 
+                  onClick={handleLike}
+                  className={`w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-all ${
+                    isLiked ? 'bg-red-500 text-white' : 'bg-white text-gray-500 hover:bg-purple-50'
+                  }`}
+                  data-testid="like-button"
+                >
+                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
                 </button>
-                <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-purple-50 transition-colors">
-                  <Share2 className="w-5 h-5 text-gray-500" />
-                </button>
+                
+                {/* Share Button with Dropdown */}
+                <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+                  <DialogTrigger asChild>
+                    <button 
+                      className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-purple-50 transition-colors"
+                      data-testid="share-button"
+                    >
+                      <Share2 className="w-5 h-5 text-gray-500" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-sm bg-white">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-bold text-gray-900">Share this product</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid grid-cols-4 gap-4 py-4">
+                      <button 
+                        onClick={() => handleShare('whatsapp')}
+                        className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-green-50 transition-colors"
+                      >
+                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                          <MessageCircle className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs text-gray-600">WhatsApp</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare('facebook')}
+                        className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-blue-50 transition-colors"
+                      >
+                        <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                          <Facebook className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs text-gray-600">Facebook</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare('twitter')}
+                        className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-sky-50 transition-colors"
+                      >
+                        <div className="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center">
+                          <Twitter className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs text-gray-600">Twitter</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare('copy')}
+                        className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center">
+                          <Copy className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs text-gray-600">Copy Link</span>
+                      </button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
+              
+              {/* Likes Count */}
+              {likesCount > 0 && (
+                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-gray-600 shadow-sm">
+                  {likesCount} {likesCount === 1 ? 'like' : 'likes'}
+                </div>
+              )}
             </div>
           </div>
 
@@ -237,7 +407,7 @@ const ProductDetail = () => {
             {/* Ratings */}
             <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center bg-green-100 px-2 py-1 rounded">
-                <span className="text-green-700 font-semibold mr-1">{averageRating > 0 ? averageRating.toFixed(1) : '4.5'}</span>
+                <span className="text-green-700 font-semibold mr-1">{averageRating.toFixed(1)}</span>
                 <Star className="w-4 h-4 text-green-700 fill-green-700" />
               </div>
               <span className="text-gray-500">({reviews.length || 112} Reviews)</span>
@@ -294,13 +464,15 @@ const ProductDetail = () => {
                   onClick={decreaseQuantity}
                   className="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors"
                   disabled={quantity <= 1}
+                  data-testid="decrease-quantity"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="px-6 py-2 font-semibold text-gray-900 border-x border-gray-300">{quantity}</span>
+                <span className="px-6 py-2 font-semibold text-gray-900 border-x border-gray-300" data-testid="quantity-display">{quantity}</span>
                 <button 
                   onClick={increaseQuantity}
                   className="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors"
+                  data-testid="increase-quantity"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -355,6 +527,52 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Feature Highlights Section - "Helps With?" style */}
+        <div className="mt-12 bg-purple-50 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Product Highlights</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {featureHighlights.map((feature, idx) => {
+              const IconComponent = getIcon(feature.icon);
+              return (
+                <div key={idx} className="text-center p-4 bg-white rounded-xl shadow-sm">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-purple-100 rounded-full flex items-center justify-center">
+                    <IconComponent className="w-7 h-7 text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">{feature.title}</h3>
+                  <p className="text-sm text-gray-500">{feature.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Rich Content Sections */}
+        {richContent.length > 0 && richContent.map((section, idx) => (
+          <div key={idx} className={`mt-12 py-12 ${idx % 2 === 0 ? 'bg-white' : 'bg-purple-50'} rounded-2xl`}>
+            <div className={`max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+              <div className={idx % 2 === 1 ? 'md:order-2' : ''}>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{section.title}</h2>
+                <p className="text-gray-600 mb-6">{section.description}</p>
+                {section.features && (
+                  <div className="space-y-3">
+                    {section.features.map((feat, fidx) => (
+                      <div key={fidx} className="flex items-center gap-3">
+                        <Check className="w-5 h-5 text-green-500" />
+                        <span className="text-gray-700">{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {section.image && (
+                <div className={idx % 2 === 1 ? 'md:order-1' : ''}>
+                  <img src={section.image} alt={section.title} className="rounded-xl shadow-lg" />
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
 
         {/* Expandable Sections */}
         <div className="mt-12 border-t border-gray-200">
@@ -424,8 +642,8 @@ const ProductDetail = () => {
                 <div className="flex items-start gap-4 bg-green-50 p-4 rounded-xl">
                   <Shield className="w-8 h-8 text-green-600 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">1 Year Manufacturer Warranty</h4>
-                    <p>This product comes with a 1-year manufacturer warranty covering manufacturing defects. For warranty claims, please contact our customer support with your invoice and product details.</p>
+                    <h4 className="font-semibold text-gray-900 mb-2">{product.warranty_info || '1 Year Manufacturer Warranty'}</h4>
+                    <p>This product comes with a manufacturer warranty covering manufacturing defects. For warranty claims, please contact our customer support with your invoice and product details.</p>
                   </div>
                 </div>
               </div>
@@ -448,7 +666,7 @@ const ProductDetail = () => {
                     <Truck className="w-6 h-6 text-purple-600 flex-shrink-0" />
                     <div>
                       <h4 className="font-semibold text-gray-900">Free Delivery</h4>
-                      <p>Free shipping on all orders across India</p>
+                      <p>{product.shipping_info || 'Free shipping on all orders across India'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -604,6 +822,22 @@ const ProductDetail = () => {
             </div>
           )}
         </div>
+
+        {/* You May Also Like - Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map((relatedProduct) => (
+                <ProductCard
+                  key={relatedProduct.id}
+                  product={relatedProduct}
+                  onAddToCart={handleAddRelatedToCart}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* EMI Calculator for products >= ₹50,000 */}
         {product.price >= 50000 && (
