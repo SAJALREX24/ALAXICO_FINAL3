@@ -343,6 +343,89 @@ const Admin = () => {
                             data-testid="product-image-input"
                           />
                         </div>
+                        <div>
+                          <Label className="text-gray-700 font-medium">Gallery Images (comma-separated URLs)</Label>
+                          <Input
+                            value={productForm.images}
+                            onChange={(e) => setProductForm({ ...productForm, images: e.target.value })}
+                            placeholder="url1.jpg, url2.jpg, url3.jpg"
+                            className="mt-1 border-gray-200 focus:border-purple-500"
+                          />
+                          <p className="text-xs text-gray-400 mt-1">Enter multiple image URLs separated by commas</p>
+                        </div>
+                        <div>
+                          <Label className="text-gray-700 font-medium">Key Features (comma-separated)</Label>
+                          <Input
+                            value={productForm.keyFeatures}
+                            onChange={(e) => setProductForm({ ...productForm, keyFeatures: e.target.value })}
+                            placeholder="Premium Quality, ISO Certified, Easy to Use, 1 Year Warranty"
+                            className="mt-1 border-gray-200 focus:border-purple-500"
+                          />
+                          <p className="text-xs text-gray-400 mt-1">These appear as checkmarks on the product page</p>
+                        </div>
+                      </div>
+
+                      {/* Feature Highlights Section */}
+                      <div className="space-y-4 border-t border-gray-100 pt-4">
+                        <h3 className="text-sm font-semibold text-gray-700 flex items-center">
+                          <Star className="w-4 h-4 mr-2 text-purple-500" />
+                          Feature Highlights (shown in product page)
+                        </h3>
+                        <p className="text-xs text-gray-500">Add up to 4 feature highlights with icons</p>
+                        {productForm.featureHighlights.map((fh, idx) => (
+                          <div key={idx} className="grid grid-cols-12 gap-2 p-3 bg-purple-50 rounded-lg">
+                            <div className="col-span-3">
+                              <Label className="text-xs text-gray-600">Icon</Label>
+                              <Select 
+                                value={fh.icon} 
+                                onValueChange={(v) => {
+                                  const newHighlights = [...productForm.featureHighlights];
+                                  newHighlights[idx].icon = v;
+                                  setProductForm({ ...productForm, featureHighlights: newHighlights });
+                                }}
+                              >
+                                <SelectTrigger className="mt-1 border-gray-200">
+                                  <SelectValue placeholder="Icon" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="zap">Zap (Fast)</SelectItem>
+                                  <SelectItem value="shield">Shield (Safe)</SelectItem>
+                                  <SelectItem value="timer">Timer (Auto)</SelectItem>
+                                  <SelectItem value="award">Award (Quality)</SelectItem>
+                                  <SelectItem value="thermometer">Thermometer</SelectItem>
+                                  <SelectItem value="volume">Volume (Sound)</SelectItem>
+                                  <SelectItem value="check">Check (Certified)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="col-span-4">
+                              <Label className="text-xs text-gray-600">Title</Label>
+                              <Input
+                                value={fh.title}
+                                onChange={(e) => {
+                                  const newHighlights = [...productForm.featureHighlights];
+                                  newHighlights[idx].title = e.target.value;
+                                  setProductForm({ ...productForm, featureHighlights: newHighlights });
+                                }}
+                                placeholder="Feature title"
+                                className="mt-1 border-gray-200"
+                              />
+                            </div>
+                            <div className="col-span-5">
+                              <Label className="text-xs text-gray-600">Description</Label>
+                              <Input
+                                value={fh.description}
+                                onChange={(e) => {
+                                  const newHighlights = [...productForm.featureHighlights];
+                                  newHighlights[idx].description = e.target.value;
+                                  setProductForm({ ...productForm, featureHighlights: newHighlights });
+                                }}
+                                placeholder="Short description"
+                                className="mt-1 border-gray-200"
+                              />
+                            </div>
+                          </div>
+                        ))}
                       </div>
 
                       {/* Pricing Section */}
