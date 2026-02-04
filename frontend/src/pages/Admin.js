@@ -88,17 +88,36 @@ const Admin = () => {
   const handleCreateProduct = async (e) => {
     e.preventDefault();
     try {
+      // Parse images from comma-separated string
+      const imagesArray = productForm.images 
+        ? productForm.images.split(',').map(url => url.trim()).filter(url => url)
+        : [];
+      
+      // Parse key features from comma-separated string
+      const keyFeaturesArray = productForm.keyFeatures 
+        ? productForm.keyFeatures.split(',').map(f => f.trim()).filter(f => f)
+        : ['Premium Quality', 'ISO Certified', 'Easy to Use', '1 Year Warranty'];
+      
+      // Filter out empty feature highlights
+      const featureHighlightsArray = productForm.featureHighlights
+        .filter(fh => fh.title && fh.description)
+        .map(fh => ({ icon: fh.icon, title: fh.title, description: fh.description }));
+
       const productData = {
         name: productForm.name,
         description: productForm.description,
         category: productForm.category,
         price: parseFloat(productForm.price),
+        original_price: productForm.originalPrice ? parseFloat(productForm.originalPrice) : null,
         image: productForm.image,
+        images: imagesArray.length > 0 ? imagesArray : null,
+        key_features: keyFeaturesArray,
+        feature_highlights: featureHighlightsArray.length > 0 ? featureHighlightsArray : null,
+        warranty_info: productForm.warrantyInfo || null,
+        shipping_info: productForm.shippingInfo || null,
         availability: productForm.availability,
         specifications: {
           ...productForm.specifications,
-          ...(productForm.originalPrice && { originalPrice: parseFloat(productForm.originalPrice) }),
-          ...(productForm.discount && { discount: parseFloat(productForm.discount) }),
           ...(productForm.stockQuantity && { stockQuantity: parseInt(productForm.stockQuantity) }),
           ...(productForm.minOrderQuantity && { minOrderQuantity: parseInt(productForm.minOrderQuantity) }),
           featured: productForm.featured,
@@ -118,9 +137,19 @@ const Admin = () => {
         originalPrice: '',
         discount: '',
         image: '',
+        images: '',
         stockQuantity: '',
         minOrderQuantity: '1',
         specifications: {},
+        keyFeatures: '',
+        featureHighlights: [
+          { icon: 'zap', title: '', description: '' },
+          { icon: 'shield', title: '', description: '' },
+          { icon: 'timer', title: '', description: '' },
+          { icon: 'award', title: '', description: '' },
+        ],
+        warrantyInfo: '',
+        shippingInfo: '',
         availability: true,
         featured: false,
         limitedStock: false,
