@@ -80,26 +80,25 @@ const Home = () => {
       <HeroSlider />
 
       {/* Trust Badges Section */}
-      <section className="py-8 sm:py-12 bg-white border-b border-slate-100">
+      <section className="py-8 sm:py-12 bg-white border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { icon: ShieldCheck, title: 'ISO Certified', desc: 'Quality Assured', bgColor: 'from-blue-100 to-blue-50', iconColor: 'text-blue-600' },
-              { icon: Truck, title: 'Fast Delivery', desc: 'Pan India', bgColor: 'from-green-100 to-green-50', iconColor: 'text-green-600' },
-              { icon: Award, title: 'Warranty', desc: 'On All Products', bgColor: 'from-purple-100 to-purple-50', iconColor: 'text-purple-600' },
-              { icon: UserCheck, title: '24/7 Support', desc: 'Expert Help', bgColor: 'from-teal-100 to-teal-50', iconColor: 'text-teal-600' },
+              { icon: ShieldCheck, title: 'ISO Certified', desc: 'Quality Assured', bgColor: 'bg-[#F5F3FF]', iconColor: 'text-[#2563EB]' },
+              { icon: Truck, title: 'Fast Delivery', desc: 'Pan India', bgColor: 'bg-[#F5F3FF]', iconColor: 'text-[#10B981]' },
+              { icon: Award, title: 'Warranty', desc: 'On All Products', bgColor: 'bg-[#F5F3FF]', iconColor: 'text-[#2563EB]' },
+              { icon: UserCheck, title: '24/7 Support', desc: 'Expert Help', bgColor: 'bg-[#F5F3FF]', iconColor: 'text-[#10B981]' },
             ].map((feature, index) => (
               <div 
                 key={index}
-                className="flex items-center space-x-3 p-3 sm:p-4 rounded-xl bg-gradient-to-br hover:shadow-md transition-shadow"
-                style={{ background: 'linear-gradient(to bottom right, var(--tw-gradient-stops))' }}
+                className="flex items-center space-x-3 p-3 sm:p-4 rounded-xl bg-[#F5F3FF] hover:shadow-md transition-shadow"
               >
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${feature.bgColor} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 ${feature.bgColor} rounded-xl flex items-center justify-center flex-shrink-0 border border-[#E9D5FF]`}>
                   <feature.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${feature.iconColor}`} />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900">{feature.title}</h3>
-                  <p className="text-xs sm:text-sm text-slate-600">{feature.desc}</p>
+                  <h3 className="text-sm sm:text-base font-semibold text-[#374151]">{feature.title}</h3>
+                  <p className="text-xs sm:text-sm text-[#6B7280]">{feature.desc}</p>
                 </div>
               </div>
             ))}
