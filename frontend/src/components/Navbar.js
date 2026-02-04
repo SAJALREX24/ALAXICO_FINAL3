@@ -283,15 +283,15 @@ const Navbar = ({ cartCount = 0 }) => {
         </div>
 
         {/* Mobile Category Bar */}
-        <div className="lg:hidden border-t border-purple-600 overflow-x-auto bg-purple-600">
+        <div className="lg:hidden border-t border-[#E5E7EB] overflow-x-auto bg-[#F5F3FF]">
           <div className="flex px-4 py-2 space-x-1" style={{ minWidth: 'max-content' }}>
             {CATEGORIES.map((category) => (
               <Link
                 key={category.name}
                 to={category.link}
-                className="flex items-center px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-full text-xs font-medium text-white transition-colors whitespace-nowrap"
+                className="flex items-center px-3 py-1.5 bg-white hover:bg-[#E9D5FF] rounded-full text-xs font-medium text-[#374151] hover:text-[#2563EB] transition-colors whitespace-nowrap border border-[#E5E7EB]"
               >
-                <category.icon className="w-3 h-3 mr-1 text-white" />
+                <category.icon className={`w-3 h-3 mr-1 ${category.color}`} />
                 {category.name.split(' ')[0]}
               </Link>
             ))}
@@ -304,9 +304,9 @@ const Navbar = ({ cartCount = 0 }) => {
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={closeMobileMenu}></div>
           <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
-            <div className="p-4 border-b border-purple-600 bg-purple-700">
+            <div className="p-4 border-b border-[#E5E7EB] bg-[#2563EB]">
               <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-white">Menu</span>
+                <span className="text-lg font-semibold text-white">Menu</span>
                 <button onClick={closeMobileMenu} className="p-2 text-white/80 hover:text-white">
                   <X className="h-5 w-5" />
                 </button>
@@ -315,28 +315,28 @@ const Navbar = ({ cartCount = 0 }) => {
 
             {/* User Info */}
             {user && (
-              <div className="p-4 bg-purple-50 border-b border-slate-200">
+              <div className="p-4 bg-[#F5F3FF] border-b border-[#E5E7EB]">
                 <div className="flex items-center space-x-3">
-                  <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-purple-400">
+                  <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#2563EB]">
                     <img src={userAvatar} alt={user.name} className="h-full w-full object-cover" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">{user.name}</p>
-                    <p className="text-sm text-slate-600">{user.email}</p>
+                    <p className="font-semibold text-[#374151]">{user.name}</p>
+                    <p className="text-sm text-[#6B7280]">{user.email}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Search */}
-            <div className="p-4 border-b border-slate-200">
+            <div className="p-4 border-b border-[#E5E7EB]">
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search products..."
-                  className="w-full h-10 px-4 pr-10 text-sm border border-slate-200 rounded-lg focus:border-purple-500 outline-none"
+                  className="w-full h-10 px-4 pr-10 text-sm border border-[#E5E7EB] rounded-lg focus:border-[#2563EB] outline-none text-[#374151]"
                 />
                 <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
                   <Search className="h-5 w-5" />
