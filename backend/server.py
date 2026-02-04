@@ -633,6 +633,47 @@ async def remove_from_cart(product_id: str, user: User = Depends(get_current_use
     )
     return {"message": "Item removed"}
 
+@api_router.get("/cart/payment-methods")
+async def get_cart_payment_methods(user: User = Depends(get_current_user)):
+    """Get available payment methods based on cart items"""
+    cart = await db.carts.find_one({"user_id": user.id}, {"_id": 0})
+    if not cart or not cart.get("items"):
+        return {"payment_methods": PAYMENT_METHODS}  # All methods available for empty cart
+    
+    # Get all products in cart
+    product_ids = [item["product_id"] for item in cart.get("items", [])]
+    products = await db.products.find({"id": {"$in": product_ids}}, {"_id": 0}).to_list(100)
+    
+    # Find common payment methods across all products
+    if not products:
+        return {"payment_methods": PAYMENT_METHODS}
+    
+    # Start with all methods and intersect
+    available_methods = set(PAYMENT_METHODS)
+    for product in products:
+        product_methods = product.get("payment_methods")
+        if product_methods:
+            available_methods = available_methods.intersection(set(product_methods))
+    
+    # If no common methods found (shouldn't happen), return all
+    if not available_methods:
+        available_methods = set(PAYMENT_METHODS)
+    
+    return {"payment_methods": list(available_methods)}
+
+@api_router.get("/payment-methods")
+async def get_all_payment_methods():
+    """Get all available payment methods"""
+    return {
+        "payment_methods": [
+            {"id": "razorpay", "name": "Online Payment", "description": "Pay via Cards, UPI, NetBanking", "icon": "credit-card"},
+            {"id": "cod", "name": "Cash on Delivery", "description": "Pay when you receive", "icon": "banknote"},
+            {"id": "bank_transfer", "name": "Bank Transfer", "description": "Direct bank transfer (NEFT/RTGS)", "icon": "building"},
+            {"id": "emi", "name": "EMI", "description": "Easy monthly installments", "icon": "calendar"},
+            {"id": "pay_later", "name": "Pay Later", "description": "Buy now, pay within 30 days", "icon": "clock"},
+        ]
+    }
+
 # ============= ORDER ROUTES =============
 
 @api_router.post("/orders/create-razorpay-order")
