@@ -27,14 +27,13 @@ Build a medical equipment e-commerce website inspired by Dr. Orgs with:
 - **Payments**: Razorpay (needs real API keys)
 - **Charts**: Recharts (for admin dashboard)
 
-## Alaxico Product Line (Featured in Hero Slider)
-Based on the Alaxico Catalog:
-1. **Piston Compressor Nebulizer** - Respiratory therapy, 3-year warranty
-2. **Electronic Blood Pressure Monitor** - Rechargeable, voice broadcast, 99 memory data
-3. **Flexible Digital Thermometer** - Super flexible tip for comfort, ideal for infants
-4. **Steamer Cum Vaporizer** - Steam therapy, 350ml capacity
-5. **Electric Hot Water Bag** - Superfast heating, low power consumption
-6. **Natural Rubber Hot Water Bag** - 2L capacity, explosion proof
+## Design Theme
+**Current Theme**: Professional Light Purple (#8B5CF6)
+- Primary: Light purple (#8B5CF6)
+- Background: White / Light purple tint (#FAF5FF, #F5F3FF)
+- Borders: Purple-100 (#E9D5FF)
+- Text: Gray-900, Gray-500, Gray-600
+- Style: Clean, minimal, professional healthcare aesthetic
 
 ## Core Features Implemented
 
@@ -48,118 +47,75 @@ Based on the Alaxico Catalog:
 | Cart & Checkout | ✅ Complete | Add/remove items, quantity management |
 | User Authentication | ✅ Complete | JWT + Google OAuth |
 | User Dashboard | ✅ Complete | Orders history, PDF invoice download |
-| WhatsApp Chat | ✅ Complete | Floating button |
-| Recently Viewed | ✅ Complete | localStorage tracking |
-| Customer Reviews | ✅ Complete | Display approved reviews |
+| Verification Badges | ✅ Complete | Hospital, Clinic, Doctor, Distributor |
+| WhatsApp Integration | ✅ Complete | Floating chat button |
+| Customer Reviews | ✅ Complete | With admin approval system |
+| Recently Viewed Products | ✅ Complete | Local storage based |
 
-### ✅ Admin Panel Features
+### ✅ Admin Features
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Products Management | ✅ Complete | Add, view, delete products |
+| Products Management | ✅ Complete | CRUD operations |
 | Orders Management | ✅ Complete | View all orders |
-| Bulk Enquiries | ✅ Complete | View, update status |
-| Reviews Management | ✅ Complete | Approve/reject reviews |
-| Verification Management | ✅ Complete | Approve/reject user verifications |
-| Sales Dashboard | ✅ Complete | Revenue, orders, charts |
-
-## Branding Updates (Completed Feb 2025)
-- ✅ Logo updated to Alaxico logo in Navbar
-- ✅ Favicon updated to Alaxico logo
-- ✅ Page title: "Alaxico | Trusted Healthcare Partner"
-- ✅ Meta description updated for SEO
-- ✅ Hero slider updated with 6 Alaxico catalog products
-- ✅ Contact email: support@alaxico.com
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/google/login` - Google OAuth initiate
-- `GET /api/auth/google/callback` - Google OAuth callback
-- `GET /api/auth/me` - Get current user
-
-### Products
-- `GET /api/products` - List products (with filters)
-- `GET /api/products/{id}` - Get single product
-- `GET /api/categories` - List categories
-- `POST /api/products/calculate-emi` - EMI calculator
-
-### Orders
-- `POST /api/orders/create-razorpay-order` - Create order
-- `POST /api/orders/verify-payment` - Verify payment
-- `GET /api/orders/my-orders` - User's orders
-- `GET /api/orders/{order_id}/invoice` - PDF invoice
-
-### Admin
-- `GET /api/admin/dashboard-stats` - Sales dashboard data
-- `POST /api/admin/products` - Create product
-- `DELETE /api/admin/products/{id}` - Delete product
-- `GET /api/admin/orders` - All orders
-- `GET /api/admin/bulk-enquiries` - All enquiries
-- `GET /api/admin/reviews` - All reviews
-- `GET /api/admin/verifications` - All verification requests
-
-## Database Schema
-```
-products: { name, category, price, discountPrice, stock, isFeatured, description, imageUrl, specifications }
-users: { name, email, password_hash, phone, role, is_verified, avatar_seed }
-orders: { user_id, products, total_amount, razorpay_order_id, status, created_at }
-bulk_enquiries: { buyer_type, quantity, organization_details, contact_details, status }
-reviews: { product_id, user_id, rating, comment, approved }
-```
-
-## Test Credentials
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@medequipmart.com | admin123 |
-| Hospital | hospital@example.com | demo123 |
-| Clinic | clinic@example.com | demo123 |
-| Doctor | doctor@example.com | demo123 |
+| Bulk Enquiries Management | ✅ Complete | Status updates |
+| Reviews Management | ✅ Complete | Approval/rejection |
+| Verification Management | ✅ Complete | Approve/reject user verification |
+| Sales Dashboard | ✅ Complete | Revenue charts, metrics |
 
 ## Pending/Blocked Items
-⚠️ **Razorpay Payment**: Uses placeholder test keys. Needs real API keys:
-- `RAZORPAY_KEY_ID`
-- `RAZORPAY_KEY_SECRET`
 
-## Future Tasks (Backlog)
-- P1: Deploy to alaxico.com domain (after Razorpay keys)
-- P2: Email notifications for order status
-- P2: Wishlist / "Save for Later"
-- P2: Product Comparison feature
-- P3: Advanced RFQ system for B2B
-- P3: Advanced search filters
+### 🔴 Blocked
+- **Razorpay Payment**: Non-functional - awaiting real API keys from user
 
-## File Structure
+### 🟡 Upcoming Tasks
+- Add Alaxico products from catalog to database
+- Deploy to alaxico.com domain
+
+### 🔵 Future/Backlog
+- Email notifications for order status
+- Wishlist / "Save for Later"
+- Product Comparison
+- Advanced RFQ system for B2B
+- Advanced search filters
+
+## Test Credentials
+- **Admin**: admin@medequipmart.com / admin123
+- **User**: clinic@example.com / demo123
+
+## API Endpoints
 ```
-/app
-├── backend/
-│   ├── .env
-│   ├── server.py
-│   └── requirements.txt
-└── frontend/
-    ├── public/
-    │   └── index.html (Alaxico title, favicon, meta)
-    └── src/
-        ├── components/
-        │   ├── Navbar.js (Alaxico logo)
-        │   ├── HeroSlider.js (6 Alaxico product slides)
-        │   ├── SalesDashboard.js
-        │   ├── EMICalculator.js
-        │   └── RecentlyViewed.js
-        ├── pages/
-        │   ├── Home.js
-        │   ├── Auth.js (Google login)
-        │   └── AuthCallback.js
-        └── utils/
-            └── avatars.js
+Auth:
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/google-callback
+
+Products:
+GET /api/products
+GET /api/products/{id}
+POST /api/products (admin)
+DELETE /api/products/{id} (admin)
+
+Cart:
+GET /api/cart
+POST /api/cart/add
+PUT /api/cart/update
+DELETE /api/cart/remove/{product_id}
+
+Orders:
+POST /api/orders/create-razorpay-order
+POST /api/orders/verify-payment
+GET /api/orders/my-orders
+GET /api/orders/{id}/invoice
+
+Bulk Enquiries:
+POST /api/bulk-enquiries
+GET /api/bulk-enquiries/my-enquiries
+
+Reviews:
+POST /api/reviews
+GET /api/reviews/product/{product_id}
+GET /api/reviews/featured
 ```
 
 ## Last Updated
-February 3, 2025
-
-## Recent Changes
-- Completed Alaxico branding integration
-- Updated hero slider with 6 catalog product images
-- Updated page title, favicon, and meta description
-- Updated contact email to support@alaxico.com
+February 4, 2026 - Applied professional light purple theme across all pages
