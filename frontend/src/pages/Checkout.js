@@ -130,7 +130,7 @@ const Checkout = () => {
           contact: address.phone,
         },
         theme: {
-          color: '#7C3AED',
+          color: '#8B5CF6',
         },
       };
       
@@ -159,10 +159,10 @@ const Checkout = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
+      <div className="min-h-screen bg-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto"></div>
-          <p className="mt-4 text-purple-200">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-500">Loading...</p>
         </div>
       </div>
     );
@@ -174,45 +174,38 @@ const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden" data-testid="checkout-page">
-      {/* Purple Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-3xl -translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-600/30 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
-        <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-teal-500/10 rounded-full blur-2xl"></div>
-      </div>
-
-      <div className="relative z-10 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-purple-50" data-testid="checkout-page">
+      <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl mb-4 border border-white/20">
-              <CreditCard className="h-8 w-8 text-teal-400" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-2xl mb-4">
+              <CreditCard className="h-8 w-8 text-purple-600" />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2" data-testid="checkout-title">
-              Secure <span className="text-teal-400">Checkout</span>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2" data-testid="checkout-title">
+              Secure <span className="text-purple-600">Checkout</span>
             </h1>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Delivery Address Form */}
             <div className="lg:col-span-2">
-              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+              <div className="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm">
                 <div className="flex items-center mb-6">
-                  <Truck className="h-6 w-6 text-teal-400 mr-3" />
-                  <h2 className="text-xl font-semibold text-white">Delivery Address</h2>
+                  <Truck className="h-6 w-6 text-purple-600 mr-3" />
+                  <h2 className="text-xl font-semibold text-gray-900">Delivery Address</h2>
                 </div>
                 
                 <form onSubmit={handlePayment} className="space-y-4">
                   <div>
-                    <Label htmlFor="street" className="text-white">Street Address *</Label>
+                    <Label htmlFor="street" className="text-gray-700">Street Address *</Label>
                     <Textarea
                       id="street"
                       value={address.street}
                       onChange={(e) => setAddress({ ...address, street: e.target.value })}
                       required
                       rows={2}
-                      className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300"
+                      className="mt-2 border-gray-200 focus:border-purple-500"
                       placeholder="Enter your street address"
                       data-testid="street-input"
                     />
@@ -220,26 +213,26 @@ const Checkout = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="city" className="text-white">City *</Label>
+                      <Label htmlFor="city" className="text-gray-700">City *</Label>
                       <Input
                         id="city"
                         value={address.city}
                         onChange={(e) => setAddress({ ...address, city: e.target.value })}
                         required
-                        className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300"
+                        className="mt-2 border-gray-200 focus:border-purple-500"
                         placeholder="City"
                         data-testid="city-input"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="state" className="text-white">State *</Label>
+                      <Label htmlFor="state" className="text-gray-700">State *</Label>
                       <Input
                         id="state"
                         value={address.state}
                         onChange={(e) => setAddress({ ...address, state: e.target.value })}
                         required
-                        className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300"
+                        className="mt-2 border-gray-200 focus:border-purple-500"
                         placeholder="State"
                         data-testid="state-input"
                       />
@@ -248,27 +241,27 @@ const Checkout = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="pincode" className="text-white">Pincode *</Label>
+                      <Label htmlFor="pincode" className="text-gray-700">Pincode *</Label>
                       <Input
                         id="pincode"
                         value={address.pincode}
                         onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
                         required
-                        className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300"
+                        className="mt-2 border-gray-200 focus:border-purple-500"
                         placeholder="PIN Code"
                         data-testid="pincode-input"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="phone" className="text-white">Phone *</Label>
+                      <Label htmlFor="phone" className="text-gray-700">Phone *</Label>
                       <Input
                         id="phone"
                         type="tel"
                         value={address.phone}
                         onChange={(e) => setAddress({ ...address, phone: e.target.value })}
                         required
-                        className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300"
+                        className="mt-2 border-gray-200 focus:border-purple-500"
                         placeholder="+91 XXXXX XXXXX"
                         data-testid="phone-input"
                       />
@@ -277,7 +270,7 @@ const Checkout = () => {
                   
                   <Button
                     type="submit"
-                    className="w-full mt-6 h-12 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-lg shadow-lg shadow-teal-500/30"
+                    className="w-full mt-6 h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold text-lg shadow-md"
                     disabled={processing}
                     data-testid="place-order-button"
                   >
@@ -286,14 +279,14 @@ const Checkout = () => {
                 </form>
 
                 {/* Trust Badges */}
-                <div className="mt-6 pt-6 border-t border-white/20">
-                  <div className="flex items-center justify-center space-x-6 text-purple-200 text-sm">
+                <div className="mt-6 pt-6 border-t border-purple-100">
+                  <div className="flex items-center justify-center space-x-6 text-gray-500 text-sm">
                     <div className="flex items-center">
-                      <ShieldCheck className="h-4 w-4 mr-1 text-teal-400" />
+                      <ShieldCheck className="h-4 w-4 mr-1 text-purple-600" />
                       Secure Payment
                     </div>
                     <div className="flex items-center">
-                      <Truck className="h-4 w-4 mr-1 text-teal-400" />
+                      <Truck className="h-4 w-4 mr-1 text-purple-600" />
                       Free Delivery
                     </div>
                   </div>
@@ -303,35 +296,35 @@ const Checkout = () => {
 
             {/* Order Summary */}
             <div>
-              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 sticky top-24" data-testid="checkout-summary">
-                <h2 className="text-xl font-semibold text-white mb-6">Order Summary</h2>
+              <div className="bg-white border border-purple-100 rounded-2xl p-6 sticky top-24 shadow-sm" data-testid="checkout-summary">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
                 
                 <div className="space-y-4 mb-6">
                   {cart.items.map((item) => (
                     <div key={item.product_id} className="flex justify-between" data-testid={`checkout-item-${item.product_id}`}>
                       <div className="flex-1">
-                        <p className="font-medium text-white text-sm">{item.product?.name}</p>
-                        <p className="text-purple-200 text-sm">Qty: {item.quantity}</p>
+                        <p className="font-medium text-gray-900 text-sm">{item.product?.name}</p>
+                        <p className="text-gray-500 text-sm">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-semibold text-teal-400">
+                      <p className="font-semibold text-purple-600">
                         ₹{((item.product?.price || 0) * item.quantity).toLocaleString()}
                       </p>
                     </div>
                   ))}
                 </div>
                 
-                <div className="border-t border-white/20 pt-4 space-y-3">
-                  <div className="flex justify-between text-purple-200">
+                <div className="border-t border-purple-100 pt-4 space-y-3">
+                  <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
                     <span>₹{calculateTotal().toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-purple-200">
+                  <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
-                    <span className="text-teal-400">FREE</span>
+                    <span className="text-green-600">FREE</span>
                   </div>
-                  <div className="flex justify-between text-lg font-semibold pt-2 border-t border-white/20">
-                    <span className="text-white">Total</span>
-                    <span className="text-teal-400" data-testid="checkout-total">₹{calculateTotal().toLocaleString()}</span>
+                  <div className="flex justify-between text-lg font-semibold pt-2 border-t border-purple-100">
+                    <span className="text-gray-900">Total</span>
+                    <span className="text-purple-600" data-testid="checkout-total">₹{calculateTotal().toLocaleString()}</span>
                   </div>
                 </div>
               </div>
