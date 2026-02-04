@@ -602,6 +602,37 @@ const Admin = () => {
                         </div>
                       </div>
 
+                      {/* Payment Methods Section */}
+                      <div className="space-y-4 border-t border-gray-100 pt-4">
+                        <h3 className="text-sm font-semibold text-gray-700 flex items-center">
+                          <Tag className="w-4 h-4 mr-2 text-purple-500" />
+                          Allowed Payment Methods
+                        </h3>
+                        <p className="text-xs text-gray-500">Select which payment methods are available for this product</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {PAYMENT_METHODS.map((method) => (
+                            <div 
+                              key={method.id}
+                              onClick={() => togglePaymentMethod(method.id)}
+                              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer border-2 transition-all ${
+                                productForm.paymentMethods?.includes(method.id) 
+                                  ? 'border-purple-500 bg-purple-50' 
+                                  : 'border-gray-200 bg-white hover:border-purple-200'
+                              }`}
+                            >
+                              <div>
+                                <p className="font-medium text-gray-900 text-sm">{method.name}</p>
+                                <p className="text-xs text-gray-500">{method.description}</p>
+                              </div>
+                              <Switch
+                                checked={productForm.paymentMethods?.includes(method.id)}
+                                onCheckedChange={() => togglePaymentMethod(method.id)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
                       {/* Options Section */}
                       <div className="space-y-4 border-t border-gray-100 pt-4">
                         <h3 className="text-sm font-semibold text-gray-700">Product Options</h3>
