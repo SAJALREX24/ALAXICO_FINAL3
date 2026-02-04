@@ -214,9 +214,9 @@ const Navbar = ({ cartCount = 0 }) => {
 
               {/* Cart */}
               <Link to="/cart" className="relative p-2" data-testid="cart-link">
-                <ShoppingCart className="h-6 w-6 text-white hover:text-purple-200 transition-colors" />
+                <ShoppingCart className="h-6 w-6 text-[#374151] hover:text-[#2563EB] transition-colors" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-white text-purple-700 text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                  <span className="absolute -top-1 -right-1 bg-[#2563EB] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
                     {cartCount}
                   </span>
                 )}
@@ -228,16 +228,16 @@ const Navbar = ({ cartCount = 0 }) => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center space-x-2 focus:outline-none" data-testid="user-menu-trigger">
-                        <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white shadow-md hover:border-purple-200 transition-colors">
+                        <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-[#2563EB] shadow-md hover:border-[#1D4ED8] transition-colors">
                           <img src={userAvatar} alt={user.name || 'User'} className="h-full w-full object-cover" />
                         </div>
-                        <ChevronDown className="w-4 h-4 text-white" />
+                        <ChevronDown className="w-4 h-4 text-[#374151]" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56">
-                      <div className="px-3 py-2 border-b border-slate-100">
-                        <p className="font-medium text-slate-900">{user.name}</p>
-                        <p className="text-xs text-slate-500">{user.email}</p>
+                      <div className="px-3 py-2 border-b border-[#E5E7EB]">
+                        <p className="font-medium text-[#374151]">{user.name}</p>
+                        <p className="text-xs text-[#6B7280]">{user.email}</p>
                       </div>
                       <DropdownMenuItem onClick={() => navigate('/dashboard')} data-testid="dashboard-menu-item">
                         <User className="w-4 h-4 mr-2" />
@@ -253,7 +253,7 @@ const Navbar = ({ cartCount = 0 }) => {
                           Admin Panel
                         </DropdownMenuItem>
                       )}
-                      <div className="border-t border-slate-100 mt-1 pt-1">
+                      <div className="border-t border-[#E5E7EB] mt-1 pt-1">
                         <DropdownMenuItem onClick={handleLogout} className="text-red-600" data-testid="logout-menu-item">
                           <LogOut className="w-4 h-4 mr-2" />
                           Logout
@@ -263,7 +263,7 @@ const Navbar = ({ cartCount = 0 }) => {
                   </DropdownMenu>
                 ) : (
                   <Link to="/login">
-                    <Button className="bg-white text-purple-700 hover:bg-purple-100 font-semibold">
+                    <Button className="bg-[#2563EB] text-white hover:bg-[#1D4ED8] font-medium">
                       Login
                     </Button>
                   </Link>
@@ -273,7 +273,7 @@ const Navbar = ({ cartCount = 0 }) => {
               {/* Mobile Menu Button */}
               <button 
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-                className="lg:hidden p-2 text-white hover:text-purple-200"
+                className="lg:hidden p-2 text-[#374151] hover:text-[#2563EB]"
                 data-testid="mobile-menu-button"
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
