@@ -11,9 +11,9 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <img 
-                src="https://static.prod-images.emergentagent.com/jobs/6cf4d218-daa4-4ddd-a299-e0a623bdb977/images/9d54be2805d41704c5b8ed1f0bd08c1bac66d11cd19481cc94c6248a8a5a753d.png" 
+                src="https://static.prod-images.emergentagent.com/jobs/6cf4d218-daa4-4ddd-a299-e0a623bdb977/images/e5a31b411711f18830e3796523ecde606cc58657dc6f9079272040fdd33d30d8.png" 
                 alt="Alaxico Logo" 
-                className="h-10 w-auto"
+                className="h-10 w-auto rounded-lg"
               />
               <span className="text-xl font-bold text-white tracking-wide">ALAXICO</span>
             </div>
