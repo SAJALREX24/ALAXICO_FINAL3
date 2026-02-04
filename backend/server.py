@@ -480,6 +480,68 @@ async def delete_product(product_id: str):
         raise HTTPException(status_code=404, detail="Product not found")
     return {"message": "Product deleted"}
 
+@api_router.post("/products/{product_id}/like")
+async def like_product(product_id: str, user: User = Depends(get_current_user)):
+    """Toggle like on a product"""
+    # Check if user already liked this product
+    existing_like = await db.product_likes.find_one({
+        "user_id": user.id,
+        "product_id": product_id
+    })
+    
+    if existing_like:
+        # Unlike
+        await db.product_likes.delete_one({"_id": existing_like["_id"]})
+        await db.products.update_one(
+            {"id": product_id},
+            {"$inc": {"likes_count": -1}}
+        )
+        return {"liked": False, "message": "Product unliked"}
+    else:
+        # Like
+        await db.product_likes.insert_one({
+            "user_id": user.id,
+            "product_id": product_id,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        await db.products.update_one(
+            {"id": product_id},
+            {"$inc": {"likes_count": 1}}
+        )
+        return {"liked": True, "message": "Product liked"}
+
+@api_router.get("/products/{product_id}/liked")
+async def check_product_liked(product_id: str, user: User = Depends(get_current_user)):
+    """Check if user has liked a product"""
+    existing_like = await db.product_likes.find_one({
+        "user_id": user.id,
+        "product_id": product_id
+    })
+    return {"liked": existing_like is not None}
+
+@api_router.get("/products/{product_id}/related")
+async def get_related_products(product_id: str, limit: int = 4):
+    """Get related products based on category"""
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Find products in the same category, excluding current product
+    related = await db.products.find(
+        {"category": product["category"], "id": {"$ne": product_id}},
+        {"_id": 0}
+    ).limit(limit).to_list(limit)
+    
+    # If not enough, fill with products from other categories
+    if len(related) < limit:
+        additional = await db.products.find(
+            {"id": {"$ne": product_id}, "id": {"$nin": [p["id"] for p in related]}},
+            {"_id": 0}
+        ).limit(limit - len(related)).to_list(limit - len(related))
+        related.extend(additional)
+    
+    return related
+
 # ============= CART ROUTES =============
 
 @api_router.get("/cart")
