@@ -667,7 +667,8 @@ async def get_all_payment_methods():
     """Get all available payment methods"""
     return {
         "payment_methods": [
-            {"id": "razorpay", "name": "Online Payment", "description": "Pay via Cards, UPI, NetBanking", "icon": "credit-card"},
+            {"id": "razorpay", "name": "Card Payment", "description": "Pay via Debit/Credit Cards, NetBanking", "icon": "credit-card"},
+            {"id": "upi", "name": "UPI Payment", "description": "GPay, PhonePe, Paytm, BHIM UPI", "icon": "smartphone"},
             {"id": "cod", "name": "Cash on Delivery", "description": "Pay when you receive", "icon": "banknote"},
             {"id": "bank_transfer", "name": "Bank Transfer", "description": "Direct bank transfer (NEFT/RTGS)", "icon": "building"},
             {"id": "emi", "name": "EMI", "description": "Easy monthly installments", "icon": "calendar"},
