@@ -135,7 +135,7 @@ const Navbar = ({ cartCount = 0 }) => {
                 onMouseLeave={() => setShowCategoryDropdown(false)}
               >
                 <button 
-                  className="flex items-center px-4 py-2 text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                  className="flex items-center px-4 py-2 text-white hover:text-purple-200 font-medium transition-colors"
                   data-testid="categories-dropdown-trigger"
                 >
                   <Grid className="w-4 h-4 mr-2" />
@@ -150,14 +150,14 @@ const Navbar = ({ cartCount = 0 }) => {
                       <Link
                         key={category.name}
                         to={category.link}
-                        className="flex items-center px-4 py-3 hover:bg-slate-50 transition-colors group"
+                        className="flex items-center px-4 py-3 hover:bg-purple-50 transition-colors group"
                         data-testid={`category-dropdown-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
                       >
                         <div className={`w-10 h-10 ${category.bgColor} rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform`}>
                           <category.icon className={`w-5 h-5 ${category.color}`} />
                         </div>
                         <div>
-                          <p className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
+                          <p className="font-medium text-slate-900 group-hover:text-purple-700 transition-colors">
                             {category.name}
                           </p>
                           <p className="text-xs text-slate-500">{category.description}</p>
@@ -167,7 +167,7 @@ const Navbar = ({ cartCount = 0 }) => {
                     <div className="border-t border-slate-100 mt-2 pt-2 px-4">
                       <Link 
                         to="/products" 
-                        className="flex items-center justify-center py-2 text-blue-600 font-medium hover:text-blue-700 transition-colors"
+                        className="flex items-center justify-center py-2 text-purple-700 font-medium hover:text-purple-800 transition-colors"
                       >
                         View All Products →
                       </Link>
@@ -178,7 +178,7 @@ const Navbar = ({ cartCount = 0 }) => {
 
               <Link 
                 to="/products" 
-                className="px-4 py-2 text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                className="px-4 py-2 text-white hover:text-purple-200 font-medium transition-colors"
                 data-testid="products-nav-link"
               >
                 All Products
@@ -186,7 +186,7 @@ const Navbar = ({ cartCount = 0 }) => {
               
               <Link 
                 to="/bulk-order" 
-                className="px-4 py-2 text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                className="px-4 py-2 text-white hover:text-purple-200 font-medium transition-colors"
                 data-testid="bulk-order-nav-link"
               >
                 Bulk Orders
@@ -194,8 +194,8 @@ const Navbar = ({ cartCount = 0 }) => {
 
               {/* Contact */}
               <a 
-                href="tel:+919045660485"
-                className="flex items-center px-4 py-2 text-slate-700 hover:text-blue-600 font-medium transition-colors"
+                href="tel:+917617617178"
+                className="flex items-center px-4 py-2 text-white hover:text-purple-200 font-medium transition-colors"
               >
                 <HeadphonesIcon className="w-4 h-4 mr-2" />
                 Support
@@ -207,7 +207,7 @@ const Navbar = ({ cartCount = 0 }) => {
               {/* Mobile Search Button */}
               <Link 
                 to="/products" 
-                className="lg:hidden p-2 text-slate-600 hover:text-blue-600 transition-colors"
+                className="lg:hidden p-2 text-white hover:text-purple-200 transition-colors"
               >
                 <Search className="h-5 w-5" />
               </Link>
