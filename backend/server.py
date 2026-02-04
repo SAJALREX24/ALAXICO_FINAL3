@@ -85,7 +85,8 @@ class RichContentSection(BaseModel):
 
 # Available payment methods
 PAYMENT_METHODS = [
-    "razorpay",      # Online payment (Cards, UPI, NetBanking)
+    "razorpay",      # Online payment (Cards, NetBanking)
+    "upi",           # UPI Payment (GPay, PhonePe, Paytm)
     "cod",           # Cash on Delivery
     "bank_transfer", # Direct Bank Transfer
     "emi",           # EMI/Installments
