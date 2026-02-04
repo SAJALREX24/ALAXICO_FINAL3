@@ -84,51 +84,29 @@ const BulkOrder = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
+      <div className="min-h-screen bg-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto"></div>
-          <p className="mt-4 text-purple-200">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-500">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden" data-testid="bulk-order-page">
-      {/* Purple Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
-        {/* Organic Blob Shapes */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600/30 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
-        <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-purple-500/20 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-teal-500/10 rounded-full blur-2xl"></div>
-      </div>
-
-      <div className="relative z-10 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-purple-50" data-testid="bulk-order-page">
+      <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            {/* Floating Icons */}
-            <div className="relative inline-block mb-6">
-              <div className="absolute -top-6 -left-12 w-14 h-14 bg-teal-500/20 backdrop-blur-sm rounded-2xl flex items-center justify-center animate-bounce" style={{animationDuration: '3s'}}>
-                <Package className="w-7 h-7 text-teal-400" />
-              </div>
-              <div className="absolute -top-4 -right-10 w-12 h-12 bg-pink-500/20 backdrop-blur-sm rounded-xl flex items-center justify-center animate-bounce" style={{animationDuration: '2.5s', animationDelay: '0.5s'}}>
-                <Heart className="w-6 h-6 text-pink-400" />
-              </div>
-              <div className="absolute -bottom-2 -left-8 w-10 h-10 bg-cyan-500/20 backdrop-blur-sm rounded-lg flex items-center justify-center animate-bounce" style={{animationDuration: '2.8s', animationDelay: '1s'}}>
-                <Truck className="w-5 h-5 text-cyan-400" />
-              </div>
-              
-              <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shadow-2xl">
-                <Package className="h-12 w-12 text-teal-400" />
-              </div>
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-100 rounded-2xl mb-6">
+              <Package className="h-10 w-10 text-purple-600" />
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" data-testid="bulk-order-title">
-              Request <span className="text-teal-400">Bulk Order</span> Quote
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4" data-testid="bulk-order-title">
+              Request <span className="text-purple-600">Bulk Order</span> Quote
             </h1>
-            <p className="text-lg text-purple-200 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
               Get special pricing for hospitals, clinics, and distributors. Fill out the form below and our team will contact you within 24 hours.
             </p>
           </div>
@@ -137,22 +115,22 @@ const BulkOrder = () => {
             {/* Benefits Section */}
             <div className="lg:col-span-1 space-y-6">
               {/* Benefits Card */}
-              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
-                <h3 className="font-semibold text-xl text-white mb-6">Why Choose Bulk Orders?</h3>
+              <div className="bg-white rounded-2xl p-6 border border-purple-100 shadow-sm">
+                <h3 className="font-semibold text-xl text-gray-900 mb-6">Why Choose Bulk Orders?</h3>
                 <div className="space-y-5">
                   {[
-                    { icon: CheckCircle, title: 'Special Pricing', desc: 'Competitive rates for bulk purchases', color: 'text-teal-400' },
-                    { icon: Shield, title: 'Priority Support', desc: 'Dedicated account manager', color: 'text-pink-400' },
-                    { icon: Truck, title: 'Fast Delivery', desc: 'Express shipping for bulk orders', color: 'text-cyan-400' },
-                    { icon: Activity, title: 'Flexible Payment', desc: 'Custom payment terms available', color: 'text-green-400' },
+                    { icon: CheckCircle, title: 'Special Pricing', desc: 'Competitive rates for bulk purchases', color: 'text-purple-600' },
+                    { icon: Shield, title: 'Priority Support', desc: 'Dedicated account manager', color: 'text-purple-600' },
+                    { icon: Truck, title: 'Fast Delivery', desc: 'Express shipping for bulk orders', color: 'text-purple-600' },
+                    { icon: Activity, title: 'Flexible Payment', desc: 'Custom payment terms available', color: 'text-purple-600' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
                         <item.icon className={`h-5 w-5 ${item.color}`} />
                       </div>
                       <div>
-                        <p className="font-medium text-white">{item.title}</p>
-                        <p className="text-sm text-purple-200">{item.desc}</p>
+                        <p className="font-medium text-gray-900">{item.title}</p>
+                        <p className="text-sm text-gray-500">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -161,7 +139,7 @@ const BulkOrder = () => {
 
               {/* Selected Product Card */}
               {product && (
-                <div className="bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl p-6 text-white shadow-xl shadow-teal-500/20">
+                <div className="bg-purple-600 rounded-2xl p-6 text-white shadow-lg">
                   <p className="text-sm opacity-90 mb-2">Selected Product</p>
                   <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
                   <p className="text-3xl font-bold">₹{product.price.toLocaleString()}</p>
@@ -170,15 +148,15 @@ const BulkOrder = () => {
               )}
 
               {/* Trust Stats */}
-              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
+              <div className="bg-white rounded-2xl p-6 border border-purple-100 shadow-sm">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-teal-400">1000+</div>
-                    <div className="text-sm text-purple-200">Happy Clients</div>
+                    <div className="text-2xl font-bold text-purple-600">1000+</div>
+                    <div className="text-sm text-gray-500">Happy Clients</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-teal-400">50+</div>
-                    <div className="text-sm text-purple-200">Cities</div>
+                    <div className="text-2xl font-bold text-purple-600">50+</div>
+                    <div className="text-sm text-gray-500">Cities</div>
                   </div>
                 </div>
               </div>
@@ -186,12 +164,12 @@ const BulkOrder = () => {
 
             {/* Form Section */}
             <div className="lg:col-span-2">
-              <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-8 space-y-6">
+              <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-purple-100 p-8 space-y-6 shadow-sm">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-white font-medium">Product *</Label>
+                    <Label className="text-gray-700 font-medium">Product *</Label>
                     <Select value={selectedProductId} onValueChange={setSelectedProductId} required>
-                      <SelectTrigger className="mt-2 bg-white/10 border-white/20 text-white focus:border-teal-400" data-testid="product-select">
+                      <SelectTrigger className="mt-2 border-gray-200 focus:border-purple-500" data-testid="product-select">
                         <SelectValue placeholder="Select product" />
                       </SelectTrigger>
                       <SelectContent>
@@ -203,9 +181,9 @@ const BulkOrder = () => {
                   </div>
 
                   <div>
-                    <Label className="text-white font-medium">Buyer Type *</Label>
+                    <Label className="text-gray-700 font-medium">Buyer Type *</Label>
                     <Select value={buyerType} onValueChange={setBuyerType} required>
-                      <SelectTrigger className="mt-2 bg-white/10 border-white/20 text-white focus:border-teal-400" data-testid="buyer-type-select">
+                      <SelectTrigger className="mt-2 border-gray-200 focus:border-purple-500" data-testid="buyer-type-select">
                         <SelectValue placeholder="Select buyer type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -240,11 +218,11 @@ const BulkOrder = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-white font-medium">Organization Name *</Label>
+                    <Label className="text-gray-700 font-medium">Organization Name *</Label>
                     <Input
                       value={organizationName}
                       onChange={(e) => setOrganizationName(e.target.value)}
-                      className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300 focus:border-teal-400"
+                      className="mt-2 border-gray-200 focus:border-purple-500"
                       placeholder="Enter organization name"
                       required
                       data-testid="organization-input"
@@ -252,13 +230,13 @@ const BulkOrder = () => {
                   </div>
 
                   <div>
-                    <Label className="text-white font-medium">Quantity Required *</Label>
+                    <Label className="text-gray-700 font-medium">Quantity Required *</Label>
                     <Input
                       type="number"
                       min="1"
                       value={quantity}
                       onChange={(e) => setQuantity(e.target.value)}
-                      className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300 focus:border-teal-400"
+                      className="mt-2 border-gray-200 focus:border-purple-500"
                       placeholder="Enter quantity"
                       required
                       data-testid="quantity-input"
@@ -267,11 +245,11 @@ const BulkOrder = () => {
                 </div>
 
                 <div>
-                  <Label className="text-white font-medium">Contact Person Name *</Label>
+                  <Label className="text-gray-700 font-medium">Contact Person Name *</Label>
                   <Input
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
-                    className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300 focus:border-teal-400"
+                    className="mt-2 border-gray-200 focus:border-purple-500"
                     placeholder="Enter contact person name"
                     required
                     data-testid="contact-name-input"
@@ -280,12 +258,12 @@ const BulkOrder = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-white font-medium">Contact Phone *</Label>
+                    <Label className="text-gray-700 font-medium">Contact Phone *</Label>
                     <Input
                       type="tel"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
-                      className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300 focus:border-teal-400"
+                      className="mt-2 border-gray-200 focus:border-purple-500"
                       placeholder="+91 XXXXX XXXXX"
                       required
                       data-testid="contact-phone-input"
@@ -293,12 +271,12 @@ const BulkOrder = () => {
                   </div>
 
                   <div>
-                    <Label className="text-white font-medium">Contact Email *</Label>
+                    <Label className="text-gray-700 font-medium">Contact Email *</Label>
                     <Input
                       type="email"
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300 focus:border-teal-400"
+                      className="mt-2 border-gray-200 focus:border-purple-500"
                       placeholder="email@example.com"
                       required
                       data-testid="contact-email-input"
@@ -307,11 +285,11 @@ const BulkOrder = () => {
                 </div>
 
                 <div>
-                  <Label className="text-white font-medium">Additional Message</Label>
+                  <Label className="text-gray-700 font-medium">Additional Message</Label>
                   <Textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-purple-300 focus:border-teal-400"
+                    className="mt-2 border-gray-200 focus:border-purple-500"
                     placeholder="Any specific requirements or questions?"
                     rows={4}
                     data-testid="message-textarea"
@@ -322,7 +300,7 @@ const BulkOrder = () => {
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="flex-1 h-12 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-lg shadow-lg shadow-teal-500/30"
+                    className="flex-1 h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold text-lg shadow-md"
                     data-testid="submit-bulk-enquiry"
                   >
                     Submit Enquiry
@@ -332,7 +310,7 @@ const BulkOrder = () => {
                     size="lg" 
                     variant="outline"
                     onClick={() => navigate('/products')}
-                    className="border-white/30 text-white hover:bg-white/10"
+                    className="border-purple-200 text-purple-600 hover:bg-purple-50"
                   >
                     Cancel
                   </Button>
@@ -343,7 +321,7 @@ const BulkOrder = () => {
 
           {/* Back to Home */}
           <div className="mt-8 text-center">
-            <Link to="/" className="text-purple-200 hover:text-white transition-colors">
+            <Link to="/" className="text-gray-500 hover:text-purple-600 transition-colors">
               ← Back to Home
             </Link>
           </div>
