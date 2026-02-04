@@ -158,7 +158,7 @@ const Auth = () => {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="mt-2 border-2 border-slate-200 focus:border-blue-500"
+                  className="mt-2 border-2 border-[#E5E7EB] focus:border-[#2563EB]"
                   data-testid="phone-input"
                 />
               </div>
@@ -166,7 +166,7 @@ const Auth = () => {
             
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
               size="lg"
               disabled={loading}
               data-testid="auth-submit-button"
@@ -178,7 +178,7 @@ const Auth = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+              className="text-[#2563EB] hover:text-[#1D4ED8] font-medium transition-colors"
               data-testid="toggle-auth-mode-button"
             >
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
