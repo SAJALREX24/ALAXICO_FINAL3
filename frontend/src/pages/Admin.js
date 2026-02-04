@@ -133,38 +133,71 @@ const Admin = () => {
         },
       };
       
-      await api.post('/admin/products', productData);
-      toast.success('Product created successfully!');
+      if (editingProduct) {
+        // Update existing product
+        await api.put(`/admin/products/${editingProduct.id}`, productData);
+        toast.success('Product updated successfully!');
+      } else {
+        // Create new product
+        await api.post('/admin/products', productData);
+        toast.success('Product created successfully!');
+      }
+      
       setProductDialogOpen(false);
+      setEditingProduct(null);
       fetchData();
-      setProductForm({
-        name: '',
-        description: '',
-        category: '',
-        price: '',
-        originalPrice: '',
-        discount: '',
-        image: '',
-        images: '',
-        stockQuantity: '',
-        minOrderQuantity: '1',
-        specifications: {},
-        keyFeatures: '',
-        featureHighlights: [
+      setProductForm(defaultProductForm);
+    } catch (error) {
+      toast.error(editingProduct ? 'Failed to update product' : 'Failed to create product');
+    }
+  };
+
+  // Open edit dialog with product data
+  const handleEditProduct = (product) => {
+    setEditingProduct(product);
+    
+    // Parse feature highlights from product
+    const featureHighlights = product.feature_highlights && product.feature_highlights.length > 0
+      ? [
+          ...product.feature_highlights,
+          ...Array(4 - product.feature_highlights.length).fill({ icon: 'zap', title: '', description: '' })
+        ].slice(0, 4)
+      : [
           { icon: 'zap', title: '', description: '' },
           { icon: 'shield', title: '', description: '' },
           { icon: 'timer', title: '', description: '' },
           { icon: 'award', title: '', description: '' },
-        ],
-        warrantyInfo: '',
-        shippingInfo: '',
-        availability: true,
-        featured: false,
-        limitedStock: false,
-      });
-    } catch (error) {
-      toast.error('Failed to create product');
-    }
+        ];
+    
+    setProductForm({
+      name: product.name || '',
+      description: product.description || '',
+      category: product.category || '',
+      price: product.price?.toString() || '',
+      originalPrice: product.original_price?.toString() || '',
+      discount: '',
+      image: product.image || '',
+      images: product.images?.join(', ') || '',
+      stockQuantity: product.specifications?.stockQuantity?.toString() || '',
+      minOrderQuantity: product.specifications?.minOrderQuantity?.toString() || '1',
+      specifications: product.specifications || {},
+      keyFeatures: product.key_features?.join(', ') || '',
+      featureHighlights: featureHighlights,
+      warrantyInfo: product.warranty_info || '',
+      shippingInfo: product.shipping_info || '',
+      availability: product.availability ?? true,
+      featured: product.specifications?.featured ?? false,
+      limitedStock: product.specifications?.limitedStock ?? false,
+    });
+    
+    setProductDialogOpen(true);
+  };
+
+  // Close dialog and reset form
+  const handleCloseDialog = () => {
+    setProductDialogOpen(false);
+    setEditingProduct(null);
+    setProductForm(defaultProductForm);
   };
 
   const handleDeleteProduct = async (productId) => {
