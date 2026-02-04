@@ -100,44 +100,44 @@ const Auth = () => {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200"></div>
+              <div className="w-full border-t border-[#E5E7EB]"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-slate-500">or continue with email</span>
+              <span className="px-4 bg-white text-[#6B7280]">or continue with email</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
               <div>
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name" className="text-[#374151]">Full Name *</Label>
                 <Input
                   id="name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="mt-2 border-2 border-slate-200 focus:border-blue-500"
+                  className="mt-2 border-2 border-[#E5E7EB] focus:border-[#2563EB]"
                   data-testid="name-input"
                 />
               </div>
             )}
             
             <div>
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email" className="text-[#374151]">Email *</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-2 border-2 border-slate-200 focus:border-blue-500"
+                className="mt-2 border-2 border-[#E5E7EB] focus:border-[#2563EB]"
                 data-testid="email-input"
               />
             </div>
             
             <div>
-              <Label htmlFor="password">Password *</Label>
+              <Label htmlFor="password" className="text-[#374151]">Password *</Label>
               <Input
                 id="password"
                 type="password"
@@ -145,14 +145,14 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="mt-2 border-2 border-slate-200 focus:border-blue-500"
+                className="mt-2 border-2 border-[#E5E7EB] focus:border-[#2563EB]"
                 data-testid="password-input"
               />
             </div>
             
             {!isLogin && (
               <div>
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="text-[#374151]">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
