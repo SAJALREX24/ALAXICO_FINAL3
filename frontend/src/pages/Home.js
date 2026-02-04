@@ -161,7 +161,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#374151] mb-4" data-testid="featured-products-title">
-              Featured Products
+              Featured <span className="text-purple-600">Products</span>
             </h2>
             <p className="text-xl text-[#6B7280]">Top-quality medical equipment for professionals</p>
           </div>
@@ -179,7 +179,7 @@ const Home = () => {
           
           <div className="text-center mt-12">
             <Link to="/products">
-              <Button size="lg" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-lg hover:shadow-xl">
+              <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl">
                 View All Products
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
