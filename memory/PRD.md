@@ -44,7 +44,7 @@ Build a professional, trustworthy, and scalable medical equipment e-commerce pla
 - **Backend**: FastAPI, Pydantic
 - **Database**: MongoDB (Motor async driver)
 - **Authentication**: JWT + Emergent Google OAuth
-- **Payments**: Razorpay (requires user API keys), COD, Bank Transfer, Pay Later
+- **Payments**: Razorpay (Cards, UPI, NetBanking), COD, Bank Transfer, EMI, Pay Later
 
 ## What's Been Implemented
 
