@@ -94,7 +94,7 @@ const Checkout = () => {
     });
   };
 
-  const handleRazorpayPayment = async () => {
+  const handleRazorpayPayment = async (preferredMethod = null) => {
     try {
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript();
@@ -150,6 +150,26 @@ const Checkout = () => {
           color: '#8B5CF6',
         },
       };
+      
+      // If UPI is selected, configure to show UPI options first
+      if (preferredMethod === 'upi') {
+        options.config = {
+          display: {
+            blocks: {
+              upi: {
+                name: "UPI Payment",
+                instruments: [
+                  { method: "upi", flows: ["qrcode", "collect", "intent"] }
+                ]
+              }
+            },
+            sequence: ["block.upi"],
+            preferences: {
+              show_default_blocks: true
+            }
+          }
+        };
+      }
       
       const razorpay = new window.Razorpay(options);
       razorpay.on('payment.failed', () => {
