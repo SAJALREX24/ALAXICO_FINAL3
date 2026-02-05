@@ -58,7 +58,7 @@ const Admin = () => {
     ],
     warrantyInfo: '',
     shippingInfo: '',
-    paymentMethods: ['razorpay', 'upi', 'cod', 'bank_transfer', 'emi', 'pay_later'], // All enabled by default
+    paymentMethods: ['razorpay', 'upi', 'cod', 'bank_transfer', 'pay_later'], // All enabled by default
     availability: true,
     featured: false,
     limitedStock: false,
