@@ -47,7 +47,7 @@ function AppRouter({ cartCount }) {
       <Footer />
       <WhatsAppButton />
       <Toaster 
-        position="top-center"
+        position="bottom-right"
         expand={true}
         richColors={true}
         closeButton={true}
