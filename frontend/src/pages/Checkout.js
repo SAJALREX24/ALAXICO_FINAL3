@@ -17,7 +17,6 @@ const PAYMENT_METHOD_ICONS = {
   upi: Smartphone,
   cod: Banknote,
   bank_transfer: Building,
-  emi: Calendar,
   pay_later: Clock,
 };
 
@@ -26,7 +25,6 @@ const PAYMENT_METHOD_DETAILS = {
   upi: { name: 'UPI Payment', description: 'GPay, PhonePe, Paytm, BHIM UPI', color: 'green' },
   cod: { name: 'Cash on Delivery', description: 'Pay when you receive', color: 'green' },
   bank_transfer: { name: 'Bank Transfer', description: 'Direct bank transfer (NEFT/RTGS)', color: 'blue' },
-  emi: { name: 'EMI', description: 'Easy monthly installments', color: 'orange' },
   pay_later: { name: 'Pay Later', description: 'Buy now, pay within 30 days', color: 'teal' },
 };
 
