@@ -741,32 +741,36 @@ const ProductDetail = () => {
         </div>
 
         {/* Reviews Section */}
-        <div className="mt-12 bg-purple-50 rounded-2xl p-6 lg:p-8">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900" data-testid="reviews-section-title">
-              Customer Reviews ({reviews.length})
-            </h2>
+        <div className="mt-12 bg-gradient-to-b from-purple-50 to-white rounded-2xl p-6 lg:p-8 border border-purple-100">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900" data-testid="reviews-section-title">
+                Customer Reviews
+              </h2>
+              <p className="text-gray-500 mt-1">{reviews.length} reviews from verified buyers</p>
+            </div>
             {user && (
               <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-purple-600 hover:bg-purple-700" data-testid="write-review-button">
+                  <Button className="bg-purple-600 hover:bg-purple-700 shadow-md" data-testid="write-review-button">
                     <Star className="w-4 h-4 mr-2" />
                     Write a Review
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md bg-white border border-purple-100 shadow-xl">
+                <DialogContent className="max-w-lg bg-white border border-purple-100 shadow-xl">
                   <DialogHeader className="border-b border-gray-100 pb-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <Star className="w-5 h-5 text-purple-600" />
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center">
+                        <Star className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <DialogTitle className="text-xl font-bold text-gray-900">Write a Review</DialogTitle>
-                        <p className="text-sm text-gray-500">Share your experience with this product</p>
+                        <DialogTitle className="text-xl font-bold text-gray-900">Share Your Experience</DialogTitle>
+                        <p className="text-sm text-gray-500">Help others make better decisions</p>
                       </div>
                     </div>
                   </DialogHeader>
-                  <form onSubmit={handleSubmitReview} className="space-y-6 pt-4">
+                  <form onSubmit={handleSubmitReview} className="space-y-5 pt-4">
+                    {/* Rating */}
                     <div>
                       <Label className="text-gray-700 font-medium">Your Rating *</Label>
                       <div className="flex items-center space-x-1 mt-2">
@@ -782,10 +786,13 @@ const ProductDetail = () => {
                             />
                           </button>
                         ))}
-                        <span className="ml-2 text-sm text-gray-500">({rating} star{rating > 1 ? 's' : ''})</span>
+                        <span className="ml-3 text-sm font-medium text-gray-600">
+                          {rating === 5 ? 'Excellent!' : rating === 4 ? 'Good' : rating === 3 ? 'Average' : rating === 2 ? 'Poor' : 'Bad'}
+                        </span>
                       </div>
                     </div>
                     
+                    {/* Comment */}
                     <div>
                       <Label className="text-gray-700 font-medium">Your Review *</Label>
                       <Textarea
@@ -793,19 +800,73 @@ const ProductDetail = () => {
                         onChange={(e) => setComment(e.target.value)}
                         rows={4}
                         required
-                        placeholder="Share your thoughts about this product..."
-                        className="mt-1 border-gray-200 focus:border-purple-500"
+                        placeholder="Share your experience with this product... What did you like or dislike?"
+                        className="mt-2 border-gray-200 focus:border-purple-500"
                         data-testid="review-comment-textarea"
                       />
+                    </div>
+                    
+                    {/* Image Upload */}
+                    <div>
+                      <Label className="text-gray-700 font-medium">Add Photos (Optional)</Label>
+                      <p className="text-xs text-gray-500 mt-1">Upload up to 5 photos of the product</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {reviewImages.map((img, index) => (
+                          <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
+                            <img src={img} alt={`Review ${index + 1}`} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => removeReviewImage(index)}
+                              className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                        {reviewImages.length < 5 && (
+                          <button
+                            type="button"
+                            onClick={() => imageInputRef.current?.click()}
+                            className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:border-purple-400 hover:text-purple-500 transition-colors"
+                          >
+                            <Camera className="w-6 h-6" />
+                            <span className="text-xs mt-1">Add</span>
+                          </button>
+                        )}
+                        <input
+                          ref={imageInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Video URL */}
+                    <div>
+                      <Label className="text-gray-700 font-medium">Video URL (Optional)</Label>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Video className="w-5 h-5 text-gray-400" />
+                        <input
+                          type="url"
+                          value={reviewVideoUrl}
+                          onChange={(e) => setReviewVideoUrl(e.target.value)}
+                          placeholder="YouTube or video link"
+                          className="flex-1 h-10 px-3 text-sm border border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none"
+                        />
+                      </div>
                     </div>
                     
                     <div className="flex space-x-3 pt-2">
                       <Button 
                         type="submit" 
-                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white shadow-md"
+                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white shadow-md h-11"
+                        disabled={uploadingMedia}
                         data-testid="submit-review-button"
                       >
-                        Submit Review
+                        {uploadingMedia ? 'Uploading...' : 'Submit Review'}
                       </Button>
                       <Button 
                         type="button" 
@@ -823,40 +884,107 @@ const ProductDetail = () => {
           </div>
           
           {reviews.length === 0 ? (
-            <p className="text-gray-500 text-center py-8" data-testid="no-reviews-message">
-              No reviews yet. Be the first to review this product!
-            </p>
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
+              <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg" data-testid="no-reviews-message">
+                No reviews yet. Be the first to review this product!
+              </p>
+            </div>
           ) : (
             <div className="space-y-4">
               {reviews.map((review) => (
-                <div key={review.id} className="bg-white border border-purple-100 rounded-xl p-6" data-testid={`review-${review.id}`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                          />
-                        ))}
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <p className="font-semibold text-gray-900">{review.user?.name}</p>
-                        {review.user && (
-                          <VerificationBadge
-                            verification_status={review.user.verification_status}
-                            buyer_type={review.user.buyer_type}
-                          />
-                        )}
+                <div key={review.id} className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-md transition-shadow" data-testid={`review-${review.id}`}>
+                  {/* Review Header */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <img 
+                        src={getMedicalAvatar(review.user_id, review.user?.email)} 
+                        alt={review.user?.name}
+                        className="w-12 h-12 rounded-full border-2 border-purple-100"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-gray-900">{review.user?.name}</span>
+                          {review.user && (
+                            <VerificationBadge
+                              verification_status={review.user.verification_status}
+                              buyer_type={review.user.buyer_type}
+                            />
+                          )}
+                        </div>
+                        {/* User Email with Favicon */}
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <Mail className="w-3.5 h-3.5 text-gray-400" />
+                          <span className="text-xs text-gray-500">{review.user?.email}</span>
+                        </div>
+                        {/* Stars */}
+                        <div className="flex items-center mt-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                            />
+                          ))}
+                          <span className="ml-2 text-xs text-gray-500">
+                            {new Date(review.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-gray-600 leading-relaxed">{review.comment}</p>
+                  
+                  {/* Review Content */}
+                  <p className="text-gray-700 mt-4 leading-relaxed">{review.comment}</p>
+                  
+                  {/* Review Images */}
+                  {review.images && review.images.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {review.images.map((img, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedReviewImage(img)}
+                          className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-400 transition-colors"
+                        >
+                          <img src={img} alt={`Review photo ${idx + 1}`} className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Review Video */}
+                  {review.video_url && (
+                    <div className="mt-4">
+                      <a 
+                        href={review.video_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                      >
+                        <Play className="w-4 h-4" />
+                        <span className="text-sm font-medium">Watch Video Review</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </div>
+
+        {/* Image Preview Modal */}
+        {selectedReviewImage && (
+          <Dialog open={!!selectedReviewImage} onOpenChange={() => setSelectedReviewImage(null)}>
+            <DialogContent className="max-w-3xl p-0 bg-black border-0">
+              <button
+                onClick={() => setSelectedReviewImage(null)}
+                className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <img src={selectedReviewImage} alt="Review" className="w-full h-auto rounded-lg" />
+            </DialogContent>
+          </Dialog>
+        )}
 
         {/* You May Also Like - Related Products */}
         {relatedProducts.length > 0 && (
