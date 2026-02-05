@@ -799,42 +799,45 @@ const Admin = () => {
 
           {/* Orders Tab */}
           <TabsContent value="orders">
-            <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Orders Management</h2>
-              <div className="space-y-4">
+            <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Orders Management</h2>
+              <div className="space-y-3 sm:space-y-4">
                 {orders.map((order) => (
-                  <div key={order.id} className="border border-purple-100 bg-purple-50 rounded-lg p-4" data-testid={`admin-order-${order.id}`}>
-                    <div className="flex justify-between items-start mb-3">
+                  <div key={order.id} className="border border-purple-100 bg-purple-50 rounded-lg p-3 sm:p-4" data-testid={`admin-order-${order.id}`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2 sm:mb-3">
                       <div>
-                        <p className="font-semibold text-gray-900">Order #{order.id.slice(0, 8)}</p>
-                        <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">Order #{order.id.slice(0, 8)}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.payment_status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                      <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium self-start ${order.payment_status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
                         {order.payment_status}
                       </span>
                     </div>
                     <p className="text-sm font-semibold text-purple-600">Total: ₹{order.total_amount.toLocaleString()}</p>
                   </div>
                 ))}
+                {orders.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">No orders yet</p>
+                )}
               </div>
             </div>
           </TabsContent>
 
           {/* Bulk Enquiries Tab */}
           <TabsContent value="enquiries">
-            <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Bulk Enquiries Management</h2>
-              <div className="space-y-4">
+            <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Bulk Enquiries Management</h2>
+              <div className="space-y-3 sm:space-y-4">
                 {bulkEnquiries.map((enquiry) => (
-                  <div key={enquiry.id} className="border border-purple-100 bg-purple-50 rounded-lg p-4" data-testid={`admin-enquiry-${enquiry.id}`}>
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <p className="font-semibold text-gray-900">{enquiry.product?.name}</p>
-                        <p className="text-sm text-gray-500">{enquiry.organization_name} - {enquiry.buyer_type}</p>
-                        <p className="text-sm text-gray-500">Quantity: {enquiry.quantity}</p>
+                  <div key={enquiry.id} className="border border-purple-100 bg-purple-50 rounded-lg p-3 sm:p-4" data-testid={`admin-enquiry-${enquiry.id}`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-2 sm:mb-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">{enquiry.product?.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">{enquiry.organization_name} - {enquiry.buyer_type}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">Quantity: {enquiry.quantity}</p>
                       </div>
                       <Select value={enquiry.status} onValueChange={(v) => handleEnquiryStatus(enquiry.id, v)}>
-                        <SelectTrigger className="w-32" data-testid={`enquiry-status-${enquiry.id}`}>
+                        <SelectTrigger className="w-full sm:w-32 text-xs sm:text-sm h-8 sm:h-9" data-testid={`enquiry-status-${enquiry.id}`}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -846,6 +849,9 @@ const Admin = () => {
                     </div>
                   </div>
                 ))}
+                {bulkEnquiries.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">No bulk enquiries yet</p>
+                )}
               </div>
             </div>
           </TabsContent>
