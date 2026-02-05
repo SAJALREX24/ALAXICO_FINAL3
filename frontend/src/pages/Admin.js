@@ -33,7 +33,6 @@ const Admin = () => {
     { id: 'upi', name: 'UPI Payment', description: 'GPay, PhonePe, Paytm, BHIM' },
     { id: 'cod', name: 'Cash on Delivery', description: 'Pay when you receive' },
     { id: 'bank_transfer', name: 'Bank Transfer', description: 'NEFT/RTGS/IMPS' },
-    { id: 'emi', name: 'EMI', description: 'Monthly installments' },
     { id: 'pay_later', name: 'Pay Later', description: 'Pay within 30 days' },
   ];
 
