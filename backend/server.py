@@ -674,7 +674,6 @@ async def get_all_payment_methods():
             {"id": "upi", "name": "UPI Payment", "description": "GPay, PhonePe, Paytm, BHIM UPI", "icon": "smartphone"},
             {"id": "cod", "name": "Cash on Delivery", "description": "Pay when you receive", "icon": "banknote"},
             {"id": "bank_transfer", "name": "Bank Transfer", "description": "Direct bank transfer (NEFT/RTGS)", "icon": "building"},
-            {"id": "emi", "name": "EMI", "description": "Easy monthly installments", "icon": "calendar"},
             {"id": "pay_later", "name": "Pay Later", "description": "Buy now, pay within 30 days", "icon": "clock"},
         ]
     }
