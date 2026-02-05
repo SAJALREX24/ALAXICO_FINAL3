@@ -759,8 +759,8 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
         "total_amount": order_data.total_amount,
         "delivery_address": order_data.delivery_address,
         "payment_method": order_data.payment_method,
-        "payment_status": "pending",
-        "order_status": "confirmed",
+        "payment_status": "completed",
+        "order_status": "completed",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
