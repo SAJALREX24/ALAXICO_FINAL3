@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/api';
-import { Trash2, Plus, Minus, ShoppingBag, ShoppingCart, MapPin, Tag, Truck, ChevronRight, Shield } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ShoppingCart, MapPin, Tag, Truck, ChevronRight, Shield, Package, ShieldCheck } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
