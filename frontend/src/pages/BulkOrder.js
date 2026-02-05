@@ -9,6 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Package, Building2, Stethoscope, Warehouse, CheckCircle, Heart, Shield, Activity, Truck } from 'lucide-react';
 import { toast } from 'sonner';
+import { FullPageLoader } from '../components/MedicalLoader';
 
 const BulkOrder = () => {
   const { user } = useAuth();
