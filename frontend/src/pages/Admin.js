@@ -953,22 +953,22 @@ const Admin = () => {
 
           {/* Verifications Tab */}
           <TabsContent value="verifications">
-            <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Verification Requests</h2>
-              <div className="space-y-4">
+            <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Verification Requests</h2>
+              <div className="space-y-3 sm:space-y-4">
                 {verifications.map((verification) => (
-                  <div key={verification.id} className="border border-purple-100 bg-purple-50 rounded-lg p-4" data-testid={`admin-verification-${verification.id}`}>
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <p className="font-semibold text-gray-900">{verification.user?.name}</p>
-                        <p className="text-sm text-gray-500">{verification.organization_name} - {verification.buyer_type}</p>
-                        <p className="text-sm text-gray-500">Document: {verification.documents?.info}</p>
+                  <div key={verification.id} className="border border-purple-100 bg-purple-50 rounded-lg p-3 sm:p-4" data-testid={`admin-verification-${verification.id}`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-2 sm:mb-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{verification.user?.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">{verification.organization_name} - {verification.buyer_type}</p>
+                        <p className="text-xs sm:text-sm text-gray-500 truncate">Document: {verification.documents?.info}</p>
                       </div>
                       {verification.status === 'pending' && (
-                        <div className="flex space-x-2">
+                        <div className="flex space-x-2 self-start">
                           <Button
                             size="sm"
-                            className="bg-purple-600 hover:bg-purple-700"
+                            className="bg-purple-600 hover:bg-purple-700 text-xs h-8"
                             onClick={() => handleVerificationAction(verification.id, 'approved')}
                             data-testid={`approve-verification-${verification.id}`}
                           >
@@ -977,6 +977,7 @@ const Admin = () => {
                           <Button
                             size="sm"
                             variant="destructive"
+                            className="text-xs h-8"
                             onClick={() => handleVerificationAction(verification.id, 'rejected')}
                             data-testid={`reject-verification-${verification.id}`}
                           >
@@ -985,13 +986,16 @@ const Admin = () => {
                         </div>
                       )}
                       {verification.status !== 'pending' && (
-                        <span className={`px-3 py-1 rounded text-sm ${verification.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`px-2 sm:px-3 py-1 rounded text-xs sm:text-sm self-start ${verification.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                           {verification.status}
                         </span>
                       )}
                     </div>
                   </div>
                 ))}
+                {verifications.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">No verification requests</p>
+                )}
               </div>
             </div>
           </TabsContent>
