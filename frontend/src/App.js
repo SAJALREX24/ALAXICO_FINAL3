@@ -47,33 +47,52 @@ function AppRouter({ cartCount }) {
       <Footer />
       <WhatsAppButton />
       <Toaster 
-        position="bottom-right" 
+        position="top-center"
+        expand={true}
+        richColors={true}
+        closeButton={true}
+        duration={4000}
         toastOptions={{
           style: {
             background: 'white',
-            color: '#0F172A',
-            border: '2px solid #3B82F6',
-            padding: '12px 16px',
-            borderRadius: '12px',
+            color: '#1F2937',
+            padding: '16px 20px',
+            borderRadius: '16px',
             fontSize: '14px',
-            maxWidth: '350px',
+            fontWeight: '500',
+            maxWidth: '420px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            border: '1px solid #E5E7EB',
           },
+          className: 'toast-custom',
           success: {
             style: {
-              border: '2px solid #10B981',
+              background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
+              border: '1px solid #10B981',
+              color: '#065F46',
             },
-            iconTheme: {
-              primary: '#10B981',
-              secondary: '#FFFFFF',
-            },
+            icon: '✓',
           },
           error: {
             style: {
-              border: '2px solid #EF4444',
+              background: 'linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%)',
+              border: '1px solid #EF4444',
+              color: '#991B1B',
             },
-            iconTheme: {
-              primary: '#EF4444',
-              secondary: '#FFFFFF',
+            icon: '✕',
+          },
+          warning: {
+            style: {
+              background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
+              border: '1px solid #F59E0B',
+              color: '#92400E',
+            },
+          },
+          info: {
+            style: {
+              background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
+              border: '1px solid #3B82F6',
+              color: '#1E40AF',
             },
           },
         }}
