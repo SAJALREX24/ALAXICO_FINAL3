@@ -268,48 +268,51 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-purple-50 py-8" data-testid="admin-page">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8" data-testid="admin-title">
+    <div className="min-h-screen bg-purple-50 py-4 sm:py-8" data-testid="admin-page">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-8" data-testid="admin-title">
           Admin <span className="text-purple-600">Dashboard</span>
         </h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm" data-testid="stat-products">
-            <Package className="h-8 w-8 text-purple-600 mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{products.length}</p>
-            <p className="text-gray-500">Products</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-products">
+            <Package className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 mb-1 sm:mb-2" />
+            <p className="text-lg sm:text-2xl font-bold text-gray-900">{products.length}</p>
+            <p className="text-xs sm:text-sm text-gray-500">Products</p>
           </div>
-          <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm" data-testid="stat-orders">
-            <ShoppingCart className="h-8 w-8 text-green-500 mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
-            <p className="text-gray-500">Orders</p>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-orders">
+            <ShoppingCart className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 mb-1 sm:mb-2" />
+            <p className="text-lg sm:text-2xl font-bold text-gray-900">{orders.length}</p>
+            <p className="text-xs sm:text-sm text-gray-500">Orders</p>
           </div>
-          <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm" data-testid="stat-enquiries">
-            <FileText className="h-8 w-8 text-purple-500 mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{bulkEnquiries.length}</p>
-            <p className="text-gray-500">Bulk Enquiries</p>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-enquiries">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500 mb-1 sm:mb-2" />
+            <p className="text-lg sm:text-2xl font-bold text-gray-900">{bulkEnquiries.length}</p>
+            <p className="text-xs sm:text-sm text-gray-500">Enquiries</p>
           </div>
-          <div className="bg-white border border-purple-100 rounded-xl p-6 shadow-sm" data-testid="stat-verifications">
-            <ShieldCheck className="h-8 w-8 text-purple-500 mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{verifications.filter(v => v.status === 'pending').length}</p>
-            <p className="text-gray-500">Pending Verifications</p>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-verifications">
+            <ShieldCheck className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500 mb-1 sm:mb-2" />
+            <p className="text-lg sm:text-2xl font-bold text-gray-900">{verifications.filter(v => v.status === 'pending').length}</p>
+            <p className="text-xs sm:text-sm text-gray-500">Pending</p>
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-white border border-purple-100 rounded-xl p-1 shadow-sm">
-            <TabsTrigger value="dashboard" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="admin-dashboard-tab">
-              <BarChart3 className="w-4 h-4 mr-1" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="products" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="admin-products-tab">Products</TabsTrigger>
-            <TabsTrigger value="orders" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="admin-orders-tab">Orders</TabsTrigger>
-            <TabsTrigger value="enquiries" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="admin-enquiries-tab">Enquiries</TabsTrigger>
-            <TabsTrigger value="reviews" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="admin-reviews-tab">Reviews</TabsTrigger>
-            <TabsTrigger value="verifications" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="admin-verifications-tab">Verifications</TabsTrigger>
-          </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-6 bg-white border border-purple-100 rounded-xl p-1 shadow-sm gap-1">
+              <TabsTrigger value="dashboard" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-dashboard-tab">
+                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                <span className="hidden sm:inline">Dashboard</span>
+                <span className="sm:hidden">Stats</span>
+              </TabsTrigger>
+              <TabsTrigger value="products" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-products-tab">Products</TabsTrigger>
+              <TabsTrigger value="orders" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-orders-tab">Orders</TabsTrigger>
+              <TabsTrigger value="enquiries" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-enquiries-tab">Enquiries</TabsTrigger>
+              <TabsTrigger value="reviews" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-reviews-tab">Reviews</TabsTrigger>
+              <TabsTrigger value="verifications" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-verifications-tab">Verify</TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Sales Dashboard Tab */}
           <TabsContent value="dashboard">
