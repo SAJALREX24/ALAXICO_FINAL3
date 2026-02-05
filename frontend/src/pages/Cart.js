@@ -312,46 +312,40 @@ const Cart = () => {
                 {/* People Also Bought This */}
                 {similarProducts.length > 0 && (
                   <div className="mb-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-900">People also bought this</h2>
-                      <Link to="/products" className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center">
-                        View All <ChevronRight className="h-4 w-4" />
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <h2 className="text-base sm:text-lg font-semibold text-gray-900">People also bought</h2>
+                      <Link to="/products" className="text-purple-600 hover:text-purple-700 text-xs sm:text-sm font-medium flex items-center">
+                        View All <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Link>
                     </div>
                     
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      {similarProducts.map((product) => (
-                        <div key={product.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                      {similarProducts.slice(0, 4).map((product) => (
+                        <div key={product.id} className="bg-white rounded-lg sm:rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                           <Link to={`/product/${product.id}`}>
                             <div className="aspect-square bg-gray-100 overflow-hidden">
                               <img 
                                 src={product.image} 
                                 alt={product.name}
                                 className="w-full h-full object-cover hover:scale-105 transition-transform"
+                                onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=400&q=80'; }}
                               />
                             </div>
                           </Link>
-                          <div className="p-3">
+                          <div className="p-2 sm:p-3">
                             <Link to={`/product/${product.id}`}>
-                              <h3 className="text-xs font-medium text-gray-900 line-clamp-2 mb-1 hover:text-purple-600">
+                              <h3 className="text-[10px] sm:text-xs font-medium text-gray-900 line-clamp-2 mb-1 hover:text-purple-600 h-8 sm:h-auto">
                                 {product.name}
                               </h3>
                             </Link>
-                            <p className="text-[10px] text-gray-500 mb-2 line-clamp-1">By {product.brand || 'Alaxico'}</p>
-                            {product.original_price && product.original_price > product.price && (
-                              <p className="text-[10px] text-gray-400 line-through">MRP ₹{product.original_price}</p>
-                            )}
                             <div className="flex items-center gap-1 mb-2">
-                              <span className="text-sm font-semibold text-gray-900">₹{product.price.toLocaleString()}</span>
-                              {product.discount_percentage > 0 && (
-                                <span className="text-[10px] text-green-600 font-medium">{product.discount_percentage}% OFF</span>
-                              )}
+                              <span className="text-xs sm:text-sm font-semibold text-gray-900">₹{product.price?.toLocaleString()}</span>
                             </div>
                             <Button 
                               onClick={() => handleAddToCart(product)}
-                              className="w-full h-8 text-xs bg-purple-600 hover:bg-purple-700 text-white"
+                              className="w-full h-7 sm:h-8 text-[10px] sm:text-xs bg-purple-600 hover:bg-purple-700 text-white"
                             >
-                              Add to Cart
+                              Add
                             </Button>
                           </div>
                         </div>
@@ -363,11 +357,11 @@ const Cart = () => {
 
               {/* Right Side - Payment Details */}
               <div className="lg:w-[340px] flex-shrink-0">
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm sticky top-24" data-testid="order-summary">
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm lg:sticky lg:top-24" data-testid="order-summary">
                   {/* Delivery Address */}
-                  <div className="p-4 border-b border-gray-100">
+                  <div className="p-3 sm:p-4 border-b border-gray-100">
                     <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <h3 className="font-medium text-gray-900">Add delivery address</h3>
