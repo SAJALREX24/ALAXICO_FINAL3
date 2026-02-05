@@ -854,11 +854,11 @@ async def get_product_reviews(product_id: str):
         {"_id": 0}
     ).sort("created_at", -1).to_list(1000)
     
-    # Populate user details
+    # Populate user details including email
     for review in reviews:
         user = await db.users.find_one(
             {"id": review["user_id"]},
-            {"_id": 0, "name": 1, "verification_status": 1, "buyer_type": 1}
+            {"_id": 0, "name": 1, "email": 1, "verification_status": 1, "buyer_type": 1}
         )
         review["user"] = user
     
