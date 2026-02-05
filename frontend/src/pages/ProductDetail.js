@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
-import { ShoppingCart, Star, Package, ChevronDown, ChevronUp, Check, Truck, Shield, Award, Clock, Heart, Share2, Minus, Plus, Zap, ThermometerSun, Timer, Volume2, BadgeCheck, Copy, Facebook, Twitter, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Star, Package, ChevronDown, ChevronUp, Check, Truck, Shield, Award, Clock, Heart, Share2, Minus, Plus, Zap, ThermometerSun, Timer, Volume2, BadgeCheck, Copy, Facebook, Twitter, MessageCircle, Camera, Video, X, Mail, Play } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
@@ -12,6 +12,7 @@ import VerificationBadge from '../components/VerificationBadge';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
 import EMICalculator from '../components/EMICalculator';
 import ProductCard from '../components/ProductCard';
+import { getMedicalAvatar } from '../utils/avatars';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -27,6 +28,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [selectedReviewImage, setSelectedReviewImage] = useState(null);
   
   // Expandable sections
   const [expandedSections, setExpandedSections] = useState({
@@ -39,6 +41,10 @@ const ProductDetail = () => {
   // Review form
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
+  const [reviewImages, setReviewImages] = useState([]);
+  const [reviewVideoUrl, setReviewVideoUrl] = useState('');
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const imageInputRef = useRef(null);
 
   useEffect(() => {
     fetchProductData();
