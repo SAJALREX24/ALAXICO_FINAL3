@@ -223,11 +223,11 @@ const Cart = () => {
               <div className="flex-1">
                 {/* Items Count Header */}
                 <div className="flex items-center justify-between mb-4">
-                  <h1 className="text-xl font-semibold text-gray-900" data-testid="cart-title">
+                  <h1 className="text-lg sm:text-xl font-semibold text-gray-900" data-testid="cart-title">
                     {cart.items.length} Item{cart.items.length > 1 ? 's' : ''} in cart
                   </h1>
-                  <Link to="/products" className="text-purple-600 hover:text-purple-700 font-medium flex items-center text-sm">
-                    + Add More Items
+                  <Link to="/products" className="text-purple-600 hover:text-purple-700 font-medium flex items-center text-xs sm:text-sm">
+                    + Add More
                   </Link>
                 </div>
 
@@ -236,76 +236,74 @@ const Cart = () => {
                   {cart.items.map((item, index) => (
                     <div
                       key={item.product_id}
-                      className={`p-4 flex gap-4 ${index !== cart.items.length - 1 ? 'border-b border-gray-100' : ''}`}
+                      className={`p-3 sm:p-4 ${index !== cart.items.length - 1 ? 'border-b border-gray-100' : ''}`}
                       data-testid={`cart-item-${item.product_id}`}
                     >
-                      {/* Product Image */}
-                      <Link to={`/product/${item.product_id}`} className="flex-shrink-0">
-                        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                          <img
-                            src={item.product?.image}
-                            alt={item.product?.name}
-                            className="w-full h-full object-cover"
-                            data-testid="cart-item-image"
-                          />
-                        </div>
-                      </Link>
-                      
-                      {/* Product Details */}
-                      <div className="flex-1 min-w-0">
-                        <Link to={`/product/${item.product_id}`}>
-                          <h3 className="font-medium text-gray-900 hover:text-purple-600 transition-colors mb-1 line-clamp-2 text-sm" data-testid="cart-item-name">
-                            {item.product?.name}
-                          </h3>
+                      <div className="flex gap-3">
+                        {/* Product Image */}
+                        <Link to={`/product/${item.product_id}`} className="flex-shrink-0">
+                          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg overflow-hidden">
+                            <img
+                              src={item.product?.image}
+                              alt={item.product?.name}
+                              className="w-full h-full object-cover"
+                              data-testid="cart-item-image"
+                            />
+                          </div>
                         </Link>
                         
-                        {item.product?.original_price && item.product.original_price > item.product.price && (
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-gray-400 line-through text-xs">MRP ₹{item.product.original_price.toLocaleString()}</span>
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-semibold text-gray-900" data-testid="cart-item-price">
-                            ₹{item.product?.price.toLocaleString()}
-                          </span>
-                          {item.product?.discount_percentage > 0 && (
-                            <span className="text-green-600 text-sm font-medium">
-                              {item.product.discount_percentage}% OFF
+                        {/* Product Details */}
+                        <div className="flex-1 min-w-0">
+                          <Link to={`/product/${item.product_id}`}>
+                            <h3 className="font-medium text-gray-900 hover:text-purple-600 transition-colors mb-1 line-clamp-2 text-xs sm:text-sm" data-testid="cart-item-name">
+                              {item.product?.name}
+                            </h3>
+                          </Link>
+                          
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm sm:text-lg font-semibold text-gray-900" data-testid="cart-item-price">
+                              ₹{item.product?.price?.toLocaleString()}
                             </span>
-                          )}
+                            {item.product?.discount_percentage > 0 && (
+                              <span className="text-green-600 text-xs font-medium">
+                                {item.product.discount_percentage}% OFF
+                              </span>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Remove Button */}
+                        <button
+                          onClick={() => removeItem(item.product_id)}
+                          className="text-red-400 hover:text-red-500 transition-colors p-1 h-fit flex-shrink-0"
+                          data-testid="remove-item-button"
+                        >
+                          <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </button>
                       </div>
-
-                      {/* Remove Button */}
-                      <button
-                        onClick={() => removeItem(item.product_id)}
-                        className="text-red-400 hover:text-red-500 transition-colors p-1 h-fit"
-                        data-testid="remove-item-button"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-
-                      {/* Quantity Controls */}
-                      <div className="flex items-center border border-gray-200 rounded-lg h-fit">
-                        <button
-                          onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
-                          className="px-3 py-2 text-purple-600 hover:bg-purple-50 disabled:opacity-50 disabled:text-gray-400"
-                          data-testid="decrease-quantity-button"
-                        >
-                          <Minus className="h-4 w-4" />
-                        </button>
-                        <span className="px-4 py-2 font-medium text-gray-900 min-w-[40px] text-center" data-testid="cart-item-quantity">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
-                          className="px-3 py-2 text-purple-600 hover:bg-purple-50"
-                          data-testid="increase-quantity-button"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </button>
+                      
+                      {/* Quantity Controls - Below on Mobile */}
+                      <div className="flex items-center justify-end mt-2 sm:mt-0">
+                        <div className="flex items-center border border-gray-200 rounded-lg">
+                          <button
+                            onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
+                            disabled={item.quantity <= 1}
+                            className="px-2 sm:px-3 py-1.5 sm:py-2 text-purple-600 hover:bg-purple-50 disabled:opacity-50 disabled:text-gray-400"
+                            data-testid="decrease-quantity-button"
+                          >
+                            <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                          </button>
+                          <span className="px-3 sm:px-4 py-1.5 sm:py-2 font-medium text-gray-900 min-w-[32px] sm:min-w-[40px] text-center text-sm" data-testid="cart-item-quantity">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
+                            className="px-2 sm:px-3 py-1.5 sm:py-2 text-purple-600 hover:bg-purple-50"
+                            data-testid="increase-quantity-button"
+                          >
+                            <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
