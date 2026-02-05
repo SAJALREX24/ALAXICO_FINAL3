@@ -722,11 +722,12 @@ async def verify_payment(verification: PaymentVerification, user: User = Depends
             "razorpay_signature": verification.razorpay_signature
         })
         
-        # Update order status
+        # Update order status to completed
         await db.orders.update_one(
             {"razorpay_order_id": verification.razorpay_order_id},
             {"$set": {
                 "payment_status": "completed",
+                "order_status": "completed",
                 "razorpay_payment_id": verification.razorpay_payment_id
             }}
         )
