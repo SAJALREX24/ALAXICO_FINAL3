@@ -89,7 +89,6 @@ PAYMENT_METHODS = [
     "upi",           # UPI Payment (GPay, PhonePe, Paytm)
     "cod",           # Cash on Delivery
     "bank_transfer", # Direct Bank Transfer
-    "emi",           # EMI/Installments
     "pay_later"      # Pay Later option
 ]
 
