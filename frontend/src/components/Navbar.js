@@ -234,29 +234,65 @@ const Navbar = ({ cartCount = 0 }) => {
                         <ChevronDown className="w-4 h-4 text-gray-500" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <div className="px-3 py-2 border-b border-gray-100">
-                        <p className="font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
+                    <DropdownMenuContent align="end" className="w-64 p-0 rounded-xl shadow-xl border border-purple-100">
+                      {/* User Header */}
+                      <div className="px-4 py-3 bg-gradient-to-r from-purple-50 to-white border-b border-purple-100 rounded-t-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-purple-300 shadow-sm">
+                            <img src={userAvatar} alt={user.name || 'User'} className="h-full w-full object-cover" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">{user.name}</p>
+                            <p className="text-xs text-gray-500 truncate max-w-[150px]">{user.email}</p>
+                          </div>
+                        </div>
                       </div>
-                      <DropdownMenuItem onClick={() => navigate('/dashboard')} data-testid="dashboard-menu-item">
-                        <User className="w-4 h-4 mr-2" />
-                        My Dashboard
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/cart')}>
-                        <ShoppingCart className="w-4 h-4 mr-2" />
-                        My Cart
-                      </DropdownMenuItem>
-                      {user.role === 'admin' && (
-                        <DropdownMenuItem onClick={() => navigate('/admin')} data-testid="admin-menu-item">
-                          <Settings className="w-4 h-4 mr-2" />
-                          Admin Panel
+                      
+                      {/* Menu Items */}
+                      <div className="py-2">
+                        <DropdownMenuItem 
+                          onClick={() => navigate('/dashboard')} 
+                          className="px-4 py-2.5 cursor-pointer hover:bg-purple-50 focus:bg-purple-50"
+                          data-testid="dashboard-menu-item"
+                        >
+                          <User className="w-4 h-4 mr-3 text-purple-600" />
+                          <span>My Dashboard</span>
                         </DropdownMenuItem>
-                      )}
-                      <div className="border-t border-gray-100 mt-1 pt-1">
-                        <DropdownMenuItem onClick={handleLogout} className="text-red-600" data-testid="logout-menu-item">
-                          <LogOut className="w-4 h-4 mr-2" />
-                          Logout
+                        <DropdownMenuItem 
+                          onClick={() => navigate('/cart')}
+                          className="px-4 py-2.5 cursor-pointer hover:bg-purple-50 focus:bg-purple-50"
+                        >
+                          <ShoppingCart className="w-4 h-4 mr-3 text-purple-600" />
+                          <span>My Cart</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => navigate('/dashboard?tab=orders')}
+                          className="px-4 py-2.5 cursor-pointer hover:bg-purple-50 focus:bg-purple-50"
+                        >
+                          <Package className="w-4 h-4 mr-3 text-purple-600" />
+                          <span>My Orders</span>
+                        </DropdownMenuItem>
+                        {user.role === 'admin' && (
+                          <DropdownMenuItem 
+                            onClick={() => navigate('/admin')} 
+                            className="px-4 py-2.5 cursor-pointer hover:bg-purple-50 focus:bg-purple-50"
+                            data-testid="admin-menu-item"
+                          >
+                            <Settings className="w-4 h-4 mr-3 text-purple-600" />
+                            <span>Admin Panel</span>
+                          </DropdownMenuItem>
+                        )}
+                      </div>
+                      
+                      {/* Logout */}
+                      <div className="border-t border-purple-100 py-2">
+                        <DropdownMenuItem 
+                          onClick={handleLogout} 
+                          className="px-4 py-2.5 cursor-pointer hover:bg-red-50 focus:bg-red-50 text-red-600" 
+                          data-testid="logout-menu-item"
+                        >
+                          <LogOut className="w-4 h-4 mr-3" />
+                          <span>Logout</span>
                         </DropdownMenuItem>
                       </div>
                     </DropdownMenuContent>
