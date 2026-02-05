@@ -11,6 +11,7 @@ import { Package, FileText, ShieldCheck, User, Download, LayoutDashboard } from 
 import { toast } from 'sonner';
 import VerificationBadge from '../components/VerificationBadge';
 import { getMedicalAvatar } from '../utils/avatars';
+import { FullPageLoader } from '../components/MedicalLoader';
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
