@@ -72,35 +72,35 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-purple-50" data-testid="products-page">
-      <div className="py-8 px-4 sm:px-6 lg:px-8">
+      <div className="py-4 sm:py-8 px-3 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-2xl mb-4">
-              <Package className="h-8 w-8 text-purple-600" />
+          <div className="mb-4 sm:mb-8 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 rounded-xl sm:rounded-2xl mb-2 sm:mb-4">
+              <Package className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2" data-testid="products-title">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1 sm:mb-2" data-testid="products-title">
               Medical <span className="text-purple-600">Equipment</span>
             </h1>
-            <p className="text-gray-500">Browse our complete range of professional medical equipment</p>
+            <p className="text-xs sm:text-base text-gray-500">Browse our complete range of medical equipment</p>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
             {/* Filters Sidebar */}
             <aside className="lg:w-64 shrink-0" data-testid="filters-sidebar">
-              <div className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm">
-                <div className="flex items-center mb-4">
-                  <Filter className="h-5 w-5 text-purple-600 mr-2" />
-                  <h2 className="font-semibold text-gray-900">Filters</h2>
+              <div className="bg-white border border-purple-100 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm">
+                <div className="flex items-center mb-3 sm:mb-4">
+                  <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 mr-2" />
+                  <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Filters</h2>
                 </div>
                 
                 {/* Category Filter */}
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">Category</h3>
-                  <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                <div className="mb-3 sm:mb-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">Category</h3>
+                  <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-1 px-1">
                     <button
                       onClick={() => setSelectedCategory('')}
-                      className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm transition-colors flex-shrink-0 ${
+                      className={`whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-colors flex-shrink-0 ${
                         selectedCategory === '' 
                           ? 'bg-purple-600 text-white' 
                           : 'bg-purple-50 text-gray-700 hover:bg-purple-100 border border-purple-100'
