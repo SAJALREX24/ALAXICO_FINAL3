@@ -136,32 +136,32 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-sonner-toast] {
-    animation: slideInFromTop 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards !important;
+    animation: slideInFromRight 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards !important;
 }
 
 [data-sonner-toast][data-removed="true"] {
-    animation: slideOutToTop 0.3s cubic-bezier(0.21, 1.02, 0.73, 1) forwards !important;
+    animation: slideOutToRight 0.3s cubic-bezier(0.21, 1.02, 0.73, 1) forwards !important;
 }
 
-@keyframes slideInFromTop {
+@keyframes slideInFromRight {
     0% {
         opacity: 0;
-        transform: translateY(-20px) scale(0.95);
+        transform: translateX(20px) scale(0.95);
     }
     100% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateX(0) scale(1);
     }
 }
 
-@keyframes slideOutToTop {
+@keyframes slideOutToRight {
     0% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateX(0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateY(-20px) scale(0.95);
+        transform: translateX(20px) scale(0.95);
     }
 }
 
