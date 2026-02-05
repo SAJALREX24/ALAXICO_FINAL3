@@ -496,7 +496,7 @@ const Checkout = () => {
                           </div>
                         ) : (
                           <>
-                            {selectedPaymentMethod === 'razorpay' || selectedPaymentMethod === 'emi' || selectedPaymentMethod === 'upi'
+                            {selectedPaymentMethod === 'razorpay' || selectedPaymentMethod === 'upi'
                               ? `Pay ₹${calculateTotal().toLocaleString()}`
                               : `Place Order - ₹${calculateTotal().toLocaleString()}`
                             }
