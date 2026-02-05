@@ -371,13 +371,13 @@ const Navbar = ({ cartCount = 0 }) => {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div className="fixed inset-0 z-40 lg:hidden" style={{ top: '0' }}>
           <div className="fixed inset-0 bg-black/50" onClick={closeMobileMenu}></div>
-          <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
-            <div className="p-4 border-b border-purple-100 bg-purple-50">
+          <div className="fixed right-0 top-0 h-full w-[280px] sm:w-80 bg-white shadow-xl overflow-y-auto animate-slide-in-right">
+            <div className="p-4 border-b border-purple-100 bg-purple-50 sticky top-0 z-10">
               <div className="flex items-center justify-between">
                 <span className="text-lg font-semibold text-purple-700">Menu</span>
-                <button onClick={closeMobileMenu} className="p-2 text-gray-500 hover:text-gray-700">
+                <button onClick={closeMobileMenu} className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-purple-100">
                   <X className="h-5 w-5" />
                 </button>
               </div>
