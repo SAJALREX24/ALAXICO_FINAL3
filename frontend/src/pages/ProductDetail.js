@@ -240,6 +240,10 @@ const ProductDetail = () => {
     );
   }
 
+  if (loading) {
+    return <FullPageLoader text="Loading product details..." />;
+  }
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-purple-50">
