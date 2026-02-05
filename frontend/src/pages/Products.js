@@ -66,6 +66,10 @@ const Products = () => {
     }
   };
 
+  if (loading) {
+    return <FullPageLoader text="Loading medical equipment..." />;
+  }
+
   return (
     <div className="min-h-screen bg-purple-50" data-testid="products-page">
       <div className="py-8 px-4 sm:px-6 lg:px-8">
