@@ -608,9 +608,9 @@ const Admin = () => {
                         <p className="text-xs text-gray-500">Select which payment methods are available for this product</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                           {PAYMENT_METHODS.map((method) => (
-                            <div 
+                            <label 
                               key={method.id}
-                              onClick={() => togglePaymentMethod(method.id)}
+                              htmlFor={`payment-method-${method.id}`}
                               className={`flex items-center justify-between p-2 sm:p-3 rounded-lg cursor-pointer border-2 transition-all ${
                                 productForm.paymentMethods?.includes(method.id) 
                                   ? 'border-purple-500 bg-purple-50' 
@@ -622,10 +622,11 @@ const Admin = () => {
                                 <p className="text-[10px] sm:text-xs text-gray-500">{method.description}</p>
                               </div>
                               <Switch
+                                id={`payment-method-${method.id}`}
                                 checked={productForm.paymentMethods?.includes(method.id)}
                                 onCheckedChange={() => togglePaymentMethod(method.id)}
                               />
-                            </div>
+                            </label>
                           ))}
                         </div>
                       </div>
