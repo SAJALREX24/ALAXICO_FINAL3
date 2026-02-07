@@ -13,8 +13,16 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Update state when URL params change
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category') || '';
+    const searchFromUrl = searchParams.get('search') || '';
+    setSelectedCategory(categoryFromUrl);
+    setSearchQuery(searchFromUrl);
+  }, [searchParams]);
 
   useEffect(() => {
     fetchCategories();
