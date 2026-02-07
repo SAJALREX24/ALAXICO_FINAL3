@@ -636,26 +636,29 @@ const Admin = () => {
                         <h3 className="text-sm font-semibold text-gray-700">Product Options</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
                           <div className="flex items-center justify-between p-2 sm:p-3 bg-purple-50 rounded-lg">
-                            <Label className="text-gray-700 font-medium cursor-pointer text-xs sm:text-sm">Available</Label>
+                            <Label htmlFor="availability-switch" className="text-gray-700 font-medium cursor-pointer text-xs sm:text-sm">Available</Label>
                             <Switch
+                              id="availability-switch"
                               checked={productForm.availability}
-                              onCheckedChange={(checked) => setProductForm({ ...productForm, availability: checked })}
+                              onCheckedChange={(checked) => setProductForm(prev => ({ ...prev, availability: checked }))}
                               data-testid="product-availability-switch"
                             />
                           </div>
                           <div className="flex items-center justify-between p-2 sm:p-3 bg-purple-50 rounded-lg">
-                            <Label className="text-gray-700 font-medium cursor-pointer text-xs sm:text-sm">Featured</Label>
+                            <Label htmlFor="featured-switch" className="text-gray-700 font-medium cursor-pointer text-xs sm:text-sm">Featured</Label>
                             <Switch
+                              id="featured-switch"
                               checked={productForm.featured}
-                              onCheckedChange={(checked) => setProductForm({ ...productForm, featured: checked })}
+                              onCheckedChange={(checked) => setProductForm(prev => ({ ...prev, featured: checked }))}
                               data-testid="product-featured-switch"
                             />
                           </div>
                           <div className="flex items-center justify-between p-2 sm:p-3 bg-purple-50 rounded-lg">
-                            <Label className="text-gray-700 font-medium cursor-pointer text-xs sm:text-sm">Limited Stock</Label>
+                            <Label htmlFor="limited-switch" className="text-gray-700 font-medium cursor-pointer text-xs sm:text-sm">Limited Stock</Label>
                             <Switch
+                              id="limited-switch"
                               checked={productForm.limitedStock}
-                              onCheckedChange={(checked) => setProductForm({ ...productForm, limitedStock: checked })}
+                              onCheckedChange={(checked) => setProductForm(prev => ({ ...prev, limitedStock: checked }))}
                               data-testid="product-limited-switch"
                             />
                           </div>
