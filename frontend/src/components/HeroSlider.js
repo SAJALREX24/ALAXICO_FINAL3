@@ -28,7 +28,7 @@ const SLIDES = [
   },
   {
     id: 3,
-    image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/ca5a7ac4c142f412a5db4c0b0aa10ca52083f6927a5479ae25292b761f44875d.png",
+    image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/31a7ddb8c5f67b2994d0f0df98bb4080181c235faf2de62f8751f04381a1456b.png",
     alt: "Alaxico Steamer Cum Vaporizer",
     title: "Pure & Gentle Steam",
     subtitle: "Steamer Cum Vaporizer | 350 ML Capacity | 1 Year Warranty",
