@@ -15,6 +15,7 @@ const SLIDES = [
     features: ["Low Noise Operation", "Ultrafine Particles", "Three Layer Filtration"],
     ctaLink: "/products?category=Diagnostic%20Equipment",
     ctaText: "Shop Nebulizers",
+    isProductSlide: false,
   },
   {
     id: 2,
@@ -25,10 +26,13 @@ const SLIDES = [
     features: ["Voice Broadcast", "99 Memory Data", "Digital LCD Screen"],
     ctaLink: "/products?category=Patient%20Monitoring",
     ctaText: "Shop BP Monitors",
+    isProductSlide: false,
   },
   {
     id: 3,
-    image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/31a7ddb8c5f67b2994d0f0df98bb4080181c235faf2de62f8751f04381a1456b.png",
+    // Product slide with actual product image
+    isProductSlide: true,
+    productImage: "https://customer-assets.emergentagent.com/job_ca9be29b-8ac3-4cf9-b58b-b602c01a2519/artifacts/be2u8mi6_steamer.jpeg",
     alt: "Alaxico Steamer Cum Vaporizer",
     title: "Pure & Gentle Steam",
     subtitle: "Steamer Cum Vaporizer | 350 ML Capacity | 1 Year Warranty",
@@ -45,6 +49,7 @@ const SLIDES = [
     features: ["Superfast Heating", "Low Power Consumption", "Safe & Secure"],
     ctaLink: "/products?category=Hospital%20Furniture",
     ctaText: "Shop Hot Water Bags",
+    isProductSlide: false,
   },
 ];
 
