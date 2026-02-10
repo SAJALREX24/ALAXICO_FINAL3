@@ -30,15 +30,14 @@ const SLIDES = [
   },
   {
     id: 3,
-    // Product slide with actual product image
-    isProductSlide: true,
-    productImage: "https://customer-assets.emergentagent.com/job_ca9be29b-8ac3-4cf9-b58b-b602c01a2519/artifacts/be2u8mi6_steamer.jpeg",
+    image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/cc8ae9812eceebece2a617eb17102328d2e25fed69575a43ca8252c76bb58e60.png",
     alt: "Alaxico Steamer Cum Vaporizer",
     title: "Pure & Gentle Steam",
     subtitle: "Steamer Cum Vaporizer | 350 ML Capacity | 1 Year Warranty",
     features: ["Single Wall Safety", "Facial Steaming", "Health Benefits"],
     ctaLink: "/products?category=Surgical%20Equipment",
     ctaText: "Shop Vaporizers",
+    isProductSlide: false,
   },
   {
     id: 4,
