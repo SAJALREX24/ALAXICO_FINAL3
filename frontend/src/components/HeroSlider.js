@@ -4,25 +4,25 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Alaxico Landscape Hero Banners - Real product photos with people using products
+// Alaxico Landscape Hero Banners - Real product photos with EXACT catalog information
 const SLIDES = [
   {
     id: 1,
     image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/1e736eb32089855ffa56aaadafdccc75674a08b225ca43d28912520f82e77945.png",
     alt: "Alaxico Piston Compressor Nebulizer",
-    title: "Breathe Easy, Live Fully",
-    subtitle: "Piston Compressor Nebulizer with Low Noise Operation & 3 Year Warranty",
-    features: ["Ultrafine Particles", "Strong Airflow", "Three Layer Filtration"],
+    title: "Breath Easy Live Fully",
+    subtitle: "Piston Compressor Nebulizer | 3 Year Warranty",
+    features: ["Low Noise Operation", "Ultrafine Particles", "Three Layer Filtration"],
     ctaLink: "/products?category=Diagnostic%20Equipment",
     ctaText: "Shop Nebulizers",
   },
   {
     id: 2,
     image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/c70949d6051c7bb83a241e49ca693d9367ddf5568c309026ef918bcea376d075.png",
-    alt: "Alaxico Digital Blood Pressure Monitor",
+    alt: "Alaxico Electronic Blood Pressure Monitor",
     title: "Your Heart's Best Friend",
-    subtitle: "Rechargeable BP Monitor with Voice Broadcast & 99 Memory Data",
-    features: ["Digital LCD", "One Click On/Off", "3 Year Warranty"],
+    subtitle: "Electronic Rechargeable BP Monitor | 3 Year Warranty",
+    features: ["Voice Broadcast", "99 Memory Data", "Digital LCD Screen"],
     ctaLink: "/products?category=Patient%20Monitoring",
     ctaText: "Shop BP Monitors",
   },
@@ -31,8 +31,8 @@ const SLIDES = [
     image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/9b6c2d8dfc7d34a275dc4dc3dd65694a9352eab3c915751d47ee0f382cf5fd8a.png",
     alt: "Alaxico Steamer Cum Vaporizer",
     title: "Pure & Gentle Steam",
-    subtitle: "Steamer Vaporizer for Respiratory Relief & Skincare Routines",
-    features: ["350 ML Capacity", "Single Wall Safety", "1 Year Warranty"],
+    subtitle: "Steamer Cum Vaporizer | 350 ML Capacity | 1 Year Warranty",
+    features: ["Single Wall Safety", "Facial Steaming", "Health Benefits"],
     ctaLink: "/products?category=Surgical%20Equipment",
     ctaText: "Shop Vaporizers",
   },
@@ -41,8 +41,8 @@ const SLIDES = [
     image: "https://static.prod-images.emergentagent.com/jobs/ca9be29b-8ac3-4cf9-b58b-b602c01a2519/images/5911a61323832050165d7b697384ea5d0009dc3d4e0d0d88d017425238154dbf.png",
     alt: "Alaxico Electric Hot Water Bag",
     title: "Technology for Healthy Life",
-    subtitle: "Electric Hot Water Bag with Superfast Heating & Low Power Consumption",
-    features: ["Safe & Secure", "Instant Pain Relief", "Multiple Colors"],
+    subtitle: "Electric Hot Water Bag | Safe & Secure",
+    features: ["Superfast Heating", "Low Power Consumption", "Safe & Secure"],
     ctaLink: "/products?category=Hospital%20Furniture",
     ctaText: "Shop Hot Water Bags",
   },
