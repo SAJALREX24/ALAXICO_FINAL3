@@ -73,32 +73,32 @@ const HeroSlider = () => {
         <div className="flex">
           {SLIDES.map((slide) => (
             <div key={slide.id} className="flex-[0_0_100%] min-w-0 relative">
-              {/* Image Container - Different aspect ratios for different screens */}
-              <div className="relative w-full h-[200px] sm:h-[280px] md:h-[350px] lg:h-[420px] xl:h-[480px]">
+              {/* Image Container - Taller on mobile for breathing room */}
+              <div className="relative w-full h-[280px] sm:h-[320px] md:h-[380px] lg:h-[450px] xl:h-[520px]">
                 <img
                   src={slide.image}
                   alt={slide.alt}
                   className="absolute inset-0 w-full h-full object-cover object-center"
                   loading={slide.id === 1 ? "eager" : "lazy"}
                 />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent" />
+                {/* Gradient Overlay - Stronger on mobile for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent sm:from-black/50 sm:via-black/30" />
                 
-                {/* Content Overlay */}
+                {/* Content Overlay - Centered vertically with more space */}
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                    <div className="max-w-[200px] sm:max-w-sm md:max-w-md lg:max-w-lg">
-                      {/* Title - Responsive sizing */}
-                      <h2 className="text-white text-base sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-1 sm:mb-2 md:mb-3 drop-shadow-lg leading-tight">
+                  <div className="w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto">
+                    <div className="max-w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg">
+                      {/* Title - Larger on mobile, better line height */}
+                      <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 md:mb-5 drop-shadow-lg leading-snug">
                         {slide.title}
                       </h2>
-                      {/* Subtitle - Hidden on mobile */}
-                      <p className="text-white/90 text-xs sm:text-sm md:text-base lg:text-lg mb-2 sm:mb-3 md:mb-4 drop-shadow-md hidden sm:block line-clamp-2">
+                      {/* Subtitle - Now visible on mobile too */}
+                      <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-5 md:mb-6 drop-shadow-md line-clamp-2">
                         {slide.subtitle}
                       </p>
-                      {/* CTA Button */}
+                      {/* CTA Button - Larger touch target on mobile */}
                       <Link to={slide.ctaLink}>
-                        <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 sm:px-5 md:px-6 lg:px-8 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-full text-[10px] sm:text-xs md:text-sm lg:text-base shadow-lg hover:shadow-xl transition-all duration-300">
+                        <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 sm:px-6 md:px-8 lg:px-10 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300">
                           {slide.ctaText}
                         </button>
                       </Link>
