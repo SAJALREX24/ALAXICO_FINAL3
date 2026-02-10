@@ -111,34 +111,34 @@ const HeroSlider = () => {
         </div>
       </div>
 
-      {/* Navigation Arrows - Smaller on mobile */}
+      {/* Navigation Arrows - Better positioned on mobile */}
       <button
         onClick={scrollPrev}
-        className="absolute left-1 sm:left-3 lg:left-6 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-9 sm:h-9 lg:w-11 lg:h-11 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-purple-600 hover:bg-white transition-all z-10 shadow-md"
+        className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-purple-600 hover:bg-white transition-all z-10 shadow-lg"
         aria-label="Previous slide"
         data-testid="hero-prev-button"
       >
-        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+        <ChevronLeft className="w-5 h-5 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
       </button>
       <button
         onClick={scrollNext}
-        className="absolute right-1 sm:right-3 lg:right-6 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-9 sm:h-9 lg:w-11 lg:h-11 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-purple-600 hover:bg-white transition-all z-10 shadow-md"
+        className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-purple-600 hover:bg-white transition-all z-10 shadow-lg"
         aria-label="Next slide"
         data-testid="hero-next-button"
       >
-        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+        <ChevronRight className="w-5 h-5 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
       </button>
 
-      {/* Dots Indicator - Smaller on mobile */}
-      <div className="absolute bottom-2 sm:bottom-3 lg:bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-1.5 lg:gap-2 z-10">
+      {/* Dots Indicator - Larger touch targets on mobile */}
+      <div className="absolute bottom-4 sm:bottom-5 lg:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-2 lg:gap-3 z-10">
         {SLIDES.map((_, index) => (
           <button
             key={index}
             onClick={() => scrollTo(index)}
             className={`transition-all duration-300 rounded-full ${
               index === selectedIndex
-                ? 'w-4 sm:w-6 lg:w-8 h-1.5 sm:h-2 lg:h-2.5 bg-purple-600'
-                : 'w-1.5 sm:w-2 lg:w-2.5 h-1.5 sm:h-2 lg:h-2.5 bg-white/60 hover:bg-white'
+                ? 'w-6 sm:w-7 lg:w-8 h-2 sm:h-2.5 lg:h-3 bg-purple-600'
+                : 'w-2 sm:w-2.5 lg:w-3 h-2 sm:h-2.5 lg:h-3 bg-white/70 hover:bg-white'
             }`}
             aria-label={`Go to slide ${index + 1}`}
             data-testid={`hero-dot-${index}`}
