@@ -49,6 +49,16 @@ Build a professional, trustworthy, and scalable medical equipment e-commerce pla
 ## What's Been Implemented
 
 ### February 2026
+- ✅ **Hero Slider Mobile Responsiveness Fix** (Feb 10):
+  - Increased mobile slider height (280px vs 200px) for breathing room
+  - Widened content area from 200px to 85% on mobile
+  - Made subtitle visible on mobile (was hidden)
+  - Larger text sizes for better readability
+  - Stronger gradient overlay on mobile for text contrast
+  - Larger CTA buttons with better touch targets
+  - Improved navigation arrow sizing and positioning
+  - Larger dots indicator with better visibility
+
 - ✅ **Comprehensive Mobile Responsiveness**:
   - Login/Auth page fully responsive
   - Full-screen mobile navigation menu (replaces drawer)
