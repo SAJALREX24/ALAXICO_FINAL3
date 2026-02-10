@@ -87,16 +87,16 @@ const HeroSlider = () => {
                 <div className="relative w-full h-[320px] sm:h-[360px] md:h-[400px] lg:h-[480px] xl:h-[550px] bg-gradient-to-r from-purple-700 via-purple-600 to-purple-500">
                   {/* Content Container */}
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between">
-                      {/* Text Content - Left Side */}
-                      <div className="max-w-full sm:max-w-[45%] text-center sm:text-left mb-4 sm:mb-0">
-                        <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 md:mb-4 drop-shadow-lg leading-tight sm:leading-snug">
+                    <div className="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
+                      {/* Text Content - Top on mobile, Left on desktop */}
+                      <div className="max-w-full sm:max-w-[45%] text-center sm:text-left order-2 sm:order-1">
+                        <h2 className="text-white text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-1 sm:mb-3 md:mb-4 drop-shadow-lg leading-tight sm:leading-snug">
                           {slide.title}
                         </h2>
-                        <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl mb-3 sm:mb-4 drop-shadow-md">
+                        <p className="text-white/90 text-xs sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-4 drop-shadow-md">
                           {slide.subtitle}
                         </p>
-                        {/* Features - Show on tablet and up */}
+                        {/* Features - Hidden on mobile */}
                         {slide.features && (
                           <div className="hidden sm:flex flex-wrap gap-2 mb-4 md:mb-5">
                             {slide.features.map((feature, idx) => (
@@ -110,13 +110,13 @@ const HeroSlider = () => {
                           </div>
                         )}
                         <Link to={slide.ctaLink}>
-                          <button className="bg-white hover:bg-gray-100 text-purple-700 font-semibold px-5 sm:px-6 md:px-8 lg:px-10 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                          <button className="bg-white hover:bg-gray-100 text-purple-700 font-semibold px-4 sm:px-6 md:px-8 lg:px-10 py-2 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-xs sm:text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300">
                             {slide.ctaText}
                           </button>
                         </Link>
                       </div>
-                      {/* Product Image - Right Side */}
-                      <div className="w-[200px] sm:w-[280px] md:w-[320px] lg:w-[380px] xl:w-[420px] flex-shrink-0">
+                      {/* Product Image - Center on mobile, Right on desktop */}
+                      <div className="w-[160px] sm:w-[280px] md:w-[320px] lg:w-[380px] xl:w-[420px] flex-shrink-0 order-1 sm:order-2">
                         <img
                           src={slide.productImage}
                           alt={slide.alt}
