@@ -255,89 +255,8 @@ const Navbar = ({ cartCount = 0 }) => {
               </a>
             </div>
 
-              <Link 
-                to="/products" 
-                className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
-                data-testid="products-nav-link"
-              >
-                All Products
-              </Link>
-              
-              <Link 
-                to="/bulk-order" 
-                className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
-                data-testid="bulk-order-nav-link"
-              >
-                Bulk Orders
-              </Link>
-
-              {/* B2B Link */}
-              <Link 
-                to="/b2b" 
-                className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
-                data-testid="b2b-nav-link"
-              >
-                For Business
-              </Link>
-
-              {/* More Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors">
-                  More
-                  <ChevronDown className="w-4 h-4 ml-1" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white">
-                  <DropdownMenuItem asChild>
-                    <Link to="/quiz" className="flex items-center cursor-pointer">
-                      <HelpCircle className="w-4 h-4 mr-2 text-purple-600" />
-                      Find Right Equipment
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/compare" className="flex items-center cursor-pointer">
-                      <Scale className="w-4 h-4 mr-2 text-blue-600" />
-                      Compare Products
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/partner" className="flex items-center cursor-pointer">
-                      <Handshake className="w-4 h-4 mr-2 text-green-600" />
-                      Partner with Us
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/stores" className="flex items-center cursor-pointer">
-                      <Store className="w-4 h-4 mr-2 text-orange-600" />
-                      Store Locator
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Track Order - Prominent */}
-              {user && (
-                <Link 
-                  to="/dashboard?tab=orders" 
-                  className="flex items-center px-4 py-2 text-purple-600 hover:text-purple-700 font-medium transition-colors"
-                  data-testid="track-order-nav-link"
-                >
-                  <PackageSearch className="w-4 h-4 mr-2" />
-                  Track Order
-                </Link>
-              )}
-
-              {/* Contact */}
-              <a 
-                href="tel:+917617617178"
-                className="flex items-center px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
-              >
-                <HeadphonesIcon className="w-4 h-4 mr-2" />
-                Support
-              </a>
-            </div>
-
             {/* Right Side Icons */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center space-x-1 sm:space-x-3">
               {/* Mobile Search Button */}
               <Link 
                 to="/products" 
@@ -345,6 +264,18 @@ const Navbar = ({ cartCount = 0 }) => {
               >
                 <Search className="h-5 w-5" />
               </Link>
+
+              {/* Track Order - For logged in users (desktop) */}
+              {user && (
+                <Link 
+                  to="/dashboard?tab=orders" 
+                  className="hidden lg:flex items-center px-3 py-1.5 text-purple-600 hover:text-purple-700 text-sm font-medium border border-purple-200 rounded-full hover:bg-purple-50 transition-colors"
+                  data-testid="track-order-nav-link"
+                >
+                  <PackageSearch className="w-4 h-4 mr-1.5" />
+                  Track
+                </Link>
+              )}
 
               {/* Cart */}
               <Link to="/cart" className="relative p-2" data-testid="cart-link">
