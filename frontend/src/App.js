@@ -31,6 +31,7 @@ function AppRouter({ cartCount }) {
 
   return (
     <div className="App">
+      <PromoBanner />
       <Navbar cartCount={cartCount} />
       <Routes>
         <Route path="/" element={<Home />} />
