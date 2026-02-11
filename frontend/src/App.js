@@ -50,6 +50,11 @@ function AppRouter({ cartCount }) {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/bulk-order" element={<BulkOrder />} />
+        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/b2b" element={<B2B />} />
+        <Route path="/partner" element={<Partner />} />
+        <Route path="/stores" element={<StoreLocator />} />
       </Routes>
       <Footer />
       <WhatsAppButton />
