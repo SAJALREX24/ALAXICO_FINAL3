@@ -195,6 +195,49 @@ const Navbar = ({ cartCount = 0 }) => {
                 Bulk Orders
               </Link>
 
+              {/* B2B Link */}
+              <Link 
+                to="/b2b" 
+                className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
+                data-testid="b2b-nav-link"
+              >
+                For Business
+              </Link>
+
+              {/* More Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                  More
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-white">
+                  <DropdownMenuItem asChild>
+                    <Link to="/quiz" className="flex items-center cursor-pointer">
+                      <HelpCircle className="w-4 h-4 mr-2 text-purple-600" />
+                      Find Right Equipment
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/compare" className="flex items-center cursor-pointer">
+                      <Scale className="w-4 h-4 mr-2 text-blue-600" />
+                      Compare Products
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/partner" className="flex items-center cursor-pointer">
+                      <Handshake className="w-4 h-4 mr-2 text-green-600" />
+                      Partner with Us
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/stores" className="flex items-center cursor-pointer">
+                      <Store className="w-4 h-4 mr-2 text-orange-600" />
+                      Store Locator
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {/* Track Order - Prominent */}
               {user && (
                 <Link 
