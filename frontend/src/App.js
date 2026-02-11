@@ -16,6 +16,11 @@ import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import BulkOrder from './pages/BulkOrder';
+import Quiz from './pages/Quiz';
+import Compare from './pages/Compare';
+import B2B from './pages/B2B';
+import Partner from './pages/Partner';
+import StoreLocator from './pages/StoreLocator';
 import api from './utils/api';
 import '@/App.css';
 
