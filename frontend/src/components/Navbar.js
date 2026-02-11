@@ -509,11 +509,20 @@ const Navbar = ({ cartCount = 0 }) => {
               <MobileMenuItemFull icon={FileText} label="Bulk Orders" onClick={() => { navigate('/bulk-order'); closeMobileMenu(); }} />
               <MobileMenuItemFull icon={ShoppingCart} label="Shopping Cart" badge={cartCount} onClick={() => { navigate('/cart'); closeMobileMenu(); }} />
               
+              <div className="my-3 mx-4 border-t border-purple-100"></div>
+              <p className="px-4 pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tools & Services</p>
+              <MobileMenuItemFull icon={HelpCircle} label="Find Right Equipment" onClick={() => { navigate('/quiz'); closeMobileMenu(); }} />
+              <MobileMenuItemFull icon={Scale} label="Compare Products" onClick={() => { navigate('/compare'); closeMobileMenu(); }} />
+              <MobileMenuItemFull icon={Building2} label="For Business (B2B)" onClick={() => { navigate('/b2b'); closeMobileMenu(); }} />
+              <MobileMenuItemFull icon={Handshake} label="Partner with Us" onClick={() => { navigate('/partner'); closeMobileMenu(); }} />
+              <MobileMenuItemFull icon={Store} label="Store Locator" onClick={() => { navigate('/stores'); closeMobileMenu(); }} />
+              
               {user ? (
                 <>
                   <div className="my-3 mx-4 border-t border-purple-100"></div>
                   <p className="px-4 pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Account</p>
                   <MobileMenuItemFull icon={User} label="My Dashboard" onClick={() => { navigate('/dashboard'); closeMobileMenu(); }} />
+                  <MobileMenuItemFull icon={PackageSearch} label="Track Order" onClick={() => { navigate('/dashboard?tab=orders'); closeMobileMenu(); }} />
                   {user.role === 'admin' && (
                     <MobileMenuItemFull icon={Settings} label="Admin Panel" onClick={() => { navigate('/admin'); closeMobileMenu(); }} />
                   )}
