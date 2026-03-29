@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
 import PromoBanner from './components/PromoBanner';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -36,6 +37,7 @@ function AppRouter({ cartCount }) {
 
   return (
     <div className="App">
+      <ScrollToTop />
       <PromoBanner />
       <Navbar cartCount={cartCount} />
       <Routes>
