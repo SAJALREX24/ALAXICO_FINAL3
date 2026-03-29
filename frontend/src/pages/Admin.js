@@ -264,6 +264,21 @@ const Admin = () => {
     }
   };
 
+  const handleOrderStatusUpdate = async (orderId, status, courierName = null, trackingNumber = null, estimatedDelivery = null) => {
+    try {
+      const updateData = { order_status: status };
+      if (courierName) updateData.courier_name = courierName;
+      if (trackingNumber) updateData.tracking_number = trackingNumber;
+      if (estimatedDelivery) updateData.estimated_delivery = estimatedDelivery;
+      
+      await api.put(`/admin/orders/${orderId}/status`, updateData);
+      toast.success(`Order status updated to ${status}`);
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to update order status');
+    }
+  };
+
   if (loading) {
     return <FullPageLoader text="Loading admin panel..." />;
   }
@@ -860,16 +875,121 @@ const Admin = () => {
               <div className="space-y-3 sm:space-y-4">
                 {orders.map((order) => (
                   <div key={order.id} className="border border-purple-100 bg-purple-50 rounded-lg p-3 sm:p-4" data-testid={`admin-order-${order.id}`}>
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2 sm:mb-3">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
                       <div>
                         <p className="font-semibold text-gray-900 text-sm sm:text-base">Order #{order.id.slice(0, 8)}</p>
-                        <p className="text-xs sm:text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                        {order.user && (
+                          <p className="text-xs text-purple-600 mt-1">
+                            👤 {order.user.name || order.user.email}
+                          </p>
+                        )}
                       </div>
-                      <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium self-start ${order.payment_status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                        {order.payment_status}
-                      </span>
+                      <div className="flex flex-col gap-1 items-end">
+                        <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${order.payment_status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                          💳 {order.payment_status || 'pending'}
+                        </span>
+                        <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
+                          order.order_status === 'delivered' ? 'bg-green-100 text-green-700' :
+                          order.order_status === 'shipped' ? 'bg-purple-100 text-purple-700' :
+                          order.order_status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          📦 {order.order_status || 'pending'}
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-sm font-semibold text-purple-600">Total: ₹{order.total_amount.toLocaleString()}</p>
+                    
+                    {/* Order Items */}
+                    <div className="bg-white rounded-lg p-2 mb-3 text-xs">
+                      {order.items?.map((item, idx) => (
+                        <div key={idx} className="flex justify-between py-1 border-b border-gray-100 last:border-0">
+                          <span className="text-gray-700">{item.product_name} × {item.quantity}</span>
+                          <span className="font-medium">₹{(item.price * item.quantity).toLocaleString()}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between pt-2 font-semibold text-purple-600">
+                        <span>Total</span>
+                        <span>₹{order.total_amount?.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Delivery Address */}
+                    {order.delivery_address && (
+                      <div className="text-xs text-gray-500 mb-3 bg-white rounded-lg p-2">
+                        <p className="font-medium text-gray-700 mb-1">📍 Delivery Address:</p>
+                        <p>{order.delivery_address.name}, {order.delivery_address.phone}</p>
+                        <p>{order.delivery_address.address}, {order.delivery_address.city}</p>
+                        <p>{order.delivery_address.state} - {order.delivery_address.pincode}</p>
+                      </div>
+                    )}
+                    
+                    {/* Order Status Update */}
+                    <div className="border-t border-purple-200 pt-3">
+                      <p className="text-xs font-semibold text-gray-700 mb-2">Update Order Status:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {['pending', 'processing', 'packed', 'shipped', 'delivered', 'cancelled'].map((status) => (
+                          <Button
+                            key={status}
+                            size="sm"
+                            variant={order.order_status === status ? 'default' : 'outline'}
+                            className={`text-xs h-7 ${
+                              order.order_status === status 
+                                ? 'bg-purple-600 text-white' 
+                                : 'border-purple-200 text-purple-600 hover:bg-purple-50'
+                            }`}
+                            onClick={() => handleOrderStatusUpdate(order.id, status)}
+                          >
+                            {status === 'pending' && '⏳'}
+                            {status === 'processing' && '⚙️'}
+                            {status === 'packed' && '📦'}
+                            {status === 'shipped' && '🚚'}
+                            {status === 'delivered' && '✅'}
+                            {status === 'cancelled' && '❌'}
+                            {' '}{status.charAt(0).toUpperCase() + status.slice(1)}
+                          </Button>
+                        ))}
+                      </div>
+                      
+                      {/* Tracking Info Input (show when shipped) */}
+                      {(order.order_status === 'shipped' || order.order_status === 'packed') && (
+                        <div className="mt-3 p-3 bg-white rounded-lg border border-purple-100">
+                          <p className="text-xs font-semibold text-gray-700 mb-2">🚚 Add Tracking Info:</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <Input
+                              placeholder="Courier Name"
+                              className="text-xs h-8"
+                              id={`courier-${order.id}`}
+                              defaultValue={order.courier_name || ''}
+                            />
+                            <Input
+                              placeholder="Tracking Number"
+                              className="text-xs h-8"
+                              id={`tracking-${order.id}`}
+                              defaultValue={order.tracking_number || ''}
+                            />
+                            <Input
+                              placeholder="Est. Delivery (e.g., Apr 5)"
+                              className="text-xs h-8"
+                              id={`delivery-${order.id}`}
+                              defaultValue={order.estimated_delivery || ''}
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            className="mt-2 text-xs h-7 bg-purple-600"
+                            onClick={() => {
+                              const courier = document.getElementById(`courier-${order.id}`).value;
+                              const tracking = document.getElementById(`tracking-${order.id}`).value;
+                              const delivery = document.getElementById(`delivery-${order.id}`).value;
+                              handleOrderStatusUpdate(order.id, order.order_status, courier, tracking, delivery);
+                            }}
+                          >
+                            Save Tracking Info
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
                 {orders.length === 0 && (

@@ -7,11 +7,21 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Package, FileText, ShieldCheck, User, Download, LayoutDashboard } from 'lucide-react';
+import { Package, FileText, ShieldCheck, User, Download, LayoutDashboard, Truck, MapPin, Clock, CheckCircle, XCircle, Box, PackageCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import VerificationBadge from '../components/VerificationBadge';
 import { getMedicalAvatar } from '../utils/avatars';
 import { FullPageLoader } from '../components/MedicalLoader';
+
+// Order status configuration
+const ORDER_STATUSES = {
+  pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-700', icon: Clock },
+  processing: { label: 'Processing', color: 'bg-blue-100 text-blue-700', icon: Box },
+  packed: { label: 'Packed', color: 'bg-indigo-100 text-indigo-700', icon: PackageCheck },
+  shipped: { label: 'Shipped', color: 'bg-purple-100 text-purple-700', icon: Truck },
+  delivered: { label: 'Delivered', color: 'bg-green-100 text-green-700', icon: CheckCircle },
+  cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-700', icon: XCircle }
+};
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -155,49 +165,105 @@ const Dashboard = () => {
                   <p className="text-gray-500 text-center py-8">No orders yet</p>
                 ) : (
                   <div className="space-y-4">
-                    {orders.map((order) => (
-                      <div key={order.id} className="bg-purple-50 border border-purple-100 rounded-xl p-4" data-testid={`order-${order.id}`}>
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <p className="font-semibold text-gray-900">Order #{order.id.slice(0, 8)}</p>
-                            <p className="text-sm text-gray-500">
-                              {new Date(order.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            order.payment_status === 'completed' 
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
-                          }`}>
-                            {order.payment_status}
-                          </span>
-                        </div>
-                        <div className="space-y-2 mb-3">
-                          {order.items.map((item, idx) => (
-                            <div key={idx} className="flex justify-between text-sm text-gray-600">
-                              <span>{item.product_name} x {item.quantity}</span>
-                              <span>₹{(item.price * item.quantity).toLocaleString()}</span>
+                    {orders.map((order) => {
+                      const status = ORDER_STATUSES[order.order_status] || ORDER_STATUSES.pending;
+                      const StatusIcon = status.icon;
+                      return (
+                        <div key={order.id} className="bg-purple-50 border border-purple-100 rounded-xl p-4" data-testid={`order-${order.id}`}>
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <p className="font-semibold text-gray-900">Order #{order.id.slice(0, 8)}</p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(order.created_at).toLocaleDateString('en-IN', { 
+                                  day: 'numeric', month: 'short', year: 'numeric' 
+                                })}
+                              </p>
                             </div>
-                          ))}
-                        </div>
-                        <div className="border-t border-purple-200 pt-3 flex justify-between items-center">
-                          <div className="font-semibold text-gray-900">
-                            <span>Total: </span>
-                            <span className="text-purple-600">₹{order.total_amount.toLocaleString()}</span>
+                            <div className="flex flex-col items-end gap-1">
+                              <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${status.color}`}>
+                                <StatusIcon className="w-3 h-3" />
+                                {status.label}
+                              </span>
+                              {order.payment_status && (
+                                <span className={`px-2 py-0.5 rounded text-xs ${
+                                  order.payment_status === 'completed' 
+                                    ? 'bg-green-50 text-green-600'
+                                    : 'bg-orange-50 text-orange-600'
+                                }`}>
+                                  Payment: {order.payment_status}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => downloadInvoice(order.id)}
-                            className="border-purple-200 text-purple-600 hover:bg-purple-50"
-                            data-testid={`download-invoice-${order.id}`}
-                          >
-                            <Download className="w-4 h-4 mr-1" />
-                            Invoice
-                          </Button>
+                          
+                          {/* Order Items */}
+                          <div className="space-y-2 mb-3">
+                            {order.items.map((item, idx) => (
+                              <div key={idx} className="flex justify-between text-sm text-gray-600">
+                                <span>{item.product_name} x {item.quantity}</span>
+                                <span>₹{(item.price * item.quantity).toLocaleString()}</span>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Tracking Info */}
+                          {(order.tracking_number || order.courier_name || order.estimated_delivery) && (
+                            <div className="bg-white rounded-lg p-3 mb-3 border border-purple-100">
+                              <p className="text-xs font-semibold text-purple-600 mb-2 flex items-center gap-1">
+                                <Truck className="w-3 h-3" /> Tracking Information
+                              </p>
+                              <div className="grid grid-cols-2 gap-2 text-xs">
+                                {order.courier_name && (
+                                  <div>
+                                    <span className="text-gray-500">Courier:</span>
+                                    <span className="ml-1 font-medium">{order.courier_name}</span>
+                                  </div>
+                                )}
+                                {order.tracking_number && (
+                                  <div>
+                                    <span className="text-gray-500">Tracking #:</span>
+                                    <span className="ml-1 font-medium text-purple-600">{order.tracking_number}</span>
+                                  </div>
+                                )}
+                                {order.estimated_delivery && (
+                                  <div className="col-span-2">
+                                    <span className="text-gray-500">Expected Delivery:</span>
+                                    <span className="ml-1 font-medium text-green-600">{order.estimated_delivery}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Delivery Address */}
+                          {order.delivery_address && (
+                            <div className="text-xs text-gray-500 mb-3 flex items-start gap-1">
+                              <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                              <span>
+                                {order.delivery_address.address}, {order.delivery_address.city}, {order.delivery_address.state} - {order.delivery_address.pincode}
+                              </span>
+                            </div>
+                          )}
+                          
+                          <div className="border-t border-purple-200 pt-3 flex justify-between items-center">
+                            <div className="font-semibold text-gray-900">
+                              <span>Total: </span>
+                              <span className="text-purple-600">₹{order.total_amount.toLocaleString()}</span>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => downloadInvoice(order.id)}
+                              className="border-purple-200 text-purple-600 hover:bg-purple-50"
+                              data-testid={`download-invoice-${order.id}`}
+                            >
+                              <Download className="w-4 h-4 mr-1" />
+                              Invoice
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

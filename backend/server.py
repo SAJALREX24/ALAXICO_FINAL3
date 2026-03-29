@@ -784,13 +784,14 @@ async def verify_payment(verification: PaymentVerification, user: User = Depends
             "razorpay_signature": verification.razorpay_signature
         })
         
-        # Update order status to completed
+        # Update order status
         await db.orders.update_one(
             {"razorpay_order_id": verification.razorpay_order_id},
             {"$set": {
                 "payment_status": "completed",
-                "order_status": "completed",
-                "razorpay_payment_id": verification.razorpay_payment_id
+                "order_status": "pending",
+                "razorpay_payment_id": verification.razorpay_payment_id,
+                "status_updated_at": datetime.now(timezone.utc).isoformat()
             }}
         )
         
@@ -823,7 +824,8 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
         "delivery_address": order_data.delivery_address,
         "payment_method": order_data.payment_method,
         "payment_status": "completed",
-        "order_status": "completed",
+        "order_status": "pending",
+        "status_updated_at": datetime.now(timezone.utc).isoformat(),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
@@ -846,7 +848,71 @@ async def get_my_orders(user: User = Depends(get_current_user)):
 @api_router.get("/admin/orders", dependencies=[Depends(get_admin_user)])
 async def get_all_orders():
     orders = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    # Populate user details for each order
+    for order in orders:
+        user = await db.users.find_one({"id": order.get("user_id")}, {"_id": 0, "password": 0})
+        order["user"] = user
     return orders
+
+class OrderStatusUpdate(BaseModel):
+    order_status: str  # pending, processing, packed, shipped, delivered, cancelled
+    tracking_number: Optional[str] = None
+    courier_name: Optional[str] = None
+    estimated_delivery: Optional[str] = None
+    admin_notes: Optional[str] = None
+
+@api_router.put("/admin/orders/{order_id}/status")
+async def update_order_status(order_id: str, status_data: OrderStatusUpdate, admin: User = Depends(get_admin_user)):
+    """Admin updates order status with optional tracking info"""
+    valid_statuses = ["pending", "processing", "packed", "shipped", "delivered", "cancelled"]
+    if status_data.order_status not in valid_statuses:
+        raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {valid_statuses}")
+    
+    update_data = {
+        "order_status": status_data.order_status,
+        "status_updated_at": datetime.now(timezone.utc).isoformat(),
+        "status_updated_by": admin.id
+    }
+    
+    # Add tracking info if provided
+    if status_data.tracking_number:
+        update_data["tracking_number"] = status_data.tracking_number
+    if status_data.courier_name:
+        update_data["courier_name"] = status_data.courier_name
+    if status_data.estimated_delivery:
+        update_data["estimated_delivery"] = status_data.estimated_delivery
+    if status_data.admin_notes:
+        update_data["admin_notes"] = status_data.admin_notes
+    
+    result = await db.orders.update_one(
+        {"id": order_id},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": f"Order status updated to {status_data.order_status}"}
+
+@api_router.get("/orders/{order_id}/track")
+async def track_order(order_id: str, user: User = Depends(get_current_user)):
+    """Get order tracking details for a specific order"""
+    order = await db.orders.find_one({"id": order_id, "user_id": user.id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {
+        "order_id": order_id,
+        "order_status": order.get("order_status", "pending"),
+        "payment_status": order.get("payment_status", "pending"),
+        "tracking_number": order.get("tracking_number"),
+        "courier_name": order.get("courier_name"),
+        "estimated_delivery": order.get("estimated_delivery"),
+        "created_at": order.get("created_at"),
+        "status_updated_at": order.get("status_updated_at"),
+        "items": order.get("items", []),
+        "delivery_address": order.get("delivery_address", {})
+    }
 
 # ============= BULK ENQUIRY ROUTES =============
 
