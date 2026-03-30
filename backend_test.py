@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://cc1abe83-06be-4957-a970-42a62c6774a3.preview.emergentagent.com"
+BACKEND_URL = "https://build-begins.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 # Test credentials
