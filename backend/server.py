@@ -861,6 +861,18 @@ async def decrement_stock(items: List[dict]):
                     {"$set": {"availability": False}}
                 )
 
+# N-01 & N-02 FIX: Helper function to restore stock on order cancellation/rejection
+async def restore_stock(items: List[dict]):
+    """Restore stock quantity when order is cancelled or payment rejected"""
+    for item in items:
+        await db.products.update_one(
+            {"id": item["product_id"]},
+            {
+                "$inc": {"specifications.stockQuantity": item["quantity"]},
+                "$set": {"availability": True}  # Re-enable product availability
+            }
+        )
+
 @api_router.post("/orders/create-razorpay-order")
 async def create_razorpay_order(order_data: OrderCreate, user: User = Depends(get_current_user)):
     # C-01 FIX: Calculate total server-side, don't trust client amount
@@ -914,12 +926,13 @@ async def verify_payment(verification: PaymentVerification, user: User = Depends
             # H-02 FIX: Decrement stock after successful payment
             await decrement_stock(order.get("items", []))
         
-        # Update order status
+        # Update order status and mark stock as decremented
         await db.orders.update_one(
             {"razorpay_order_id": verification.razorpay_order_id},
             {"$set": {
                 "payment_status": "completed",
                 "order_status": "pending",
+                "stock_decremented": True,
                 "razorpay_payment_id": verification.razorpay_payment_id,
                 "status_updated_at": datetime.now(timezone.utc).isoformat()
             }}
@@ -968,14 +981,18 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
         "payment_method": order_data.payment_method,
         "payment_status": payment_status_map.get(order_data.payment_method, "pending"),
         "order_status": "pending",
+        "stock_decremented": False,  # Track if stock was decremented
         "status_updated_at": datetime.now(timezone.utc).isoformat(),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
     await db.orders.insert_one(order)
     
-    # H-02 FIX: Decrement stock for COD orders
-    await decrement_stock(validated_items)
+    # N-02 FIX: Only decrement stock for COD immediately
+    # For bank_transfer and pay_later, stock is decremented when payment is confirmed
+    if order_data.payment_method == "cod":
+        await decrement_stock(validated_items)
+        await db.orders.update_one({"id": order_id}, {"$set": {"stock_decremented": True}})
     
     # Clear cart
     await db.carts.delete_one({"user_id": user.id})
@@ -1005,6 +1022,24 @@ async def confirm_payment(order_id: str, data: PaymentConfirmation, admin: User 
     if data.payment_status not in valid_statuses:
         raise HTTPException(status_code=400, detail=f"Invalid payment status")
     
+    # Get the order first to check current state
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # N-01 & N-02 FIX: Handle stock based on payment status change
+    stock_decremented = order.get("stock_decremented", False)
+    
+    # If payment is being marked as completed and stock wasn't decremented yet
+    if data.payment_status == "completed" and not stock_decremented:
+        await decrement_stock(order.get("items", []))
+        await db.orders.update_one({"id": order_id}, {"$set": {"stock_decremented": True}})
+    
+    # If payment is being marked as failed/refunded and stock was decremented, restore it
+    if data.payment_status in ["failed", "refunded"] and stock_decremented:
+        await restore_stock(order.get("items", []))
+        await db.orders.update_one({"id": order_id}, {"$set": {"stock_decremented": False}})
+    
     result = await db.orders.update_one(
         {"id": order_id},
         {"$set": {
@@ -1013,9 +1048,6 @@ async def confirm_payment(order_id: str, data: PaymentConfirmation, admin: User 
             "payment_confirmed_by": admin.id
         }}
     )
-    
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Order not found")
     
     return {"message": f"Payment status updated to {data.payment_status}"}
 
@@ -1046,6 +1078,16 @@ async def update_order_status(order_id: str, status_data: OrderStatusUpdate, adm
     valid_statuses = ["pending", "processing", "packed", "shipped", "delivered", "cancelled"]
     if status_data.order_status not in valid_statuses:
         raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {valid_statuses}")
+    
+    # Get the order first to check current state
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # N-01 FIX: Restore stock if order is being cancelled and stock was decremented
+    if status_data.order_status == "cancelled" and order.get("stock_decremented", False):
+        await restore_stock(order.get("items", []))
+        await db.orders.update_one({"id": order_id}, {"$set": {"stock_decremented": False}})
     
     update_data = {
         "order_status": status_data.order_status,

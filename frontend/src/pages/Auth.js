@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Stethoscope, Heart, Shield, Activity } from 'lucide-react';
+import { Stethoscope, Heart, Shield, Activity, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Auth = () => {
@@ -19,8 +19,24 @@ const Auth = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
+  // N-03 FIX: Password validation rules matching backend
+  const passwordValidation = useMemo(() => ({
+    minLength: password.length >= 8,
+    hasUppercase: /[A-Z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+  }), [password]);
+
+  const isPasswordValid = passwordValidation.minLength && passwordValidation.hasUppercase && passwordValidation.hasNumber;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // N-03 FIX: Validate password on registration before submitting
+    if (!isLogin && !isPasswordValid) {
+      toast.error('Password does not meet requirements');
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -193,11 +209,28 @@ const Auth = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={8}
                   className="mt-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                   placeholder="Enter your password"
                   data-testid="password-input"
                 />
+                {/* N-03 FIX: Password strength indicator for registration */}
+                {!isLogin && password.length > 0 && (
+                  <div className="mt-2 space-y-1 text-xs">
+                    <div className={`flex items-center gap-1 ${passwordValidation.minLength ? 'text-green-600' : 'text-gray-400'}`}>
+                      {passwordValidation.minLength ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                      At least 8 characters
+                    </div>
+                    <div className={`flex items-center gap-1 ${passwordValidation.hasUppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                      {passwordValidation.hasUppercase ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                      One uppercase letter
+                    </div>
+                    <div className={`flex items-center gap-1 ${passwordValidation.hasNumber ? 'text-green-600' : 'text-gray-400'}`}>
+                      {passwordValidation.hasNumber ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                      One number
+                    </div>
+                  </div>
+                )}
               </div>
               
               {!isLogin && (
