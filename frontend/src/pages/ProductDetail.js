@@ -169,7 +169,7 @@ const ProductDetail = () => {
       setReviewImages([]);
       setReviewVideoUrl('');
     } catch (error) {
-      toast.error('Failed to submit review');
+      toast.error(error.response?.data?.detail || 'Failed to submit review');
     }
   };
 

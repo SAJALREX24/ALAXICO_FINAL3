@@ -845,15 +845,19 @@ async def calculate_cart_total(user_id: str, items: List[dict] = None):
 async def decrement_stock(items: List[dict]):
     """Decrement stock quantity for ordered items"""
     for item in items:
+        # F-02 FIX: Only decrement if product tracks stockQuantity (consistent with restore_stock)
         await db.products.update_one(
-            {"id": item["product_id"]},
+            {
+                "id": item["product_id"],
+                "specifications.stockQuantity": {"$exists": True}  # Guard condition
+            },
             {
                 "$inc": {"specifications.stockQuantity": -item["quantity"]},
             }
         )
         # Check if out of stock and update availability
         product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0})
-        if product:
+        if product and product.get("specifications", {}).get("stockQuantity") is not None:
             stock_qty = product.get("specifications", {}).get("stockQuantity", 0)
             if stock_qty <= 0:
                 await db.products.update_one(
