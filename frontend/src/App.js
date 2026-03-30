@@ -22,6 +22,7 @@ import Compare from './pages/Compare';
 import B2B from './pages/B2B';
 import Partner from './pages/Partner';
 import StoreLocator from './pages/StoreLocator';
+import NotFound from './pages/NotFound';
 import api from './utils/api';
 import '@/App.css';
 
@@ -57,6 +58,8 @@ function AppRouter({ cartCount }) {
         <Route path="/b2b" element={<B2B />} />
         <Route path="/partner" element={<Partner />} />
         <Route path="/stores" element={<StoreLocator />} />
+        {/* M-05 FIX: 404 catch-all route */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <WhatsAppButton />
@@ -129,8 +132,8 @@ function AppContent() {
     };
     fetchCartCount();
 
-    // Update cart count every 5 seconds
-    const interval = setInterval(fetchCartCount, 5000);
+    // M-04 FIX: Reduced polling frequency from 5s to 60s (use event-driven updates in components)
+    const interval = setInterval(fetchCartCount, 60000);
     return () => clearInterval(interval);
   }, []);
 

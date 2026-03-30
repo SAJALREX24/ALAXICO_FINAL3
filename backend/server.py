@@ -7,6 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import time
+import re
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
@@ -26,6 +27,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch, mm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from collections import defaultdict
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -57,7 +62,12 @@ SESSION_EXPIRATION_DAYS = 7
 # Security
 security = HTTPBearer(auto_error=False)  # Allow optional auth for Google OAuth
 
+# Rate limiter for auth endpoints (C-03 fix)
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 api_router = APIRouter(prefix="/api")
 
 # ============= MODELS =============
@@ -315,10 +325,20 @@ async def get_admin_user(user: User = Depends(get_current_user)):
 # ============= AUTH ROUTES =============
 
 @api_router.post("/auth/register")
-async def register(user_data: UserCreate):
+@limiter.limit("5/minute")
+async def register(request: Request, user_data: UserCreate):
     existing = await db.users.find_one({"email": user_data.email}, {"_id": 0})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # M-03 FIX: Password strength validation
+    password = user_data.password
+    if len(password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    if not re.search(r'[A-Z]', password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one uppercase letter")
+    if not re.search(r'[0-9]', password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one number")
     
     user_dict = user_data.model_dump()
     password = user_dict.pop("password")
@@ -335,13 +355,16 @@ async def register(user_data: UserCreate):
     return {"token": token, "user": user}
 
 @api_router.post("/auth/login")
-async def login(credentials: UserLogin):
+@limiter.limit("5/minute")
+async def login(request: Request, credentials: UserLogin):
+    # C-03 FIX: Rate limiting added via decorator
+    # Use generic error message to prevent account enumeration
     user_doc = await db.users.find_one({"email": credentials.email}, {"_id": 0})
     if not user_doc:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
     
     if not verify_password(credentials.password, user_doc["password"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
     
     user_doc.pop("password")
     if isinstance(user_doc["created_at"], str):
@@ -515,7 +538,9 @@ async def get_products(category: Optional[str] = None, search: Optional[str] = N
     if category:
         query["category"] = category
     if search:
-        query["name"] = {"$regex": search, "$options": "i"}
+        # M-02 FIX: Escape regex special characters to prevent ReDoS
+        escaped_search = re.escape(search)
+        query["name"] = {"$regex": escaped_search, "$options": "i"}
     
     products = await db.products.find(query, {"_id": 0}).to_list(1000)
     return products
@@ -641,6 +666,19 @@ async def get_cart(user: User = Depends(get_current_user)):
 
 @api_router.post("/cart/add")
 async def add_to_cart(item: CartItem, user: User = Depends(get_current_user)):
+    # H-01 FIX: Check product availability before adding to cart
+    product = await db.products.find_one({"id": item.product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    if not product.get("availability", True):
+        raise HTTPException(status_code=400, detail="Product is out of stock")
+    
+    # Check stock quantity
+    stock_qty = product.get("specifications", {}).get("stockQuantity", 999)
+    if stock_qty < item.quantity:
+        raise HTTPException(status_code=400, detail=f"Insufficient stock. Only {stock_qty} available.")
+    
     cart = await db.carts.find_one({"user_id": user.id}, {"_id": 0})
     
     if not cart:
@@ -654,7 +692,10 @@ async def add_to_cart(item: CartItem, user: User = Depends(get_current_user)):
         found = False
         for i in items:
             if i["product_id"] == item.product_id:
-                i["quantity"] += item.quantity
+                new_qty = i["quantity"] + item.quantity
+                if new_qty > stock_qty:
+                    raise HTTPException(status_code=400, detail=f"Cannot add more. Only {stock_qty} available.")
+                i["quantity"] = new_qty
                 found = True
                 break
         if not found:
@@ -742,20 +783,101 @@ async def get_all_payment_methods():
 
 # ============= ORDER ROUTES =============
 
+# C-01 FIX: Helper function to calculate cart total server-side
+async def calculate_cart_total(user_id: str, items: List[dict] = None):
+    """Calculate the total amount from cart or provided items by fetching prices from DB"""
+    total = 0.0
+    validated_items = []
+    
+    if items:
+        # Validate items provided in request
+        for item in items:
+            product = await db.products.find_one({"id": item.get("product_id")}, {"_id": 0})
+            if not product:
+                raise HTTPException(status_code=400, detail=f"Product not found: {item.get('product_id')}")
+            
+            # H-01 FIX: Check availability
+            if not product.get("availability", True):
+                raise HTTPException(status_code=400, detail=f"Product '{product['name']}' is out of stock")
+            
+            # H-02 FIX: Check stock quantity
+            stock_qty = product.get("specifications", {}).get("stockQuantity", 999)
+            if stock_qty < item.get("quantity", 1):
+                raise HTTPException(status_code=400, detail=f"Insufficient stock for '{product['name']}'. Available: {stock_qty}")
+            
+            quantity = item.get("quantity", 1)
+            price = product.get("price", 0)
+            total += price * quantity
+            validated_items.append({
+                "product_id": product["id"],
+                "name": product["name"],
+                "price": price,
+                "quantity": quantity,
+                "image": product.get("images", [None])[0]
+            })
+    else:
+        # Get from user's cart
+        cart = await db.carts.find_one({"user_id": user_id}, {"_id": 0})
+        if not cart or not cart.get("items"):
+            raise HTTPException(status_code=400, detail="Cart is empty")
+        
+        for item in cart.get("items", []):
+            product = await db.products.find_one({"id": item.get("product_id")}, {"_id": 0})
+            if product:
+                # H-01 FIX: Check availability
+                if not product.get("availability", True):
+                    raise HTTPException(status_code=400, detail=f"Product '{product['name']}' is out of stock")
+                
+                quantity = item.get("quantity", 1)
+                price = product.get("price", 0)
+                total += price * quantity
+                validated_items.append({
+                    "product_id": product["id"],
+                    "name": product["name"],
+                    "price": price,
+                    "quantity": quantity,
+                    "image": product.get("images", [None])[0]
+                })
+    
+    return total, validated_items
+
+# H-02 FIX: Helper function to decrement stock after order
+async def decrement_stock(items: List[dict]):
+    """Decrement stock quantity for ordered items"""
+    for item in items:
+        await db.products.update_one(
+            {"id": item["product_id"]},
+            {
+                "$inc": {"specifications.stockQuantity": -item["quantity"]},
+            }
+        )
+        # Check if out of stock and update availability
+        product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0})
+        if product:
+            stock_qty = product.get("specifications", {}).get("stockQuantity", 0)
+            if stock_qty <= 0:
+                await db.products.update_one(
+                    {"id": item["product_id"]},
+                    {"$set": {"availability": False}}
+                )
+
 @api_router.post("/orders/create-razorpay-order")
 async def create_razorpay_order(order_data: OrderCreate, user: User = Depends(get_current_user)):
-    # Create Razorpay order
+    # C-01 FIX: Calculate total server-side, don't trust client amount
+    server_total, validated_items = await calculate_cart_total(user.id, order_data.items)
+    
+    # Create Razorpay order with server-calculated amount
     razorpay_order = razorpay_client.order.create({
-        "amount": int(order_data.total_amount * 100),  # Convert to paise
+        "amount": int(server_total * 100),  # Convert to paise
         "currency": "INR",
         "payment_capture": 1
     })
     
-    # Save order to database
+    # Save order to database with server-calculated total
     order = Order(
         user_id=user.id,
-        items=order_data.items,
-        total_amount=order_data.total_amount,
+        items=validated_items,  # Use validated items with DB prices
+        total_amount=server_total,  # Use server-calculated total
         razorpay_order_id=razorpay_order["id"],
         delivery_address=order_data.delivery_address
     )
@@ -785,6 +907,12 @@ async def verify_payment(verification: PaymentVerification, user: User = Depends
             "razorpay_payment_id": verification.razorpay_payment_id,
             "razorpay_signature": verification.razorpay_signature
         })
+        
+        # Get order to decrement stock
+        order = await db.orders.find_one({"razorpay_order_id": verification.razorpay_order_id}, {"_id": 0})
+        if order:
+            # H-02 FIX: Decrement stock after successful payment
+            await decrement_stock(order.get("items", []))
         
         # Update order status
         await db.orders.update_one(
@@ -816,6 +944,9 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
     if order_data.payment_method not in ["cod", "bank_transfer", "pay_later"]:
         raise HTTPException(status_code=400, detail="Invalid payment method")
     
+    # C-01 FIX: Calculate total server-side, don't trust client amount
+    server_total, validated_items = await calculate_cart_total(user.id, order_data.items)
+    
     order_id = str(uuid.uuid4())
     
     # Set payment status based on payment method
@@ -831,8 +962,8 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
     order = {
         "id": order_id,
         "user_id": user.id,
-        "items": order_data.items,
-        "total_amount": order_data.total_amount,
+        "items": validated_items,  # Use validated items with DB prices
+        "total_amount": server_total,  # Use server-calculated total
         "delivery_address": order_data.delivery_address,
         "payment_method": order_data.payment_method,
         "payment_status": payment_status_map.get(order_data.payment_method, "pending"),
@@ -842,6 +973,9 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
     }
     
     await db.orders.insert_one(order)
+    
+    # H-02 FIX: Decrement stock for COD orders
+    await decrement_stock(validated_items)
     
     # Clear cart
     await db.carts.delete_one({"user_id": user.id})
@@ -855,7 +989,7 @@ async def create_cod_order(order_data: CODOrderCreate, user: User = Depends(get_
     
     return {
         "order_id": order_id,
-        "message": messages.get(order_data.payment_method, "Order placed successfully!").format(int(order_data.total_amount)),
+        "message": messages.get(order_data.payment_method, "Order placed successfully!").format(int(server_total)),
         "payment_method": order_data.payment_method,
         "payment_status": payment_status_map.get(order_data.payment_method, "pending")
     }
@@ -1023,11 +1157,11 @@ async def get_product_reviews(product_id: str):
         {"_id": 0}
     ).sort("created_at", -1).to_list(1000)
     
-    # Populate user details including email
+    # Populate user details - C-02 FIX: Remove email from public review projection
     for review in reviews:
         user = await db.users.find_one(
             {"id": review["user_id"]},
-            {"_id": 0, "name": 1, "email": 1, "verification_status": 1, "buyer_type": 1}
+            {"_id": 0, "name": 1, "verification_status": 1, "buyer_type": 1}
         )
         review["user"] = user
     
@@ -1040,11 +1174,11 @@ async def get_featured_reviews():
         {"_id": 0}
     ).sort("created_at", -1).limit(6).to_list(6)
     
-    # Populate user and product details
+    # Populate user and product details - C-02 FIX: Remove email from public review
     for review in reviews:
         user = await db.users.find_one(
             {"id": review["user_id"]},
-            {"_id": 0, "name": 1, "email": 1, "verification_status": 1, "buyer_type": 1}
+            {"_id": 0, "name": 1, "verification_status": 1, "buyer_type": 1}
         )
         product = await db.products.find_one(
             {"id": review["product_id"]},
@@ -1149,14 +1283,22 @@ async def approve_verification(verification_id: str, approval: VerificationAppro
 async def get_dashboard_stats():
     """Get comprehensive sales statistics for admin dashboard"""
     
+    # H-05 FIX: Use correct payment statuses for completed orders
+    # Completed statuses: "completed" (Razorpay), "pay_on_delivery" (COD delivered), etc.
+    completed_statuses = ["completed", "paid"]
+    pending_statuses = ["pending", "pay_on_delivery", "awaiting_confirmation", "emi_pending"]
+    
     # Total revenue from completed orders
-    orders = await db.orders.find({"payment_status": "paid"}, {"_id": 0}).to_list(1000)
+    orders = await db.orders.find(
+        {"payment_status": {"$in": completed_statuses}}, 
+        {"_id": 0}
+    ).to_list(1000)
     total_revenue = sum(order.get("total_amount", 0) for order in orders)
     
-    # Order counts
+    # Order counts - H-05 FIX: Use correct status groupings
     total_orders = await db.orders.count_documents({})
-    pending_orders = await db.orders.count_documents({"payment_status": "pending"})
-    completed_orders = await db.orders.count_documents({"payment_status": "paid"})
+    pending_orders = await db.orders.count_documents({"payment_status": {"$in": pending_statuses}})
+    completed_orders = await db.orders.count_documents({"payment_status": {"$in": completed_statuses}})
     
     # Product stats
     total_products = await db.products.count_documents({})
@@ -1173,7 +1315,7 @@ async def get_dashboard_stats():
     total_enquiries = await db.bulk_enquiries.count_documents({})
     pending_enquiries = await db.bulk_enquiries.count_documents({"status": "pending"})
     
-    # Monthly revenue (last 6 months)
+    # Monthly revenue (last 6 months) - H-05 FIX: Use correct payment statuses
     monthly_revenue = []
     for i in range(5, -1, -1):
         month_start = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -1181,7 +1323,7 @@ async def get_dashboard_stats():
         month_end = month_start + timedelta(days=30)
         
         month_orders = await db.orders.find({
-            "payment_status": "paid",
+            "payment_status": {"$in": completed_statuses},
             "created_at": {
                 "$gte": month_start.isoformat(),
                 "$lt": month_end.isoformat()
@@ -1423,9 +1565,9 @@ async def generate_invoice(order_id: str, user: User = Depends(get_current_user)
     
     elements = []
     
-    # Company Header
-    elements.append(Paragraph("MedEquipMart", title_style))
-    elements.append(Paragraph("Your Trusted Medical Equipment Partner", ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=10, textColor=colors.gray, alignment=TA_CENTER)))
+    # Company Header - H-06 FIX: Correct branding to Alaxico
+    elements.append(Paragraph("Alaxico", title_style))
+    elements.append(Paragraph("Premium Medical Equipment Solutions", ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=10, textColor=colors.gray, alignment=TA_CENTER)))
     elements.append(Spacer(1, 20))
     
     # Invoice Title
@@ -1628,9 +1770,10 @@ async def get_config():
 @api_router.get("/cloudinary/signature")
 async def generate_cloudinary_signature(
     resource_type: str = Query("image", enum=["image", "video"]),
-    folder: str = Query("alaxico/products")
+    folder: str = Query("alaxico/products"),
+    user: User = Depends(get_current_user)  # C-04 FIX: Require authentication
 ):
-    """Generate signature for Cloudinary upload"""
+    """Generate signature for Cloudinary upload - requires authentication"""
     ALLOWED_FOLDERS = ("alaxico/products", "alaxico/reviews", "alaxico/users")
     if not any(folder.startswith(f) for f in ALLOWED_FOLDERS):
         raise HTTPException(status_code=400, detail="Invalid folder path")
