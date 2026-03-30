@@ -5,103 +5,19 @@ import { Button } from '../components/ui/button';
 const STORES = [
   {
     id: 1,
-    name: 'Alaxico Delhi - Head Office',
+    name: 'Alaxico Agra - Head Office',
     type: 'head_office',
-    address: 'Plot No. 15, Sector 44, Gurugram, Haryana 122003',
+    address: 'UG-6, Rajnandini Plaza, Shastripuram Road, Agra, Uttar Pradesh',
     phone: '+91 7617617178',
-    email: 'delhi@alaxico.com',
+    email: 'info@alaxico.com',
     hours: 'Mon-Sat: 9:00 AM - 7:00 PM',
-    services: ['Sales', 'Service Center', 'Demo Room'],
-    coordinates: { lat: 28.4595, lng: 77.0266 },
-    city: 'Delhi NCR'
-  },
-  {
-    id: 2,
-    name: 'Alaxico Mumbai',
-    type: 'showroom',
-    address: '203, Trade Center, BKC, Mumbai, Maharashtra 400051',
-    phone: '+91 9876543210',
-    email: 'mumbai@alaxico.com',
-    hours: 'Mon-Sat: 10:00 AM - 7:00 PM',
-    services: ['Sales', 'Demo Room'],
-    coordinates: { lat: 19.0596, lng: 72.8556 },
-    city: 'Mumbai'
-  },
-  {
-    id: 3,
-    name: 'Alaxico Bangalore',
-    type: 'service_center',
-    address: '45, MG Road, Near Trinity Circle, Bangalore, Karnataka 560001',
-    phone: '+91 9988776655',
-    email: 'bangalore@alaxico.com',
-    hours: 'Mon-Sat: 9:30 AM - 6:30 PM',
-    services: ['Sales', 'Service Center', 'Repairs'],
-    coordinates: { lat: 12.9716, lng: 77.5946 },
-    city: 'Bangalore'
-  },
-  {
-    id: 4,
-    name: 'Alaxico Chennai',
-    type: 'dealer',
-    address: '78, Anna Salai, Triplicane, Chennai, Tamil Nadu 600002',
-    phone: '+91 9112233445',
-    email: 'chennai@alaxico.com',
-    hours: 'Mon-Sat: 10:00 AM - 6:00 PM',
-    services: ['Sales', 'Authorized Dealer'],
-    coordinates: { lat: 13.0827, lng: 80.2707 },
-    city: 'Chennai'
-  },
-  {
-    id: 5,
-    name: 'Alaxico Hyderabad',
-    type: 'dealer',
-    address: '23, Jubilee Hills, Road No. 36, Hyderabad, Telangana 500033',
-    phone: '+91 9223344556',
-    email: 'hyderabad@alaxico.com',
-    hours: 'Mon-Sat: 10:00 AM - 7:00 PM',
-    services: ['Sales', 'Demo Room'],
-    coordinates: { lat: 17.4326, lng: 78.4071 },
-    city: 'Hyderabad'
-  },
-  {
-    id: 6,
-    name: 'Alaxico Kolkata',
-    type: 'service_center',
-    address: '156, Park Street, Kolkata, West Bengal 700016',
-    phone: '+91 9334455667',
-    email: 'kolkata@alaxico.com',
-    hours: 'Mon-Sat: 9:00 AM - 6:00 PM',
-    services: ['Service Center', 'Repairs', 'Spare Parts'],
-    coordinates: { lat: 22.5726, lng: 88.3639 },
-    city: 'Kolkata'
-  },
-  {
-    id: 7,
-    name: 'Alaxico Pune',
-    type: 'dealer',
-    address: '89, FC Road, Shivajinagar, Pune, Maharashtra 411005',
-    phone: '+91 9445566778',
-    email: 'pune@alaxico.com',
-    hours: 'Mon-Sat: 10:00 AM - 7:00 PM',
-    services: ['Sales', 'Authorized Dealer'],
-    coordinates: { lat: 18.5204, lng: 73.8567 },
-    city: 'Pune'
-  },
-  {
-    id: 8,
-    name: 'Alaxico Ahmedabad',
-    type: 'dealer',
-    address: '34, CG Road, Navrangpura, Ahmedabad, Gujarat 380009',
-    phone: '+91 9556677889',
-    email: 'ahmedabad@alaxico.com',
-    hours: 'Mon-Sat: 10:00 AM - 6:30 PM',
-    services: ['Sales', 'Demo Room'],
-    coordinates: { lat: 23.0225, lng: 72.5714 },
-    city: 'Ahmedabad'
+    services: ['Sales', 'Service Center', 'Demo Room', 'Customer Support'],
+    coordinates: { lat: 27.1767, lng: 78.0081 },
+    city: 'Agra'
   }
 ];
 
-const CITIES = ['All Cities', 'Delhi NCR', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad', 'Kolkata', 'Pune', 'Ahmedabad'];
+const CITIES = ['All Cities', 'Agra'];
 const STORE_TYPES = [
   { id: 'all', label: 'All Locations', icon: MapPin },
   { id: 'head_office', label: 'Head Office', icon: Building2 },

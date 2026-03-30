@@ -23,6 +23,8 @@ const Admin = () => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [bulkEnquiries, setBulkEnquiries] = useState([]);
+  const [b2bEnquiries, setB2bEnquiries] = useState([]);
+  const [partnerApplications, setPartnerApplications] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,16 +85,20 @@ const Admin = () => {
 
   const fetchData = async () => {
     try {
-      const [productsRes, ordersRes, enquiriesRes, reviewsRes, verificationsRes] = await Promise.all([
+      const [productsRes, ordersRes, enquiriesRes, b2bEnquiriesRes, partnerAppsRes, reviewsRes, verificationsRes] = await Promise.all([
         api.get('/products'),
         api.get('/admin/orders'),
         api.get('/admin/bulk-enquiries'),
+        api.get('/admin/b2b-enquiries'),
+        api.get('/admin/partner-applications'),
         api.get('/admin/reviews'),
         api.get('/admin/verifications'),
       ]);
       setProducts(productsRes.data);
       setOrders(ordersRes.data);
       setBulkEnquiries(enquiriesRes.data);
+      setB2bEnquiries(b2bEnquiriesRes.data);
+      setPartnerApplications(partnerAppsRes.data);
       setReviews(reviewsRes.data);
       setVerifications(verificationsRes.data);
     } catch (error) {
@@ -280,6 +286,26 @@ const Admin = () => {
     }
   };
 
+  const handleB2bEnquiryStatus = async (enquiryId, status) => {
+    try {
+      await api.put(`/admin/b2b-enquiries/${enquiryId}`, { status });
+      toast.success('B2B Enquiry status updated');
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to update B2B enquiry status');
+    }
+  };
+
+  const handlePartnerApplicationStatus = async (applicationId, status) => {
+    try {
+      await api.put(`/admin/partner-applications/${applicationId}`, { status });
+      toast.success('Partner application status updated');
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to update partner application status');
+    }
+  };
+
   const handleOrderStatusUpdate = async (orderId, status, courierName = null, trackingNumber = null, estimatedDelivery = null) => {
     try {
       const updateData = { order_status: status };
@@ -317,32 +343,42 @@ const Admin = () => {
         </h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
-          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-products">
-            <Package className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 mb-1 sm:mb-2" />
-            <p className="text-lg sm:text-2xl font-bold text-gray-900">{products.length}</p>
-            <p className="text-xs sm:text-sm text-gray-500">Products</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-4 sm:mb-8">
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-4 shadow-sm" data-testid="stat-products">
+            <Package className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600 mb-1" />
+            <p className="text-lg sm:text-xl font-bold text-gray-900">{products.length}</p>
+            <p className="text-xs text-gray-500">Products</p>
           </div>
-          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-orders">
-            <ShoppingCart className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 mb-1 sm:mb-2" />
-            <p className="text-lg sm:text-2xl font-bold text-gray-900">{orders.length}</p>
-            <p className="text-xs sm:text-sm text-gray-500">Orders</p>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-4 shadow-sm" data-testid="stat-orders">
+            <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 mb-1" />
+            <p className="text-lg sm:text-xl font-bold text-gray-900">{orders.length}</p>
+            <p className="text-xs text-gray-500">Orders</p>
           </div>
-          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-enquiries">
-            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500 mb-1 sm:mb-2" />
-            <p className="text-lg sm:text-2xl font-bold text-gray-900">{bulkEnquiries.length}</p>
-            <p className="text-xs sm:text-sm text-gray-500">Enquiries</p>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-4 shadow-sm" data-testid="stat-enquiries">
+            <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 mb-1" />
+            <p className="text-lg sm:text-xl font-bold text-gray-900">{bulkEnquiries.length}</p>
+            <p className="text-xs text-gray-500">Enquiries</p>
           </div>
-          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm" data-testid="stat-verifications">
-            <ShieldCheck className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500 mb-1 sm:mb-2" />
-            <p className="text-lg sm:text-2xl font-bold text-gray-900">{verifications.filter(v => v.status === 'pending').length}</p>
-            <p className="text-xs sm:text-sm text-gray-500">Pending</p>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-4 shadow-sm" data-testid="stat-b2b">
+            <Users className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500 mb-1" />
+            <p className="text-lg sm:text-xl font-bold text-gray-900">{b2bEnquiries.length}</p>
+            <p className="text-xs text-gray-500">B2B Leads</p>
+          </div>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-4 shadow-sm" data-testid="stat-partners">
+            <Box className="h-5 w-5 sm:h-6 sm:w-6 text-orange-500 mb-1" />
+            <p className="text-lg sm:text-xl font-bold text-gray-900">{partnerApplications.length}</p>
+            <p className="text-xs text-gray-500">Partners</p>
+          </div>
+          <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-4 shadow-sm" data-testid="stat-verifications">
+            <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 mb-1" />
+            <p className="text-lg sm:text-xl font-bold text-gray-900">{verifications.filter(v => v.status === 'pending').length}</p>
+            <p className="text-xs text-gray-500">Pending</p>
           </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-6 bg-white border border-purple-100 rounded-xl p-1 shadow-sm gap-1">
+            <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-8 bg-white border border-purple-100 rounded-xl p-1 shadow-sm gap-1">
               <TabsTrigger value="dashboard" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-dashboard-tab">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 <span className="hidden sm:inline">Dashboard</span>
@@ -351,6 +387,8 @@ const Admin = () => {
               <TabsTrigger value="products" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-products-tab">Products</TabsTrigger>
               <TabsTrigger value="orders" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-orders-tab">Orders</TabsTrigger>
               <TabsTrigger value="enquiries" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-enquiries-tab">Enquiries</TabsTrigger>
+              <TabsTrigger value="b2b" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-b2b-tab">B2B</TabsTrigger>
+              <TabsTrigger value="partners" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-partners-tab">Partners</TabsTrigger>
               <TabsTrigger value="reviews" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-reviews-tab">Reviews</TabsTrigger>
               <TabsTrigger value="verifications" className="flex-shrink-0 px-3 sm:px-2 text-xs sm:text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white whitespace-nowrap" data-testid="admin-verifications-tab">Verify</TabsTrigger>
             </TabsList>
@@ -1216,6 +1254,112 @@ const Admin = () => {
                 ))}
                 {bulkEnquiries.length === 0 && (
                   <p className="text-center text-gray-500 py-8">No bulk enquiries yet</p>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* B2B Enquiries Tab */}
+          <TabsContent value="b2b">
+            <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">B2B Business Enquiries</h2>
+              <div className="space-y-3 sm:space-y-4">
+                {b2bEnquiries.map((enquiry) => (
+                  <div key={enquiry.id} className="border border-purple-100 bg-purple-50 rounded-lg p-3 sm:p-4" data-testid={`admin-b2b-enquiry-${enquiry.id}`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-2 sm:mb-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-2 py-1 bg-purple-200 text-purple-800 rounded-full text-xs font-medium">
+                            {enquiry.business_type}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {new Date(enquiry.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{enquiry.business_name}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">{enquiry.contact_person}</p>
+                        <div className="flex flex-wrap gap-2 mt-2 text-xs text-gray-500">
+                          <span>📧 {enquiry.email}</span>
+                          <span>📞 {enquiry.phone}</span>
+                        </div>
+                        {enquiry.estimated_quantity && (
+                          <p className="text-xs sm:text-sm text-gray-500 mt-1">Est. Quantity: {enquiry.estimated_quantity}</p>
+                        )}
+                        {enquiry.products_interested && (
+                          <p className="text-xs sm:text-sm text-gray-500 mt-1">Products: {enquiry.products_interested}</p>
+                        )}
+                        {enquiry.message && (
+                          <p className="text-xs sm:text-sm text-gray-600 mt-2 bg-white p-2 rounded border">{enquiry.message}</p>
+                        )}
+                      </div>
+                      <Select value={enquiry.status} onValueChange={(v) => handleB2bEnquiryStatus(enquiry.id, v)}>
+                        <SelectTrigger className="w-full sm:w-32 text-xs sm:text-sm h-8 sm:h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="contacted">Contacted</SelectItem>
+                          <SelectItem value="negotiating">Negotiating</SelectItem>
+                          <SelectItem value="converted">Converted</SelectItem>
+                          <SelectItem value="closed">Closed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                ))}
+                {b2bEnquiries.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">No B2B enquiries yet</p>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Partner Applications Tab */}
+          <TabsContent value="partners">
+            <div className="bg-white border border-purple-100 rounded-xl p-3 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Partner Applications</h2>
+              <div className="space-y-3 sm:space-y-4">
+                {partnerApplications.map((application) => (
+                  <div key={application.id} className="border border-purple-100 bg-purple-50 rounded-lg p-3 sm:p-4" data-testid={`admin-partner-${application.id}`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-2 sm:mb-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                            {application.program_type}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {new Date(application.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{application.name}</p>
+                        {application.organization && (
+                          <p className="text-xs sm:text-sm text-gray-600">{application.organization}</p>
+                        )}
+                        <div className="flex flex-wrap gap-2 mt-2 text-xs text-gray-500">
+                          <span>📧 {application.email}</span>
+                          <span>📞 {application.phone}</span>
+                          <span>📍 {application.city}</span>
+                        </div>
+                        {application.message && (
+                          <p className="text-xs sm:text-sm text-gray-600 mt-2 bg-white p-2 rounded border">{application.message}</p>
+                        )}
+                      </div>
+                      <Select value={application.status} onValueChange={(v) => handlePartnerApplicationStatus(application.id, v)}>
+                        <SelectTrigger className="w-full sm:w-32 text-xs sm:text-sm h-8 sm:h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="reviewing">Reviewing</SelectItem>
+                          <SelectItem value="approved">Approved</SelectItem>
+                          <SelectItem value="rejected">Rejected</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                ))}
+                {partnerApplications.length === 0 && (
+                  <p className="text-center text-gray-500 py-8">No partner applications yet</p>
                 )}
               </div>
             </div>
