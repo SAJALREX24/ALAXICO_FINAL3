@@ -865,8 +865,12 @@ async def decrement_stock(items: List[dict]):
 async def restore_stock(items: List[dict]):
     """Restore stock quantity when order is cancelled or payment rejected"""
     for item in items:
+        # E-01 FIX: Only increment stock if product already tracks stockQuantity
         await db.products.update_one(
-            {"id": item["product_id"]},
+            {
+                "id": item["product_id"],
+                "specifications.stockQuantity": {"$exists": True}  # Guard condition
+            },
             {
                 "$inc": {"specifications.stockQuantity": item["quantity"]},
                 "$set": {"availability": True}  # Re-enable product availability
@@ -1186,9 +1190,39 @@ async def update_enquiry_status(enquiry_id: str, status_data: EnquiryStatusUpdat
 
 @api_router.post("/reviews")
 async def create_review(review_data: ReviewCreate, user: User = Depends(get_current_user)):
+    # M-06 FIX: Verify user has purchased the product before allowing review
+    completed_statuses = ["completed", "paid", "pay_on_delivery", "delivered"]
+    purchase = await db.orders.find_one({
+        "user_id": user.id,
+        "items.product_id": review_data.product_id,
+        "$or": [
+            {"payment_status": {"$in": completed_statuses}},
+            {"order_status": "delivered"}
+        ]
+    })
+    
+    if not purchase:
+        raise HTTPException(
+            status_code=403, 
+            detail="You can only review products you have purchased"
+        )
+    
+    # Check if user already reviewed this product
+    existing_review = await db.reviews.find_one({
+        "user_id": user.id,
+        "product_id": review_data.product_id
+    })
+    
+    if existing_review:
+        raise HTTPException(
+            status_code=400,
+            detail="You have already reviewed this product"
+        )
+    
     review = Review(user_id=user.id, **review_data.model_dump())
     doc = review.model_dump()
     doc["created_at"] = doc["created_at"].isoformat()
+    doc["verified_purchase"] = True  # Mark as verified purchase
     await db.reviews.insert_one(doc)
     return review
 
