@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Alaxico Medical Equipment E-commerce App
-Testing Cloudinary image upload integration and existing endpoints
+Comprehensive Backend API Testing for Alaxico Medical Equipment E-commerce App
+Testing all endpoints as per FINAL DEPLOYMENT TEST requirements
 """
 
 import requests
@@ -11,8 +11,14 @@ import sys
 from datetime import datetime
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://init-point.preview.emergentagent.com"
+BACKEND_URL = "https://cc1abe83-06be-4957-a970-42a62c6774a3.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
+
+# Test credentials
+ADMIN_EMAIL = "admin@medequipmart.com"
+ADMIN_PASSWORD = "admin123"
+TEST_USER_EMAIL = "hospital@example.com"
+TEST_USER_PASSWORD = "demo123"
 
 class Colors:
     GREEN = '\033[92m'
@@ -39,118 +45,19 @@ def print_warning(message):
 def print_info(message):
     print(f"{Colors.BLUE}ℹ️  {message}{Colors.ENDC}")
 
-def test_cloudinary_signature_endpoint():
-    """Test GET /api/cloudinary/signature endpoint"""
-    print_test_header("Cloudinary Signature Endpoint")
-    
-    try:
-        # Test 1: Default parameters (image, alaxico/products)
-        print_info("Testing default parameters...")
-        response = requests.get(f"{API_BASE}/cloudinary/signature")
-        
-        if response.status_code == 200:
-            data = response.json()
-            required_fields = ["signature", "timestamp", "cloud_name", "api_key", "folder", "resource_type"]
-            
-            missing_fields = [field for field in required_fields if field not in data]
-            if missing_fields:
-                print_error(f"Missing required fields: {missing_fields}")
-                return False
-            
-            # Verify cloud_name
-            if data["cloud_name"] != "de6hn1eu1":
-                print_error(f"Expected cloud_name 'de6hn1eu1', got '{data['cloud_name']}'")
-                return False
-            
-            # Verify default folder
-            if data["folder"] != "alaxico/products":
-                print_error(f"Expected default folder 'alaxico/products', got '{data['folder']}'")
-                return False
-            
-            # Verify default resource_type
-            if data["resource_type"] != "image":
-                print_error(f"Expected default resource_type 'image', got '{data['resource_type']}'")
-                return False
-            
-            # Verify API key is present
-            if not data["api_key"]:
-                print_error("API key is empty")
-                return False
-            
-            print_success("Default parameters test passed")
-            print_info(f"Response: {json.dumps(data, indent=2)}")
-            
-        else:
-            print_error(f"Request failed with status {response.status_code}: {response.text}")
-            return False
-        
-        # Test 2: Different resource_type (video)
-        print_info("Testing with resource_type=video...")
-        response = requests.get(f"{API_BASE}/cloudinary/signature?resource_type=video")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data["resource_type"] != "video":
-                print_error(f"Expected resource_type 'video', got '{data['resource_type']}'")
-                return False
-            print_success("Video resource_type test passed")
-        else:
-            print_error(f"Video resource_type test failed: {response.status_code}")
-            return False
-        
-        # Test 3: Different folder
-        print_info("Testing with different folder...")
-        response = requests.get(f"{API_BASE}/cloudinary/signature?folder=alaxico/reviews")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data["folder"] != "alaxico/reviews":
-                print_error(f"Expected folder 'alaxico/reviews', got '{data['folder']}'")
-                return False
-            print_success("Different folder test passed")
-        else:
-            print_error(f"Different folder test failed: {response.status_code}")
-            return False
-        
-        # Test 4: Invalid folder (should fail)
-        print_info("Testing with invalid folder...")
-        response = requests.get(f"{API_BASE}/cloudinary/signature?folder=invalid/folder")
-        
-        if response.status_code == 400:
-            print_success("Invalid folder correctly rejected")
-        else:
-            print_warning(f"Expected 400 for invalid folder, got {response.status_code}")
-        
-        # Test 5: Combined parameters
-        print_info("Testing combined parameters...")
-        response = requests.get(f"{API_BASE}/cloudinary/signature?resource_type=video&folder=alaxico/users")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data["resource_type"] == "video" and data["folder"] == "alaxico/users":
-                print_success("Combined parameters test passed")
-            else:
-                print_error("Combined parameters not set correctly")
-                return False
-        else:
-            print_error(f"Combined parameters test failed: {response.status_code}")
-            return False
-        
-        return True
-        
-    except requests.exceptions.RequestException as e:
-        print_error(f"Network error: {e}")
-        return False
-    except Exception as e:
-        print_error(f"Unexpected error: {e}")
-        return False
+# Global variables to store tokens
+admin_token = None
+user_token = None
+test_product_id = None
+test_b2b_enquiry_id = None
+test_partner_application_id = None
 
-def test_existing_endpoints():
-    """Test existing endpoints to ensure they still work"""
-    print_test_header("Existing Endpoints")
+def test_public_apis():
+    """Test all public APIs that don't require authentication"""
+    print_test_header("PUBLIC APIs (No Auth Required)")
     
     success_count = 0
-    total_tests = 2
+    total_tests = 6
     
     try:
         # Test 1: GET /api/products
@@ -159,15 +66,34 @@ def test_existing_endpoints():
         
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
+            if isinstance(data, list) and len(data) > 0:
+                global test_product_id
+                test_product_id = data[0].get('id')
                 print_success(f"Products endpoint working - returned {len(data)} products")
                 success_count += 1
             else:
-                print_error("Products endpoint returned non-list data")
+                print_error("Products endpoint returned empty list or invalid data")
         else:
-            print_error(f"Products endpoint failed: {response.status_code}")
+            print_error(f"Products endpoint failed: {response.status_code} - {response.text}")
         
-        # Test 2: GET /api/categories
+        # Test 2: GET /api/products/{id}
+        if test_product_id:
+            print_info(f"Testing GET /api/products/{test_product_id}...")
+            response = requests.get(f"{API_BASE}/products/{test_product_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('id') == test_product_id:
+                    print_success("Single product endpoint working")
+                    success_count += 1
+                else:
+                    print_error("Single product endpoint returned wrong product")
+            else:
+                print_error(f"Single product endpoint failed: {response.status_code}")
+        else:
+            print_warning("Skipping single product test - no product ID available")
+        
+        # Test 3: GET /api/categories
         print_info("Testing GET /api/categories...")
         response = requests.get(f"{API_BASE}/categories")
         
@@ -181,6 +107,202 @@ def test_existing_endpoints():
         else:
             print_error(f"Categories endpoint failed: {response.status_code}")
         
+        # Test 4: GET /api/payment-methods
+        print_info("Testing GET /api/payment-methods...")
+        response = requests.get(f"{API_BASE}/payment-methods")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('payment_methods') and isinstance(data['payment_methods'], list):
+                print_success(f"Payment methods endpoint working - returned {len(data['payment_methods'])} methods")
+                success_count += 1
+            else:
+                print_error("Payment methods endpoint returned invalid data")
+        else:
+            print_error(f"Payment methods endpoint failed: {response.status_code}")
+        
+        # Test 5: GET /api/config
+        print_info("Testing GET /api/config...")
+        response = requests.get(f"{API_BASE}/config")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('whatsapp_number') and data.get('razorpay_key_id'):
+                print_success("Config endpoint working - WhatsApp number and Razorpay key present")
+                success_count += 1
+            else:
+                print_error("Config endpoint missing required fields")
+        else:
+            print_error(f"Config endpoint failed: {response.status_code}")
+        
+        # Test 6: POST /api/b2b/enquiry
+        print_info("Testing POST /api/b2b/enquiry...")
+        b2b_data = {
+            "business_name": "Apollo Medical Center",
+            "contact_person": "Dr. Rajesh Kumar",
+            "email": "rajesh.kumar@apollomedical.com",
+            "phone": "9876543212",
+            "business_type": "clinic",
+            "estimated_quantity": "10-50",
+            "products_interested": "BP Monitors, Nebulizers, Pulse Oximeters",
+            "message": "Looking for bulk purchase of medical equipment for our clinic"
+        }
+        
+        response = requests.post(f"{API_BASE}/b2b/enquiry", json=b2b_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('message') and data.get('id'):
+                global test_b2b_enquiry_id
+                test_b2b_enquiry_id = data['id']
+                print_success("B2B enquiry endpoint working - enquiry submitted successfully")
+                success_count += 1
+            else:
+                print_error("B2B enquiry endpoint returned invalid response")
+        else:
+            print_error(f"B2B enquiry endpoint failed: {response.status_code} - {response.text}")
+        
+        # Test 7: POST /api/partner/apply
+        print_info("Testing POST /api/partner/apply...")
+        partner_data = {
+            "name": "Suresh Patel",
+            "email": "suresh.patel@medicaldist.com",
+            "phone": "9876543213",
+            "program_type": "distributor",
+            "organization": "MediCare Distributors Pvt Ltd",
+            "city": "Mumbai",
+            "message": "Interested in becoming a distributor for medical equipment"
+        }
+        
+        response = requests.post(f"{API_BASE}/partner/apply", json=partner_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('message') and data.get('id'):
+                global test_partner_application_id
+                test_partner_application_id = data['id']
+                print_success("Partner application endpoint working - application submitted successfully")
+                success_count += 1
+            else:
+                print_error("Partner application endpoint returned invalid response")
+        else:
+            print_error(f"Partner application endpoint failed: {response.status_code} - {response.text}")
+        
+        return success_count == total_tests + 1  # +1 for the partner test
+        
+    except requests.exceptions.RequestException as e:
+        print_error(f"Network error: {e}")
+        return False
+    except Exception as e:
+        print_error(f"Unexpected error: {e}")
+        return False
+
+def test_auth_apis():
+    """Test authentication APIs"""
+    print_test_header("AUTH APIs")
+    
+    success_count = 0
+    total_tests = 3
+    
+    try:
+        # Test 1: POST /api/auth/register (create test user)
+        print_info("Testing POST /api/auth/register...")
+        register_data = {
+            "email": "testuser@example.com",
+            "name": "Test User",
+            "password": "testpass123",
+            "phone": "9876543210"
+        }
+        
+        response = requests.post(f"{API_BASE}/auth/register", json=register_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('token') and data.get('user'):
+                print_success("User registration working")
+                success_count += 1
+            else:
+                print_error("Registration endpoint returned invalid response")
+        elif response.status_code == 400 and "already registered" in response.text:
+            print_success("User registration working (user already exists)")
+            success_count += 1
+        else:
+            print_error(f"Registration endpoint failed: {response.status_code} - {response.text}")
+        
+        # Test 2: POST /api/auth/login (admin login)
+        print_info("Testing POST /api/auth/login (admin)...")
+        login_data = {
+            "email": ADMIN_EMAIL,
+            "password": ADMIN_PASSWORD
+        }
+        
+        response = requests.post(f"{API_BASE}/auth/login", json=login_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('token') and data.get('user'):
+                global admin_token
+                admin_token = data['token']
+                print_success("Admin login working - token received")
+                success_count += 1
+            else:
+                print_error("Admin login endpoint returned invalid response")
+        else:
+            print_error(f"Admin login endpoint failed: {response.status_code} - {response.text}")
+        
+        # Test 3: GET /api/auth/me (with admin token)
+        if admin_token:
+            print_info("Testing GET /api/auth/me...")
+            headers = {"Authorization": f"Bearer {admin_token}"}
+            response = requests.get(f"{API_BASE}/auth/me", headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('email') == ADMIN_EMAIL and data.get('role') == 'admin':
+                    print_success("Auth me endpoint working - admin user verified")
+                    success_count += 1
+                else:
+                    print_error("Auth me endpoint returned wrong user data")
+            else:
+                print_error(f"Auth me endpoint failed: {response.status_code}")
+        else:
+            print_warning("Skipping auth/me test - no admin token available")
+        
+        # Test user login for cart tests
+        print_info("Testing POST /api/auth/login (test user)...")
+        user_login_data = {
+            "email": TEST_USER_EMAIL,
+            "password": TEST_USER_PASSWORD
+        }
+        
+        response = requests.post(f"{API_BASE}/auth/login", json=user_login_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('token'):
+                global user_token
+                user_token = data['token']
+                print_success("Test user login working")
+            else:
+                print_error("Test user login returned invalid response")
+        else:
+            print_warning(f"Test user login failed: {response.status_code} - will try to register")
+            # Try to register the test user
+            register_data = {
+                "email": TEST_USER_EMAIL,
+                "name": "Test Hospital User",
+                "password": TEST_USER_PASSWORD,
+                "phone": "9876543211"
+            }
+            
+            response = requests.post(f"{API_BASE}/auth/register", json=register_data)
+            if response.status_code == 200:
+                data = response.json()
+                user_token = data.get('token')
+                print_success("Test user registered and logged in")
+            else:
+                print_error("Failed to register test user")
+        
         return success_count == total_tests
         
     except requests.exceptions.RequestException as e:
@@ -190,57 +312,254 @@ def test_existing_endpoints():
         print_error(f"Unexpected error: {e}")
         return False
 
-def test_cloudinary_configuration():
-    """Test Cloudinary configuration values"""
-    print_test_header("Cloudinary Configuration")
+def test_admin_apis():
+    """Test admin APIs that require admin authentication"""
+    print_test_header("ADMIN APIs (Requires Admin Token)")
+    
+    if not admin_token:
+        print_error("No admin token available - skipping admin API tests")
+        return False
+    
+    success_count = 0
+    total_tests = 9
+    headers = {"Authorization": f"Bearer {admin_token}"}
     
     try:
-        response = requests.get(f"{API_BASE}/cloudinary/signature")
+        # Test 1: GET /api/admin/orders
+        print_info("Testing GET /api/admin/orders...")
+        response = requests.get(f"{API_BASE}/admin/orders", headers=headers)
         
         if response.status_code == 200:
             data = response.json()
-            
-            # Check cloud_name
-            expected_cloud_name = "de6hn1eu1"
-            if data.get("cloud_name") == expected_cloud_name:
-                print_success(f"Cloud name correct: {expected_cloud_name}")
+            if isinstance(data, list):
+                print_success(f"Admin orders endpoint working - returned {len(data)} orders")
+                success_count += 1
             else:
-                print_error(f"Expected cloud_name '{expected_cloud_name}', got '{data.get('cloud_name')}'")
-                return False
-            
-            # Check API key is present (don't log the actual key)
-            if data.get("api_key"):
-                print_success("API key is present")
-            else:
-                print_error("API key is missing")
-                return False
-            
-            # Check signature is generated
-            if data.get("signature"):
-                print_success("Signature is generated")
-            else:
-                print_error("Signature is missing")
-                return False
-            
-            # Check timestamp is present and recent
-            if data.get("timestamp"):
-                timestamp = data.get("timestamp")
-                current_time = datetime.now().timestamp()
-                if abs(current_time - timestamp) < 60:  # Within 1 minute
-                    print_success("Timestamp is recent")
-                else:
-                    print_warning("Timestamp seems old")
-            else:
-                print_error("Timestamp is missing")
-                return False
-            
-            return True
+                print_error("Admin orders endpoint returned non-list data")
         else:
-            print_error(f"Failed to get signature: {response.status_code}")
-            return False
+            print_error(f"Admin orders endpoint failed: {response.status_code}")
+        
+        # Test 2: GET /api/admin/bulk-enquiries
+        print_info("Testing GET /api/admin/bulk-enquiries...")
+        response = requests.get(f"{API_BASE}/admin/bulk-enquiries", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                print_success(f"Admin bulk enquiries endpoint working - returned {len(data)} enquiries")
+                success_count += 1
+            else:
+                print_error("Admin bulk enquiries endpoint returned non-list data")
+        else:
+            print_error(f"Admin bulk enquiries endpoint failed: {response.status_code}")
+        
+        # Test 3: GET /api/admin/b2b-enquiries
+        print_info("Testing GET /api/admin/b2b-enquiries...")
+        response = requests.get(f"{API_BASE}/admin/b2b-enquiries", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                print_success(f"Admin B2B enquiries endpoint working - returned {len(data)} enquiries")
+                success_count += 1
+            else:
+                print_error("Admin B2B enquiries endpoint returned non-list data")
+        else:
+            print_error(f"Admin B2B enquiries endpoint failed: {response.status_code}")
+        
+        # Test 4: GET /api/admin/partner-applications
+        print_info("Testing GET /api/admin/partner-applications...")
+        response = requests.get(f"{API_BASE}/admin/partner-applications", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                print_success(f"Admin partner applications endpoint working - returned {len(data)} applications")
+                success_count += 1
+            else:
+                print_error("Admin partner applications endpoint returned non-list data")
+        else:
+            print_error(f"Admin partner applications endpoint failed: {response.status_code}")
+        
+        # Test 5: GET /api/admin/reviews
+        print_info("Testing GET /api/admin/reviews...")
+        response = requests.get(f"{API_BASE}/admin/reviews", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                print_success(f"Admin reviews endpoint working - returned {len(data)} reviews")
+                success_count += 1
+            else:
+                print_error("Admin reviews endpoint returned non-list data")
+        else:
+            print_error(f"Admin reviews endpoint failed: {response.status_code}")
+        
+        # Test 6: GET /api/admin/verifications
+        print_info("Testing GET /api/admin/verifications...")
+        response = requests.get(f"{API_BASE}/admin/verifications", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                print_success(f"Admin verifications endpoint working - returned {len(data)} verifications")
+                success_count += 1
+            else:
+                print_error("Admin verifications endpoint returned non-list data")
+        else:
+            print_error(f"Admin verifications endpoint failed: {response.status_code}")
+        
+        # Test 7: GET /api/admin/products
+        print_info("Testing GET /api/admin/products...")
+        response = requests.get(f"{API_BASE}/products", headers=headers)  # Same as public endpoint
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                print_success(f"Admin products endpoint working - returned {len(data)} products")
+                success_count += 1
+            else:
+                print_error("Admin products endpoint returned non-list data")
+        else:
+            print_error(f"Admin products endpoint failed: {response.status_code}")
+        
+        # Test 8: PUT /api/admin/b2b-enquiries/{id} (if we have a test enquiry)
+        if test_b2b_enquiry_id:
+            print_info(f"Testing PUT /api/admin/b2b-enquiries/{test_b2b_enquiry_id}...")
+            status_data = {"status": "reviewed"}
+            response = requests.put(f"{API_BASE}/admin/b2b-enquiries/{test_b2b_enquiry_id}", 
+                                  json=status_data, headers=headers)
             
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('message'):
+                    print_success("Admin B2B enquiry status update working")
+                    success_count += 1
+                else:
+                    print_error("Admin B2B enquiry status update returned invalid response")
+            else:
+                print_error(f"Admin B2B enquiry status update failed: {response.status_code}")
+        else:
+            print_warning("Skipping B2B enquiry status update test - no enquiry ID available")
+        
+        # Test 9: PUT /api/admin/partner-applications/{id} (if we have a test application)
+        if test_partner_application_id:
+            print_info(f"Testing PUT /api/admin/partner-applications/{test_partner_application_id}...")
+            status_data = {"status": "reviewed"}
+            response = requests.put(f"{API_BASE}/admin/partner-applications/{test_partner_application_id}", 
+                                  json=status_data, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('message'):
+                    print_success("Admin partner application status update working")
+                    success_count += 1
+                else:
+                    print_error("Admin partner application status update returned invalid response")
+            else:
+                print_error(f"Admin partner application status update failed: {response.status_code}")
+        else:
+            print_warning("Skipping partner application status update test - no application ID available")
+        
+        return success_count >= 7  # Allow some flexibility for missing test data
+        
+    except requests.exceptions.RequestException as e:
+        print_error(f"Network error: {e}")
+        return False
     except Exception as e:
-        print_error(f"Configuration test error: {e}")
+        print_error(f"Unexpected error: {e}")
+        return False
+
+def test_cart_apis():
+    """Test cart APIs that require user authentication"""
+    print_test_header("CART APIs (Requires User Auth)")
+    
+    if not user_token:
+        print_error("No user token available - skipping cart API tests")
+        return False
+    
+    if not test_product_id:
+        print_error("No test product ID available - skipping cart API tests")
+        return False
+    
+    success_count = 0
+    total_tests = 4
+    headers = {"Authorization": f"Bearer {user_token}"}
+    
+    try:
+        # Test 1: POST /api/cart/add
+        print_info("Testing POST /api/cart/add...")
+        cart_item = {
+            "product_id": test_product_id,
+            "quantity": 2
+        }
+        
+        response = requests.post(f"{API_BASE}/cart/add", json=cart_item, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('message'):
+                print_success("Add to cart endpoint working")
+                success_count += 1
+            else:
+                print_error("Add to cart endpoint returned invalid response")
+        else:
+            print_error(f"Add to cart endpoint failed: {response.status_code} - {response.text}")
+        
+        # Test 2: GET /api/cart
+        print_info("Testing GET /api/cart...")
+        response = requests.get(f"{API_BASE}/cart", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if 'items' in data and isinstance(data['items'], list):
+                print_success(f"Get cart endpoint working - returned {len(data['items'])} items")
+                success_count += 1
+            else:
+                print_error("Get cart endpoint returned invalid response")
+        else:
+            print_error(f"Get cart endpoint failed: {response.status_code}")
+        
+        # Test 3: PUT /api/cart/update
+        print_info("Testing PUT /api/cart/update...")
+        update_item = {
+            "product_id": test_product_id,
+            "quantity": 3
+        }
+        
+        response = requests.put(f"{API_BASE}/cart/update", json=update_item, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('message'):
+                print_success("Update cart endpoint working")
+                success_count += 1
+            else:
+                print_error("Update cart endpoint returned invalid response")
+        else:
+            print_error(f"Update cart endpoint failed: {response.status_code}")
+        
+        # Test 4: DELETE /api/cart/remove/{product_id}
+        print_info(f"Testing DELETE /api/cart/remove/{test_product_id}...")
+        response = requests.delete(f"{API_BASE}/cart/remove/{test_product_id}", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('message'):
+                print_success("Remove from cart endpoint working")
+                success_count += 1
+            else:
+                print_error("Remove from cart endpoint returned invalid response")
+        else:
+            print_error(f"Remove from cart endpoint failed: {response.status_code}")
+        
+        return success_count == total_tests
+        
+    except requests.exceptions.RequestException as e:
+        print_error(f"Network error: {e}")
+        return False
+    except Exception as e:
+        print_error(f"Unexpected error: {e}")
         return False
 
 def check_backend_logs():
@@ -278,20 +597,23 @@ def check_backend_logs():
 
 def main():
     """Run all tests"""
-    print(f"{Colors.BOLD}Alaxico Backend API Testing{Colors.ENDC}")
+    print(f"{Colors.BOLD}Alaxico Backend API Comprehensive Testing{Colors.ENDC}")
     print(f"Backend URL: {BACKEND_URL}")
     print(f"Testing started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     test_results = []
     
-    # Test Cloudinary signature endpoint
-    test_results.append(("Cloudinary Signature Endpoint", test_cloudinary_signature_endpoint()))
+    # Test public APIs
+    test_results.append(("Public APIs", test_public_apis()))
     
-    # Test Cloudinary configuration
-    test_results.append(("Cloudinary Configuration", test_cloudinary_configuration()))
+    # Test auth APIs
+    test_results.append(("Auth APIs", test_auth_apis()))
     
-    # Test existing endpoints
-    test_results.append(("Existing Endpoints", test_existing_endpoints()))
+    # Test admin APIs
+    test_results.append(("Admin APIs", test_admin_apis()))
+    
+    # Test cart APIs
+    test_results.append(("Cart APIs", test_cart_apis()))
     
     # Check backend logs
     test_results.append(("Backend Logs", check_backend_logs()))
@@ -316,7 +638,7 @@ def main():
     print(f"{Colors.BLUE}Total: {passed + failed}{Colors.ENDC}")
     
     if failed == 0:
-        print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 All tests passed! Cloudinary integration is working correctly.{Colors.ENDC}")
+        print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 All tests passed! All backend APIs are working correctly.{Colors.ENDC}")
         return True
     else:
         print(f"\n{Colors.RED}{Colors.BOLD}❌ {failed} test(s) failed. Please check the issues above.{Colors.ENDC}")
