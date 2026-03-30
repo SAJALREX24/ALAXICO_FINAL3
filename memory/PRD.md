@@ -48,6 +48,18 @@ Build a professional, trustworthy, and scalable medical equipment e-commerce pla
 
 ## What's Been Implemented
 
+### March 2026
+- ✅ **Admin Panel B2B & Partner Management** (Mar 30):
+  - Added **B2B Tab** in Admin Panel to view and manage B2B business enquiries
+  - Added **Partners Tab** in Admin Panel to view and manage partner applications
+  - Admin can update status for both: Pending → Contacted/Reviewing → Converted/Approved → Closed/Rejected
+  - Updated stats dashboard to show B2B Leads and Partner counts
+
+- ✅ **Store Locator Updated** (Mar 30):
+  - Changed to single store location: **Alaxico Agra - Head Office**
+  - Address: UG-6, Rajnandini Plaza, Shastripuram Road, Agra, Uttar Pradesh
+  - Phone: +91 7617617178
+
 ### February 2026
 - ✅ **Navbar Redesign - Frido Style** (Feb 11):
   - Clean, compact navbar layout matching Frido's style
@@ -62,7 +74,7 @@ Build a professional, trustworthy, and scalable medical equipment e-commerce pla
   - **Product Comparison Tool** (`/compare`): Compare up to 4 products side-by-side with specs, price, features
   - **Corporate/B2B Section** (`/b2b`): Full B2B page with bulk pricing tiers (10-25% discounts), benefits, enquiry form
   - **Affiliate & Partner Programs** (`/partner`): 4 partner programs (Distributor, Affiliate, Healthcare Professional, Campus Ambassador)
-  - **Store Locator** (`/stores`): 8 store locations with search, filters (All/Head Office/Showroom/Service Center/Dealer), directions
+  - **Store Locator** (`/stores`): Single Agra location (UG-6, Rajnandini Plaza, Shastripuram Road)
   - **Track Order**: Prominent "Track Order" link in navbar for logged-in users
   - Backend APIs added for B2B enquiries and Partner applications
   - All pages fully mobile responsive
