@@ -47,10 +47,15 @@ const ProductCard = ({ product, onAddToCart }) => {
             <span className="text-sm sm:text-base font-semibold text-gray-900" data-testid="product-price">
               ₹{product.price?.toLocaleString()}
             </span>
-            {product.discount_percentage > 0 && (
-              <span className="text-[8px] sm:text-[10px] text-green-600 font-medium bg-green-50 px-1 sm:px-1.5 py-0.5 rounded">
-                {product.discount_percentage}% OFF
-              </span>
+            {product.original_price && product.original_price > product.price && (
+              <>
+                <span className="text-[10px] sm:text-xs text-gray-400 line-through">
+                  ₹{product.original_price?.toLocaleString()}
+                </span>
+                <span className="text-[8px] sm:text-[10px] text-green-600 font-medium bg-green-50 px-1 sm:px-1.5 py-0.5 rounded">
+                  {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% OFF
+                </span>
+              </>
             )}
           </div>
           

@@ -576,43 +576,80 @@ const Admin = () => {
                           <Percent className="w-4 h-4 mr-2 text-purple-500" />
                           Pricing & Discount
                         </h3>
+                        <p className="text-xs text-gray-500 mb-2">
+                          💡 Enter Selling Price (what customer pays) and Original Price (MRP). Discount will auto-calculate.
+                        </p>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                           <div>
                             <Label className="text-gray-700 font-medium text-sm">Selling Price (₹) *</Label>
+                            <p className="text-xs text-green-600 mb-1">Customer pays this amount</p>
                             <Input
                               type="number"
                               value={productForm.price}
-                              onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                              onChange={(e) => {
+                                const sellingPrice = parseFloat(e.target.value) || 0;
+                                const originalPrice = parseFloat(productForm.originalPrice) || 0;
+                                let discount = '';
+                                if (originalPrice > 0 && sellingPrice > 0 && originalPrice > sellingPrice) {
+                                  discount = Math.round(((originalPrice - sellingPrice) / originalPrice) * 100).toString();
+                                }
+                                setProductForm({ ...productForm, price: e.target.value, discount });
+                              }}
                               required
-                              placeholder="2499"
+                              placeholder="1499"
                               className="mt-1 border-gray-200 focus:border-purple-500 text-sm"
                               data-testid="product-price-input"
                             />
                           </div>
                           <div>
-                            <Label className="text-gray-700 font-medium text-sm">Original Price (₹)</Label>
+                            <Label className="text-gray-700 font-medium text-sm">Original Price / MRP (₹)</Label>
+                            <p className="text-xs text-gray-500 mb-1">Shown crossed out</p>
                             <Input
                               type="number"
                               value={productForm.originalPrice}
-                              onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value })}
-                              placeholder="2999"
+                              onChange={(e) => {
+                                const originalPrice = parseFloat(e.target.value) || 0;
+                                const sellingPrice = parseFloat(productForm.price) || 0;
+                                let discount = '';
+                                if (originalPrice > 0 && sellingPrice > 0 && originalPrice > sellingPrice) {
+                                  discount = Math.round(((originalPrice - sellingPrice) / originalPrice) * 100).toString();
+                                }
+                                setProductForm({ ...productForm, originalPrice: e.target.value, discount });
+                              }}
+                              placeholder="2499"
                               className="mt-1 border-gray-200 focus:border-purple-500 text-sm"
                               data-testid="product-original-price-input"
                             />
                           </div>
                           <div>
                             <Label className="text-gray-700 font-medium text-sm">Discount (%)</Label>
+                            <p className="text-xs text-purple-600 mb-1">Auto-calculated</p>
                             <Input
                               type="number"
                               value={productForm.discount}
-                              onChange={(e) => setProductForm({ ...productForm, discount: e.target.value })}
-                              placeholder="15"
+                              readOnly
+                              placeholder="Auto"
                               max="100"
-                              className="mt-1 border-gray-200 focus:border-purple-500 text-sm"
+                              className="mt-1 border-gray-200 bg-gray-50 text-sm cursor-not-allowed"
                               data-testid="product-discount-input"
                             />
                           </div>
                         </div>
+                        {/* Price Preview */}
+                        {productForm.price && (
+                          <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                            <p className="text-sm font-medium text-green-800">
+                              Preview: 
+                              {productForm.originalPrice && parseFloat(productForm.originalPrice) > parseFloat(productForm.price) && (
+                                <span className="line-through text-gray-400 ml-2">₹{productForm.originalPrice}</span>
+                              )}
+                              <span className="text-green-600 ml-2 text-lg">₹{productForm.price}</span>
+                              {productForm.discount && (
+                                <span className="ml-2 bg-green-600 text-white text-xs px-2 py-0.5 rounded">{productForm.discount}% OFF</span>
+                              )}
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       {/* Stock Section */}
