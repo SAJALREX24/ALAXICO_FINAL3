@@ -367,7 +367,7 @@ DEFAULT_USERS = [
     {
         "id": str(uuid.uuid4()),
         "email": "hospital@example.com",
-        "password": bcrypt.hashpw("demo123".encode(), bcrypt.gensalt()).decode(),
+        "password": bcrypt.hashpw("demo1234".encode(), bcrypt.gensalt()).decode(),
         "name": "City Hospital",
         "role": "user",
         "buyer_type": "hospital",
@@ -379,7 +379,7 @@ DEFAULT_USERS = [
     {
         "id": str(uuid.uuid4()),
         "email": "doctor@example.com",
-        "password": bcrypt.hashpw("demo123".encode(), bcrypt.gensalt()).decode(),
+        "password": bcrypt.hashpw("demo1234".encode(), bcrypt.gensalt()).decode(),
         "name": "Dr. Sharma",
         "role": "user",
         "buyer_type": "doctor",
@@ -422,8 +422,8 @@ async def seed_database():
         print(f"   • {p['name'][:50]} - ₹{p['price']}")
     print("\n👤 Login Credentials:")
     print("   Admin: admin@medequipmart.com / admin123")
-    print("   Hospital: hospital@example.com / demo123")
-    print("   Doctor: doctor@example.com / demo123")
+    print("   Hospital: hospital@example.com / demo1234")
+    print("   Doctor: doctor@example.com / demo1234")
     print("="*50)
 
 
