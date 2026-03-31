@@ -80,3 +80,10 @@ android-sdk/
 
 # Test credentials (contains passwords)
 memory/test_credentials.md
+
+# Environment files with secrets (keep .env.example)
+backend/.env
+frontend/.env
+.env
+.env.local
+.env.*.local
