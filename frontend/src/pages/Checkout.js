@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -64,18 +64,8 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  useEffect(() => {
-    if (authLoading) return;
-    
-    if (!user) {
-      navigate('/login?redirect=/checkout');
-      return;
-    }
-    fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, authLoading]);
-
-  const fetchData = async () => {
+  // Memoize fetchData to fix hook dependency
+  const fetchData = useCallback(async () => {
     try {
       const [cartRes, configRes, paymentMethodsRes] = await Promise.all([
         api.get('/cart'),
@@ -90,11 +80,24 @@ const Checkout = () => {
         setSelectedPaymentMethod(paymentMethodsRes.data.payment_methods[0]);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      // Log error for debugging in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching checkout data:', error);
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    
+    if (!user) {
+      navigate('/login?redirect=/checkout');
+      return;
+    }
+    fetchData();
+  }, [user, authLoading, navigate, fetchData]);
 
   // Validate a single field
   const validateField = (name, value) => {

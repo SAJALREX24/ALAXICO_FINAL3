@@ -134,9 +134,9 @@ const Quiz = () => {
 
           {/* Recommendations */}
           <div className="space-y-4 mb-8">
-            {recommendations.map((product, index) => (
+            {recommendations.map((product) => (
               <div 
-                key={index}
+                key={product.id || product.name}
                 className="bg-white rounded-2xl border border-purple-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

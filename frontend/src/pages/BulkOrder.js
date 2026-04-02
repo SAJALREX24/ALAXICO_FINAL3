@@ -248,12 +248,12 @@ const BulkOrder = () => {
                 <h3 className="font-semibold text-xl text-gray-900 mb-6">Why Choose Bulk Orders?</h3>
                 <div className="space-y-5">
                   {[
-                    { icon: CheckCircle, title: 'Special Pricing', desc: 'Competitive rates for bulk purchases', color: 'text-purple-600' },
-                    { icon: Shield, title: 'Priority Support', desc: 'Dedicated account manager', color: 'text-purple-600' },
-                    { icon: Truck, title: 'Fast Delivery', desc: 'Express shipping for bulk orders', color: 'text-purple-600' },
-                    { icon: Activity, title: 'Flexible Payment', desc: 'Custom payment terms available', color: 'text-purple-600' },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start space-x-3">
+                    { id: 'pricing', icon: CheckCircle, title: 'Special Pricing', desc: 'Competitive rates for bulk purchases', color: 'text-purple-600' },
+                    { id: 'support', icon: Shield, title: 'Priority Support', desc: 'Dedicated account manager', color: 'text-purple-600' },
+                    { id: 'delivery', icon: Truck, title: 'Fast Delivery', desc: 'Express shipping for bulk orders', color: 'text-purple-600' },
+                    { id: 'payment', icon: Activity, title: 'Flexible Payment', desc: 'Custom payment terms available', color: 'text-purple-600' },
+                  ].map((item) => (
+                    <div key={item.id} className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
                         <item.icon className={`h-5 w-5 ${item.color}`} />
                       </div>

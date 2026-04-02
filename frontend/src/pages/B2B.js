@@ -7,26 +7,26 @@ import api from '../utils/api';
 import { validators, inputFilters } from '../utils/formValidation';
 
 const BULK_PRICING_TIERS = [
-  { quantity: '10-50 units', discount: '10%', savings: 'Save up to ₹5,000' },
-  { quantity: '51-100 units', discount: '15%', savings: 'Save up to ₹15,000' },
-  { quantity: '101-500 units', discount: '20%', savings: 'Save up to ₹50,000' },
-  { quantity: '500+ units', discount: '25%+', savings: 'Custom pricing' },
+  { id: 'tier-10-50', quantity: '10-50 units', discount: '10%', savings: 'Save up to ₹5,000' },
+  { id: 'tier-51-100', quantity: '51-100 units', discount: '15%', savings: 'Save up to ₹15,000' },
+  { id: 'tier-101-500', quantity: '101-500 units', discount: '20%', savings: 'Save up to ₹50,000' },
+  { id: 'tier-500+', quantity: '500+ units', discount: '25%+', savings: 'Custom pricing' },
 ];
 
 const B2B_BENEFITS = [
-  { icon: Percent, title: 'Exclusive Discounts', description: 'Up to 25% off on bulk orders' },
-  { icon: Truck, title: 'Priority Shipping', description: 'Free express delivery on orders above ₹10,000' },
-  { icon: FileText, title: 'GST Invoice', description: 'Proper documentation for tax benefits' },
-  { icon: HeadphonesIcon, title: 'Dedicated Manager', description: 'Personal account manager for your business' },
-  { icon: Clock, title: 'Flexible Payment', description: 'Credit terms up to 30 days for verified businesses' },
-  { icon: ShieldCheck, title: 'Extended Warranty', description: 'Additional 1-year warranty on bulk purchases' },
+  { id: 'discount', icon: Percent, title: 'Exclusive Discounts', description: 'Up to 25% off on bulk orders' },
+  { id: 'shipping', icon: Truck, title: 'Priority Shipping', description: 'Free express delivery on orders above ₹10,000' },
+  { id: 'invoice', icon: FileText, title: 'GST Invoice', description: 'Proper documentation for tax benefits' },
+  { id: 'manager', icon: HeadphonesIcon, title: 'Dedicated Manager', description: 'Personal account manager for your business' },
+  { id: 'payment', icon: Clock, title: 'Flexible Payment', description: 'Credit terms up to 30 days for verified businesses' },
+  { id: 'warranty', icon: ShieldCheck, title: 'Extended Warranty', description: 'Additional 1-year warranty on bulk purchases' },
 ];
 
 const CUSTOMER_TYPES = [
-  { icon: Building2, title: 'Hospitals', description: 'Complete equipment solutions for healthcare facilities' },
-  { icon: Users, title: 'Clinics & Nursing Homes', description: 'Essential equipment for small to medium practices' },
-  { icon: Package, title: 'Distributors', description: 'Wholesale pricing for resellers and dealers' },
-  { icon: Target, title: 'Corporate', description: 'Employee wellness and first aid equipment' },
+  { id: 'hospitals', icon: Building2, title: 'Hospitals', description: 'Complete equipment solutions for healthcare facilities' },
+  { id: 'clinics', icon: Users, title: 'Clinics & Nursing Homes', description: 'Essential equipment for small to medium practices' },
+  { id: 'distributors', icon: Package, title: 'Distributors', description: 'Wholesale pricing for resellers and dealers' },
+  { id: 'corporate', icon: Target, title: 'Corporate', description: 'Employee wellness and first aid equipment' },
 ];
 
 // Validation Error Component
@@ -257,9 +257,9 @@ const B2B = () => {
             <p className="text-gray-500 text-lg">Tailored solutions for every healthcare business</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {CUSTOMER_TYPES.map((type, index) => (
+            {CUSTOMER_TYPES.map((type) => (
               <div 
-                key={index}
+                key={type.id}
                 className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all duration-300 text-center"
               >
                 <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -285,7 +285,7 @@ const B2B = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {BULK_PRICING_TIERS.map((tier, index) => (
               <div 
-                key={index}
+                key={tier.id}
                 className={`rounded-2xl p-6 sm:p-8 text-center transition-all duration-300 hover:-translate-y-1 ${
                   index === 3 
                     ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white' 
@@ -317,9 +317,9 @@ const B2B = () => {
             <p className="text-gray-500 text-lg">Exclusive perks for business partners</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {B2B_BENEFITS.map((benefit, index) => (
+            {B2B_BENEFITS.map((benefit) => (
               <div 
-                key={index}
+                key={benefit.id}
                 className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 hover:border-purple-200 transition-all duration-300 flex items-start gap-4"
               >
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
