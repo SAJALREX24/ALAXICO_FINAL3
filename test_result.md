@@ -308,7 +308,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/src/pages/Auth.js, /app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "critical"
     needs_retesting: true
     status_history:
@@ -318,6 +318,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "CRITICAL ISSUE - FINAL DEPLOYMENT TEST: Admin authentication is completely broken. Login form accepts credentials (admin@medequipmart.com/admin123) but does NOT authenticate user. After clicking login, URL stays at /login. When navigating to /admin, user is redirected to homepage /. Backend error: 'AttributeError: NoneType object has no attribute credentials' at server.py:301 in get_current_user function. Root cause: Frontend is not sending Authorization header with JWT token in subsequent requests after login. This blocks: (1) Admin panel access, (2) Cart access (redirects to /login?redirect=/cart), (3) All authenticated endpoints. MUST FIX before deployment."
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL BUG CONFIRMED - ROOT CAUSE IDENTIFIED: Login form submission is completely broken. When user clicks 'Sign In' button, NO API call is made to /api/auth/login. Tested with hospital@example.com/demo1234 credentials. Observations: (1) Form fields fill correctly, (2) Clicking 'Sign In' button does nothing - no network request to /api/auth/login, (3) No token saved to localStorage (remains null), (4) User stays on /login page, (5) Backend logs show NO login attempts. The form submission handler in Auth.js is not triggering the API call. This is a frontend JavaScript issue preventing the login function from executing. BLOCKS ALL TESTING: Cannot test checkout form validation, cart functionality, or any authenticated features. This is a CRITICAL BLOCKER that must be fixed immediately."
   
   - task: "Homepage Elements"
     implemented: true
@@ -367,20 +370,36 @@ frontend:
         agent: "testing"
         comment: "BLOCKED BY AUTHENTICATION ISSUE: Cart page requires user authentication. When attempting to access /cart, user is redirected to /login?redirect=/cart. Cannot test cart functionality until authentication issue is fixed. Cart page code appears correct with proper data-testids and UI elements, but cannot verify without working authentication."
 
+  - task: "Checkout Delivery Address Form Validation"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Checkout.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "UNABLE TO TEST - BLOCKED BY AUTHENTICATION: Cannot test checkout form validation because login is completely broken. User cannot login, cannot add items to cart (401 Unauthorized), and cannot access /checkout page (redirects to /login). Code review shows validation is implemented correctly: (1) City/State fields use inputFilters.cityOnly to filter numbers, (2) PIN code validates 6 digits, (3) Phone validates 10-digit Indian format, (4) Address requires min 10 characters, (5) Error messages with AlertCircle icon, (6) Green borders for valid fields. All data-testids present. MUST FIX AUTHENTICATION FIRST before this can be tested."
+
 metadata:
   created_by: "main_agent"
-  version: "1.4"
-  test_sequence: 5
+  version: "1.5"
+  test_sequence: 6
   run_ui: true
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus:
+    - "Admin Authentication & Login"
+  stuck_tasks:
+    - "Admin Authentication & Login"
   test_all: false
-  test_priority: "high_first"
+  test_priority: "stuck_first"
 
 agent_communication:
   - agent: "main"
     message: "IMPLEMENTED FORM VALIDATION: Added comprehensive validation to B2B Enquiry (/b2b), Partner Application (/partner), and Bulk Order (/bulk-order) forms. Features: (1) Name fields only accept letters - numbers are filtered out on input, (2) Phone requires valid 10-digit Indian format starting with 6-9, (3) Email validation with proper format check, (4) City field only accepts letters, (5) Real-time validation on blur with red error borders, (6) Green borders for valid fields, (7) Error messages displayed below fields with icon. Created /app/frontend/src/utils/formValidation.js utility file. Test by entering invalid data like numbers in name field - they will be filtered out."
   - agent: "testing"
     message: "FORM VALIDATION TESTING COMPLETE - ALL TESTS PASSED ✅: Tested all three forms (B2B Enquiry, Partner Application, Bulk Order) with comprehensive validation scenarios. All input filtering working correctly (numbers filtered from name/city fields), all error messages displaying correctly for invalid phone/email, all valid data showing green borders. Bulk Order form tested after successful admin login. No issues found. Form validation implementation is excellent and meets all requirements."
+  - agent: "testing"
+    message: "CRITICAL BLOCKER - CHECKOUT FORM VALIDATION TESTING BLOCKED: Cannot test the Checkout Delivery Address form validation (requested task) because authentication is completely broken. ROOT CAUSE: Login form submission does NOT trigger /api/auth/login API call. When user clicks 'Sign In' button, no network request is made, no token is saved to localStorage, and user stays on /login page. This blocks: (1) User login, (2) Adding items to cart (401 Unauthorized), (3) Accessing /checkout page (redirects to /login). Code review of Checkout.js shows validation is implemented correctly with all required features, but cannot be tested until authentication is fixed. IMMEDIATE ACTION REQUIRED: Fix login form submission in Auth.js to trigger the login API call."

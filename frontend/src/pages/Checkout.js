@@ -8,10 +8,11 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { 
   CreditCard, Truck, ShieldCheck, Banknote, Building, Clock, Check, Smartphone,
-  MapPin, Lock, Package, ChevronRight, BadgeCheck
+  MapPin, Lock, Package, ChevronRight, BadgeCheck, AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { FullPageLoader } from '../components/MedicalLoader';
+import { validators, inputFilters } from '../utils/formValidation';
 
 const PAYMENT_METHOD_ICONS = {
   razorpay: CreditCard,
@@ -27,6 +28,17 @@ const PAYMENT_METHOD_DETAILS = {
   cod: { name: 'Cash on Delivery', description: 'Pay when you receive', color: 'green' },
   bank_transfer: { name: 'Bank Transfer', description: 'Direct bank transfer (NEFT/RTGS)', color: 'blue' },
   pay_later: { name: 'Pay Later', description: 'Buy now, pay within 30 days', color: 'teal' },
+};
+
+// Validation Error Component
+const ValidationError = ({ error }) => {
+  if (!error) return null;
+  return (
+    <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
+      <AlertCircle className="w-4 h-4" />
+      <span>{error}</span>
+    </div>
+  );
 };
 
 const Checkout = () => {
@@ -47,6 +59,10 @@ const Checkout = () => {
     pincode: '',
     phone: user?.phone || '',
   });
+
+  // Validation state
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   useEffect(() => {
     if (authLoading) return;
@@ -80,6 +96,123 @@ const Checkout = () => {
     }
   };
 
+  // Validate a single field
+  const validateField = (name, value) => {
+    let result = { isValid: true, error: null };
+    
+    switch (name) {
+      case 'street':
+        if (!value || !value.trim()) {
+          result = { isValid: false, error: 'Full address is required' };
+        } else if (value.trim().length < 10) {
+          result = { isValid: false, error: 'Please enter a complete address (at least 10 characters)' };
+        } else if (value.trim().length > 200) {
+          result = { isValid: false, error: 'Address cannot exceed 200 characters' };
+        }
+        break;
+      case 'city':
+        result = validators.city(value);
+        break;
+      case 'state':
+        if (!value || !value.trim()) {
+          result = { isValid: false, error: 'State is required' };
+        } else if (!/^[a-zA-Z\s]+$/.test(value.trim())) {
+          result = { isValid: false, error: 'State should only contain letters' };
+        } else if (value.trim().length < 2) {
+          result = { isValid: false, error: 'State must be at least 2 characters' };
+        }
+        break;
+      case 'pincode':
+        if (!value || !value.trim()) {
+          result = { isValid: false, error: 'PIN code is required' };
+        } else if (!/^\d{6}$/.test(value.trim())) {
+          result = { isValid: false, error: 'Please enter a valid 6-digit PIN code' };
+        }
+        break;
+      case 'phone':
+        result = validators.phone(value);
+        break;
+      default:
+        break;
+    }
+    
+    return result;
+  };
+
+  // Handle input change with filtering
+  const handleAddressChange = (field, value) => {
+    let filteredValue = value;
+
+    // Apply input filters based on field type
+    switch (field) {
+      case 'city':
+        filteredValue = inputFilters.cityOnly(value);
+        break;
+      case 'state':
+        filteredValue = inputFilters.cityOnly(value); // Same filter as city - letters only
+        break;
+      case 'pincode':
+        filteredValue = value.replace(/\D/g, '').slice(0, 6);
+        break;
+      case 'phone':
+        filteredValue = value.replace(/\D/g, '').slice(0, 10);
+        break;
+      default:
+        filteredValue = value;
+    }
+
+    setAddress(prev => ({ ...prev, [field]: filteredValue }));
+    
+    // Validate on change if field was already touched
+    if (touched[field]) {
+      const result = validateField(field, filteredValue);
+      setErrors(prev => ({ ...prev, [field]: result.error }));
+    }
+  };
+
+  // Handle field blur - mark as touched and validate
+  const handleBlur = (field) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const result = validateField(field, address[field]);
+    setErrors(prev => ({ ...prev, [field]: result.error }));
+  };
+
+  // Validate entire address form
+  const validateAddressForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    const fields = ['street', 'city', 'state', 'pincode', 'phone'];
+    
+    fields.forEach(field => {
+      const result = validateField(field, address[field]);
+      if (!result.isValid) {
+        newErrors[field] = result.error;
+        isValid = false;
+      }
+    });
+
+    setErrors(newErrors);
+    // Mark all fields as touched
+    const allTouched = {};
+    fields.forEach(key => { allTouched[key] = true; });
+    setTouched(allTouched);
+
+    return isValid;
+  };
+
+  // Helper to get input class based on error state
+  const getInputClass = (fieldName) => {
+    const baseClass = "mt-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500 transition-colors";
+    if (touched[fieldName] && errors[fieldName]) {
+      return `${baseClass} border-red-400 focus:border-red-400 focus:ring-red-100`;
+    }
+    if (touched[fieldName] && !errors[fieldName] && address[fieldName]) {
+      return `${baseClass} border-green-400 focus:border-green-400 focus:ring-green-100`;
+    }
+    return baseClass;
+  };
+
   const calculateTotal = () => {
     return cart.items.reduce((total, item) => {
       return total + (item.product?.price || 0) * item.quantity;
@@ -87,11 +220,13 @@ const Checkout = () => {
   };
 
   const isAddressValid = () => {
-    return address.street.trim() && 
-           address.city.trim() && 
-           address.state.trim() && 
-           address.pincode.trim().length >= 6 && 
-           address.phone.trim().length >= 10;
+    return address.street.trim().length >= 10 && 
+           address.city.trim().length >= 2 && 
+           /^[a-zA-Z\s]+$/.test(address.city.trim()) &&
+           address.state.trim().length >= 2 && 
+           /^[a-zA-Z\s]+$/.test(address.state.trim()) &&
+           /^\d{6}$/.test(address.pincode.trim()) && 
+           /^[6-9]\d{9}$/.test(address.phone.trim());
   };
 
   const loadRazorpayScript = () => {
@@ -239,6 +374,10 @@ const Checkout = () => {
   };
 
   const proceedToPayment = () => {
+    if (!validateAddressForm()) {
+      toast.error('Please fix the errors in the address form');
+      return;
+    }
     if (!isAddressValid()) {
       toast.error('Please fill all address fields correctly');
       return;
@@ -326,69 +465,92 @@ const Checkout = () => {
                 {currentStep === 1 && (
                   <div className="p-6 space-y-4">
                     <div>
-                      <Label className="text-gray-700 font-medium">Full Address *</Label>
+                      <Label className="text-gray-700 font-medium">
+                        Full Address <span className="text-red-500">*</span>
+                      </Label>
                       <Textarea
                         value={address.street}
-                        onChange={(e) => setAddress({ ...address, street: e.target.value })}
+                        onChange={(e) => handleAddressChange('street', e.target.value)}
+                        onBlur={() => handleBlur('street')}
                         rows={2}
-                        className="mt-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                        className={getInputClass('street')}
                         placeholder="House/Flat No., Building Name, Street, Area"
+                        maxLength={200}
                         data-testid="street-input"
                       />
+                      <ValidationError error={touched.street && errors.street} />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-gray-700 font-medium">City *</Label>
+                        <Label className="text-gray-700 font-medium">
+                          City <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           value={address.city}
-                          onChange={(e) => setAddress({ ...address, city: e.target.value })}
-                          className="mt-2 border-gray-200 focus:border-purple-500"
+                          onChange={(e) => handleAddressChange('city', e.target.value)}
+                          onBlur={() => handleBlur('city')}
+                          className={getInputClass('city')}
                           placeholder="Mumbai"
+                          maxLength={50}
                           data-testid="city-input"
                         />
+                        <ValidationError error={touched.city && errors.city} />
                       </div>
                       <div>
-                        <Label className="text-gray-700 font-medium">State *</Label>
+                        <Label className="text-gray-700 font-medium">
+                          State <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           value={address.state}
-                          onChange={(e) => setAddress({ ...address, state: e.target.value })}
-                          className="mt-2 border-gray-200 focus:border-purple-500"
+                          onChange={(e) => handleAddressChange('state', e.target.value)}
+                          onBlur={() => handleBlur('state')}
+                          className={getInputClass('state')}
                           placeholder="Maharashtra"
+                          maxLength={50}
                           data-testid="state-input"
                         />
+                        <ValidationError error={touched.state && errors.state} />
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-gray-700 font-medium">PIN Code *</Label>
+                        <Label className="text-gray-700 font-medium">
+                          PIN Code <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           value={address.pincode}
-                          onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '').slice(0, 6) })}
-                          className="mt-2 border-gray-200 focus:border-purple-500"
+                          onChange={(e) => handleAddressChange('pincode', e.target.value)}
+                          onBlur={() => handleBlur('pincode')}
+                          className={getInputClass('pincode')}
                           placeholder="400001"
                           maxLength={6}
                           data-testid="pincode-input"
                         />
+                        <ValidationError error={touched.pincode && errors.pincode} />
                       </div>
                       <div>
-                        <Label className="text-gray-700 font-medium">Mobile Number *</Label>
+                        <Label className="text-gray-700 font-medium">
+                          Mobile Number <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           value={address.phone}
-                          onChange={(e) => setAddress({ ...address, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
-                          className="mt-2 border-gray-200 focus:border-purple-500"
+                          onChange={(e) => handleAddressChange('phone', e.target.value)}
+                          onBlur={() => handleBlur('phone')}
+                          className={getInputClass('phone')}
                           placeholder="9876543210"
                           maxLength={10}
                           data-testid="phone-input"
                         />
+                        <ValidationError error={touched.phone && errors.phone} />
                       </div>
                     </div>
                     
                     <Button 
                       onClick={proceedToPayment}
                       className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold mt-4"
-                      disabled={!isAddressValid()}
+                      data-testid="continue-to-payment-button"
                     >
                       Continue to Payment
                       <ChevronRight className="w-5 h-5 ml-2" />
