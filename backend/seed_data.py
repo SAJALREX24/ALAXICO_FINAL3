@@ -363,29 +363,6 @@ DEFAULT_USERS = [
         "is_verified": True,
         "verification_status": "verified",
         "created_at": datetime.now(timezone.utc).isoformat()
-    },
-    {
-        "id": str(uuid.uuid4()),
-        "email": "hospital@example.com",
-        "password": bcrypt.hashpw("demo1234".encode(), bcrypt.gensalt()).decode(),
-        "name": "City Hospital",
-        "role": "user",
-        "buyer_type": "hospital",
-        "organization": "City General Hospital",
-        "is_verified": True,
-        "verification_status": "verified",
-        "created_at": datetime.now(timezone.utc).isoformat()
-    },
-    {
-        "id": str(uuid.uuid4()),
-        "email": "doctor@example.com",
-        "password": bcrypt.hashpw("demo1234".encode(), bcrypt.gensalt()).decode(),
-        "name": "Dr. Sharma",
-        "role": "user",
-        "buyer_type": "doctor",
-        "is_verified": True,
-        "verification_status": "verified",
-        "created_at": datetime.now(timezone.utc).isoformat()
     }
 ]
 
@@ -420,10 +397,10 @@ async def seed_database():
     print("\n📦 Products Added:")
     for p in ALAXICO_PRODUCTS:
         print(f"   • {p['name'][:50]} - ₹{p['price']}")
-    print("\n👤 Login Credentials:")
-    print("   Admin: alaxicohealthcare@gmail.com / Sha@2002")
-    print("   Hospital: hospital@example.com / demo1234")
-    print("   Doctor: doctor@example.com / demo1234")
+    print("\n👤 Admin Login:")
+    print("   Email: alaxicohealthcare@gmail.com")
+    print("   Password: Sha@2002")
+    print("\n📝 Users can register themselves on the website")
     print("="*50)
 
 

@@ -6,18 +6,9 @@
 - **Role:** Admin
 - **Access:** Full admin panel access at /admin
 
-## Test User Accounts
-
-### Hospital User
-- **Email:** hospital@example.com
-- **Password:** demo1234
-- **Role:** User (Hospital buyer type)
-- **Organization:** City General Hospital
-
-### Doctor User
-- **Email:** doctor@example.com
-- **Password:** demo1234
-- **Role:** User (Doctor buyer type)
+## User Registration
+- Users can register themselves on the website
+- New users will have "user" role by default
 
 ## Payment Testing (Razorpay Test Mode)
 - Card Number: 4111 1111 1111 1111
