@@ -101,3 +101,7 @@ test_result.md
 test_reports/
 *.test.py
 *_test.py
+-e 
+# Environment files
+*.env
+*.env.*
