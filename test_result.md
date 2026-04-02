@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test Store Locator, B2B Enquiry, Partner Application flows and Admin Panel B2B/Partners tabs"
+user_problem_statement: "Add form validation to B2B Enquiry, Partner Application, and Bulk Order forms"
 
 backend:
   - task: "B2B Enquiry API endpoint"
@@ -240,6 +240,12 @@ frontend:
       - working: true
         agent: "testing"
         comment: "TESTED: B2B page (/b2b) loads correctly with enquiry form. All form fields present and functional: business_name, contact_person, email, phone, business_type (dropdown), estimated_quantity (dropdown), products_interested, message. Form submission works - data successfully sent to backend API and saved to database. Form integrates with backend /api/b2b/enquiry endpoint."
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Added comprehensive form validation. Name fields only accept letters (numbers filtered out), phone requires valid 10-digit Indian format, email validation, business name validation. Real-time validation on blur, error messages with red styling, green border for valid fields."
+      - working: true
+        agent: "testing"
+        comment: "FORM VALIDATION TESTED - ALL PASS: ✅ Contact Person field (data-testid='contact-person-input') correctly filters out numbers - typing '12345' results in empty field. ✅ Phone field (data-testid='phone-input') shows error 'Please enter a valid 10-digit Indian phone number' when entering '123'. ✅ Email field (data-testid='email-input') shows error 'Please enter a valid email address' when entering 'notanemail'. ✅ Business Type dropdown (data-testid='business-type-select') is required and has 7 options. ✅ Valid data accepted: Business Name='Apollo Hospital', Contact Person='Dr Rajesh Kumar', Email='test@hospital.com', Phone='9876543210' - all fields show green borders. Form validation working perfectly."
 
   - task: "Partner Application Form"
     implemented: true
@@ -252,6 +258,27 @@ frontend:
       - working: true
         agent: "testing"
         comment: "TESTED: Partner page (/partner) loads correctly with application form. All form fields present and functional: name, email, phone, program_type (dropdown with options: distributor, affiliate, healthcare, campus), organization, city, message. Form submission works - data successfully sent to backend API and saved to database. Form integrates with backend /api/partner/apply endpoint."
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Added comprehensive form validation. Name field only accepts letters (numbers filtered out), city only accepts letters, phone requires valid 10-digit Indian format, email validation. Real-time validation on blur, error messages with red styling, green border for valid fields."
+      - working: true
+        agent: "testing"
+        comment: "FORM VALIDATION TESTED - ALL PASS: ✅ Full Name field (data-testid='name-input') correctly filters out numbers - typing '999' results in empty field. ✅ City field (data-testid='city-input') correctly filters out numbers - typing '123' results in empty field. ✅ Phone field (data-testid='phone-input') shows error 'Please enter a valid 10-digit Indian phone number' when entering 5 digits '12345'. ✅ Email field (data-testid='email-input') shows error 'Please enter a valid email address' when entering 'invalid@'. ✅ Valid data accepted: Name='John Smith', Email='john@test.com', Phone='9876543210', City='Mumbai' - all fields show green borders. Form validation working perfectly."
+
+  - task: "Bulk Order Form"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/BulkOrder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Added comprehensive form validation. Contact name only accepts letters, organization name validated, phone requires valid 10-digit Indian format, email validation, quantity must be positive number. Real-time validation on blur, error messages with red styling, green border for valid fields."
+      - working: true
+        agent: "testing"
+        comment: "FORM VALIDATION TESTED - ALL PASS: ✅ Successfully logged in as admin (admin@medequipmart.com/admin123) and accessed /bulk-order page. ✅ Contact Name field (data-testid='contact-name-input') correctly filters out numbers - typing '123456' results in empty field. ✅ Phone field (data-testid='contact-phone-input') shows error 'Please enter a valid 10-digit Indian phone number' when entering '123'. ✅ Email field (data-testid='contact-email-input') shows error 'Please enter a valid email address' when entering 'invalidemail'. ✅ Quantity field (data-testid='quantity-input') shows error 'Quantity must be at least 1' when entering negative number '-5'. ✅ Valid data accepted: Contact Name='Dr Sharma', Phone='9876543210', Email='sharma@hospital.com', Quantity='50' - all fields show green borders. Form validation working perfectly."
 
   - task: "Admin Panel B2B Tab"
     implemented: true
@@ -342,26 +369,18 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.3"
-  test_sequence: 4
+  version: "1.4"
+  test_sequence: 5
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "All backend APIs tested and working"
-    - "Frontend authentication integration needs verification"
+  current_focus: []
   stuck_tasks: []
   test_all: false
-  test_priority: "deployment_ready"
+  test_priority: "high_first"
 
 agent_communication:
+  - agent: "main"
+    message: "IMPLEMENTED FORM VALIDATION: Added comprehensive validation to B2B Enquiry (/b2b), Partner Application (/partner), and Bulk Order (/bulk-order) forms. Features: (1) Name fields only accept letters - numbers are filtered out on input, (2) Phone requires valid 10-digit Indian format starting with 6-9, (3) Email validation with proper format check, (4) City field only accepts letters, (5) Real-time validation on blur with red error borders, (6) Green borders for valid fields, (7) Error messages displayed below fields with icon. Created /app/frontend/src/utils/formValidation.js utility file. Test by entering invalid data like numbers in name field - they will be filtered out."
   - agent: "testing"
-    message: "TESTING COMPLETE: All requested flows tested and verified working. Store Locator shows only ONE store with correct details. B2B Enquiry and Partner Application forms work end-to-end - submissions save to database and appear in admin panel. Admin panel has B2B and Partners tabs that fetch and display data correctly. Minor UX issue: admin login doesn't auto-redirect to /admin (redirects to home instead), but admin can manually navigate to /admin and all functionality works. Fixed missing WHATSAPP_NUMBER env var that was causing backend errors."
-  - agent: "testing"
-    message: "FINAL DEPLOYMENT TEST COMPLETED: Comprehensive testing of all critical flows performed. CRITICAL ISSUE FOUND: Admin authentication is broken - login form accepts credentials but does not authenticate user. Backend error: 'AttributeError: NoneType object has no attribute credentials' at server.py line 301 in get_current_user function. This prevents: (1) Admin panel access - redirects to homepage after login, (2) Cart access - requires authentication, redirects to login. All other flows working: Homepage (hero slider, promo banner, trust indicators, WhatsApp widget visible), Products page (33 products displayed), Product detail page (images, prices, add to cart button present), Store Locator (verified 1 store only), B2B form (all 4 fields present), Partner form (all 3 fields present). Authentication token not being passed in Authorization header from frontend to backend."
-  - agent: "testing"
-    message: "BACKEND API COMPREHENSIVE TEST COMPLETED - ALL APIS WORKING: Tested all 24 backend endpoints as per final deployment requirements. RESULTS: ✅ PUBLIC APIs (7/7): products, categories, payment-methods, config, b2b/enquiry, partner/apply all working. ✅ AUTH APIs (4/4): register, login (admin & user), auth/me all working - admin login returns valid JWT token. ✅ ADMIN APIs (9/9): all admin endpoints working including orders, b2b-enquiries (5 found), partner-applications (5 found), reviews, verifications, products, status updates. ✅ CART APIs (4/4): add, get, update, remove all working with user authentication. Backend authentication system is FULLY FUNCTIONAL - previous authentication issues appear to be resolved. All protected endpoints properly authenticate users. Backend logs show expected auth errors when unauthorized access attempted (normal security behavior)."
-  - agent: "testing"
-    message: "SECURITY FIXES VERIFICATION COMPLETED: Tested 8 specific security fixes as per review request. RESULTS: ✅ C-02 PASS: Email removed from public reviews - GET /api/reviews/featured returns no email addresses in user objects. ✅ C-03 PASS: Rate limiting on auth - Backend logs confirm 'ratelimit 5 per 1 minute exceeded at endpoint: /api/auth/login' working correctly. ✅ C-04 PASS: Cloudinary requires auth - GET /api/cloudinary/signature returns 401 'Not authenticated' without token. ✅ M-02 PASS: Regex escape - GET /api/products?search=.* returns empty array (regex properly escaped). ✅ M-03 PASS: Password strength - POST /api/auth/register with '123456' returns 'Password must be at least 8 characters long'. ❌ C-01 NEEDS VERIFICATION: Server-side price validation for COD orders - Unable to test due to rate limiting blocking user authentication. ❌ H-01 NEEDS VERIFICATION: Out-of-stock check - Unable to test due to authentication issues. ❌ H-05 NEEDS VERIFICATION: Dashboard stats - Unable to test admin endpoints due to rate limiting. CRITICAL: Rate limiting is working TOO well - blocking legitimate testing after multiple login attempts. 6/8 security fixes verified working, 2 require manual verification when rate limits reset."
-  - agent: "testing"
-    message: "COMPREHENSIVE FRONTEND E2E TEST COMPLETED (March 30, 2026): Executed complete 10-point test plan covering all user journeys. RESULTS: ✅ HOMEPAGE: Promotional banner (50% OFF), hero slider with 'Breath Easy' text, 6 product cards, WhatsApp widget, all 4 trust indicators (ISO Certified, Fast Delivery, Warranty, 24/7 Support) verified. ✅ PRODUCTS PAGE: 6 products displayed, Add to Cart buttons present. ⚠️ Category filter and search input not easily accessible (may be hidden/collapsed). ✅ PRODUCT DETAIL: Product name, price (₹1,499), Add to Cart button all working. Payment methods section exists but not prominently displayed. ✅ STORE LOCATOR: VERIFIED ONLY 1 STORE - 'Alaxico Agra - Head Office' with complete address 'UG-6, Rajnandini Plaza, Shastripuram Road, Agra, Uttar Pradesh'. ✅ B2B PAGE: All 4 form fields present (business_name, contact_person, email, phone). ✅ PARTNER PAGE: All 3 form fields present (name, email, phone). ✅ REGISTRATION PASSWORD VALIDATION: Weak password 'weak' shows red X marks, strong password 'StrongPass1' shows 3 green checkmarks. Validation working correctly. ✅ ADMIN LOGIN & PANEL: Admin login with admin@medequipmart.com/admin123 WORKING. Successfully accessed admin panel with all 8 tabs (Dashboard, Products, Orders, Enquiries, B2B, Partners, Reviews, Verify). B2B tab shows 6 enquiries, Partners tab shows 7 applications. AUTHENTICATION ISSUE RESOLVED. ✅ 404 PAGE: Shows '404 Page Not Found' with 'Go to Homepage' button. ⚠️ SCROLL BEHAVIOR: Not fully tested due to navigation issues. CRITICAL: Previous authentication issue is NOW RESOLVED - admin can successfully login and access admin panel."
+    message: "FORM VALIDATION TESTING COMPLETE - ALL TESTS PASSED ✅: Tested all three forms (B2B Enquiry, Partner Application, Bulk Order) with comprehensive validation scenarios. All input filtering working correctly (numbers filtered from name/city fields), all error messages displaying correctly for invalid phone/email, all valid data showing green borders. Bulk Order form tested after successful admin login. No issues found. Form validation implementation is excellent and meets all requirements."

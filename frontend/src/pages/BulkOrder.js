@@ -7,9 +7,21 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Package, Building2, Stethoscope, Warehouse, CheckCircle, Heart, Shield, Activity, Truck } from 'lucide-react';
+import { Package, Building2, Stethoscope, Warehouse, CheckCircle, Heart, Shield, Activity, Truck, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { FullPageLoader } from '../components/MedicalLoader';
+import { validators, inputFilters } from '../utils/formValidation';
+
+// Validation Error Component
+const ValidationError = ({ error }) => {
+  if (!error) return null;
+  return (
+    <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
+      <AlertCircle className="w-4 h-4" />
+      <span>{error}</span>
+    </div>
+  );
+};
 
 const BulkOrder = () => {
   const { user } = useAuth();
@@ -29,6 +41,10 @@ const BulkOrder = () => {
   const [contactPhone, setContactPhone] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [message, setMessage] = useState('');
+  
+  // Validation state
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   useEffect(() => {
     fetchData();
@@ -50,12 +66,119 @@ const BulkOrder = () => {
     }
   };
 
+  // Validate a single field
+  const validateField = (name, value) => {
+    let result = { isValid: true, error: null };
+    
+    switch (name) {
+      case 'selectedProductId':
+        result = validators.required(value, 'Product');
+        break;
+      case 'buyerType':
+        result = validators.required(value, 'Buyer type');
+        break;
+      case 'quantity':
+        result = validators.quantity(value);
+        break;
+      case 'organizationName':
+        result = validators.businessName(value, 'Organization name');
+        break;
+      case 'contactName':
+        result = validators.name(value, 'Contact person name');
+        break;
+      case 'contactPhone':
+        result = validators.phone(value);
+        break;
+      case 'contactEmail':
+        result = validators.email(value);
+        break;
+      case 'message':
+        result = validators.message(value);
+        break;
+      default:
+        break;
+    }
+    
+    return result;
+  };
+
+  // Handle blur for validation
+  const handleBlur = (fieldName, value) => {
+    setTouched(prev => ({ ...prev, [fieldName]: true }));
+    const result = validateField(fieldName, value);
+    setErrors(prev => ({ ...prev, [fieldName]: result.error }));
+  };
+
+  // Handle input change with validation
+  const handleInputChange = (fieldName, value, setter, filter = null) => {
+    const filteredValue = filter ? filter(value) : value;
+    setter(filteredValue);
+    
+    if (touched[fieldName]) {
+      const result = validateField(fieldName, filteredValue);
+      setErrors(prev => ({ ...prev, [fieldName]: result.error }));
+    }
+  };
+
+  // Validate entire form
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    const fieldsToValidate = [
+      { name: 'selectedProductId', value: selectedProductId },
+      { name: 'buyerType', value: buyerType },
+      { name: 'quantity', value: quantity },
+      { name: 'organizationName', value: organizationName },
+      { name: 'contactName', value: contactName },
+      { name: 'contactPhone', value: contactPhone },
+      { name: 'contactEmail', value: contactEmail },
+    ];
+
+    fieldsToValidate.forEach(({ name, value }) => {
+      const result = validateField(name, value);
+      if (!result.isValid) {
+        newErrors[name] = result.error;
+        isValid = false;
+      }
+    });
+
+    // Optional message field
+    if (message) {
+      const messageResult = validateField('message', message);
+      if (!messageResult.isValid) {
+        newErrors.message = messageResult.error;
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    // Mark all fields as touched
+    setTouched({
+      selectedProductId: true,
+      buyerType: true,
+      quantity: true,
+      organizationName: true,
+      contactName: true,
+      contactPhone: true,
+      contactEmail: true,
+      message: true,
+    });
+
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!user) {
       toast.error('Please login to submit bulk enquiry');
       navigate('/login?redirect=/bulk-order');
+      return;
+    }
+
+    if (!validateForm()) {
+      toast.error('Please fix the errors in the form');
       return;
     }
     
@@ -81,6 +204,18 @@ const BulkOrder = () => {
     } catch (error) {
       toast.error('Failed to submit enquiry');
     }
+  };
+
+  // Helper to get input class based on error state
+  const getInputClass = (fieldName, value) => {
+    const baseClass = "mt-2 border-gray-200 focus:border-purple-500";
+    if (touched[fieldName] && errors[fieldName]) {
+      return `${baseClass} border-red-400 focus:border-red-400 focus:ring-red-100`;
+    }
+    if (touched[fieldName] && !errors[fieldName] && value) {
+      return `${baseClass} border-green-400 focus:border-green-400 focus:ring-green-100`;
+    }
+    return baseClass;
   };
 
   if (loading) {
@@ -158,12 +293,21 @@ const BulkOrder = () => {
 
             {/* Form Section */}
             <div className="lg:col-span-2">
-              <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-purple-100 p-8 space-y-6 shadow-sm">
+              <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-purple-100 p-8 space-y-6 shadow-sm" noValidate>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-gray-700 font-medium">Product *</Label>
-                    <Select value={selectedProductId} onValueChange={setSelectedProductId} required>
-                      <SelectTrigger className="mt-2 border-gray-200 focus:border-purple-500" data-testid="product-select">
+                    <Label className="text-gray-700 font-medium">
+                      Product <span className="text-red-500">*</span>
+                    </Label>
+                    <Select 
+                      value={selectedProductId} 
+                      onValueChange={(value) => handleInputChange('selectedProductId', value, setSelectedProductId)}
+                    >
+                      <SelectTrigger 
+                        className={getInputClass('selectedProductId', selectedProductId)} 
+                        data-testid="product-select"
+                        onBlur={() => handleBlur('selectedProductId', selectedProductId)}
+                      >
                         <SelectValue placeholder="Select product" />
                       </SelectTrigger>
                       <SelectContent>
@@ -172,12 +316,22 @@ const BulkOrder = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                    <ValidationError error={touched.selectedProductId && errors.selectedProductId} />
                   </div>
 
                   <div>
-                    <Label className="text-gray-700 font-medium">Buyer Type *</Label>
-                    <Select value={buyerType} onValueChange={setBuyerType} required>
-                      <SelectTrigger className="mt-2 border-gray-200 focus:border-purple-500" data-testid="buyer-type-select">
+                    <Label className="text-gray-700 font-medium">
+                      Buyer Type <span className="text-red-500">*</span>
+                    </Label>
+                    <Select 
+                      value={buyerType} 
+                      onValueChange={(value) => handleInputChange('buyerType', value, setBuyerType)}
+                    >
+                      <SelectTrigger 
+                        className={getInputClass('buyerType', buyerType)} 
+                        data-testid="buyer-type-select"
+                        onBlur={() => handleBlur('buyerType', buyerType)}
+                      >
                         <SelectValue placeholder="Select buyer type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -207,74 +361,93 @@ const BulkOrder = () => {
                         </SelectItem>
                       </SelectContent>
                     </Select>
+                    <ValidationError error={touched.buyerType && errors.buyerType} />
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-gray-700 font-medium">Organization Name *</Label>
+                    <Label className="text-gray-700 font-medium">
+                      Organization Name <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       value={organizationName}
-                      onChange={(e) => setOrganizationName(e.target.value)}
-                      className="mt-2 border-gray-200 focus:border-purple-500"
+                      onChange={(e) => handleInputChange('organizationName', e.target.value, setOrganizationName, inputFilters.businessNameOnly)}
+                      onBlur={() => handleBlur('organizationName', organizationName)}
+                      className={getInputClass('organizationName', organizationName)}
                       placeholder="Enter organization name"
-                      required
+                      maxLength={100}
                       data-testid="organization-input"
                     />
+                    <ValidationError error={touched.organizationName && errors.organizationName} />
                   </div>
 
                   <div>
-                    <Label className="text-gray-700 font-medium">Quantity Required *</Label>
+                    <Label className="text-gray-700 font-medium">
+                      Quantity Required <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       type="number"
                       min="1"
                       value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
-                      className="mt-2 border-gray-200 focus:border-purple-500"
+                      onChange={(e) => handleInputChange('quantity', e.target.value, setQuantity)}
+                      onBlur={() => handleBlur('quantity', quantity)}
+                      className={getInputClass('quantity', quantity)}
                       placeholder="Enter quantity"
-                      required
                       data-testid="quantity-input"
                     />
+                    <ValidationError error={touched.quantity && errors.quantity} />
                   </div>
                 </div>
 
                 <div>
-                  <Label className="text-gray-700 font-medium">Contact Person Name *</Label>
+                  <Label className="text-gray-700 font-medium">
+                    Contact Person Name <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    className="mt-2 border-gray-200 focus:border-purple-500"
+                    onChange={(e) => handleInputChange('contactName', e.target.value, setContactName, inputFilters.nameOnly)}
+                    onBlur={() => handleBlur('contactName', contactName)}
+                    className={getInputClass('contactName', contactName)}
                     placeholder="Enter contact person name"
-                    required
+                    maxLength={50}
                     data-testid="contact-name-input"
                   />
+                  <ValidationError error={touched.contactName && errors.contactName} />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-gray-700 font-medium">Contact Phone *</Label>
+                    <Label className="text-gray-700 font-medium">
+                      Contact Phone <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       type="tel"
                       value={contactPhone}
-                      onChange={(e) => setContactPhone(e.target.value)}
-                      className="mt-2 border-gray-200 focus:border-purple-500"
-                      placeholder="+91 XXXXX XXXXX"
-                      required
+                      onChange={(e) => handleInputChange('contactPhone', e.target.value, setContactPhone, inputFilters.phoneOnly)}
+                      onBlur={() => handleBlur('contactPhone', contactPhone)}
+                      className={getInputClass('contactPhone', contactPhone)}
+                      placeholder="+91 98765 43210"
+                      maxLength={15}
                       data-testid="contact-phone-input"
                     />
+                    <ValidationError error={touched.contactPhone && errors.contactPhone} />
                   </div>
 
                   <div>
-                    <Label className="text-gray-700 font-medium">Contact Email *</Label>
+                    <Label className="text-gray-700 font-medium">
+                      Contact Email <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       type="email"
                       value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                      className="mt-2 border-gray-200 focus:border-purple-500"
+                      onChange={(e) => handleInputChange('contactEmail', e.target.value, setContactEmail)}
+                      onBlur={() => handleBlur('contactEmail', contactEmail)}
+                      className={getInputClass('contactEmail', contactEmail)}
                       placeholder="email@example.com"
-                      required
                       data-testid="contact-email-input"
                     />
+                    <ValidationError error={touched.contactEmail && errors.contactEmail} />
                   </div>
                 </div>
 
@@ -282,12 +455,15 @@ const BulkOrder = () => {
                   <Label className="text-gray-700 font-medium">Additional Message</Label>
                   <Textarea
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="mt-2 border-gray-200 focus:border-purple-500"
+                    onChange={(e) => handleInputChange('message', e.target.value, setMessage)}
+                    onBlur={() => handleBlur('message', message)}
+                    className={getInputClass('message', message)}
                     placeholder="Any specific requirements or questions?"
                     rows={4}
+                    maxLength={1000}
                     data-testid="message-textarea"
                   />
+                  <ValidationError error={touched.message && errors.message} />
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">

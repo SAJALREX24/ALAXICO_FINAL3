@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Handshake, Users, Store, GraduationCap, ArrowRight, CheckCircle2, IndianRupee, TrendingUp, Gift, Phone, Mail, Building2, Award, Target, Star } from 'lucide-react';
+import { Handshake, Users, Store, GraduationCap, ArrowRight, CheckCircle2, IndianRupee, TrendingUp, Gift, Phone, Mail, Building2, Award, Target, Star, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import api from '../utils/api';
+import { validators, inputFilters } from '../utils/formValidation';
 
 const PARTNER_PROGRAMS = [
   {
@@ -88,6 +89,17 @@ const PARTNER_PROGRAMS = [
   }
 ];
 
+// Validation Error Component
+const ValidationError = ({ error }) => {
+  if (!error) return null;
+  return (
+    <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
+      <AlertCircle className="w-4 h-4" />
+      <span>{error}</span>
+    </div>
+  );
+};
+
 const Partner = () => {
   const [activeProgram, setActiveProgram] = useState('distributor');
   const [formData, setFormData] = useState({
@@ -99,14 +111,130 @@ const Partner = () => {
     city: '',
     message: ''
   });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Validate a single field
+  const validateField = (name, value) => {
+    let result = { isValid: true, error: null };
+    
+    switch (name) {
+      case 'name':
+        result = validators.name(value, 'Full name');
+        break;
+      case 'email':
+        result = validators.email(value);
+        break;
+      case 'phone':
+        result = validators.phone(value);
+        break;
+      case 'program_type':
+        result = validators.required(value, 'Program');
+        break;
+      case 'organization':
+        // Optional field, but validate if provided
+        if (value && value.trim()) {
+          result = validators.businessName(value, 'Organization');
+        }
+        break;
+      case 'city':
+        result = validators.city(value);
+        break;
+      case 'message':
+        result = validators.message(value);
+        break;
+      default:
+        break;
+    }
+    
+    return result;
+  };
+
+  // Handle input change with filtering
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    let filteredValue = value;
+
+    // Apply input filters based on field type
+    switch (name) {
+      case 'name':
+        filteredValue = inputFilters.nameOnly(value);
+        break;
+      case 'phone':
+        filteredValue = inputFilters.phoneOnly(value);
+        break;
+      case 'city':
+        filteredValue = inputFilters.cityOnly(value);
+        break;
+      case 'organization':
+        filteredValue = inputFilters.businessNameOnly(value);
+        break;
+      default:
+        filteredValue = value;
+    }
+
+    setFormData(prev => ({ ...prev, [name]: filteredValue }));
+    
+    // Validate on change if field was already touched
+    if (touched[name]) {
+      const result = validateField(name, filteredValue);
+      setErrors(prev => ({ ...prev, [name]: result.error }));
+    }
+  };
+
+  // Handle field blur - mark as touched and validate
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const result = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: result.error }));
+  };
+
+  // Validate entire form
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    // Required fields validation
+    const requiredFields = ['name', 'email', 'phone', 'program_type', 'city'];
+    
+    requiredFields.forEach(field => {
+      const result = validateField(field, formData[field]);
+      if (!result.isValid) {
+        newErrors[field] = result.error;
+        isValid = false;
+      }
+    });
+
+    // Optional fields validation (only if they have values)
+    ['organization', 'message'].forEach(field => {
+      if (formData[field]) {
+        const result = validateField(field, formData[field]);
+        if (!result.isValid) {
+          newErrors[field] = result.error;
+          isValid = false;
+        }
+      }
+    });
+
+    setErrors(newErrors);
+    // Mark all fields as touched
+    const allTouched = {};
+    Object.keys(formData).forEach(key => { allTouched[key] = true; });
+    setTouched(allTouched);
+
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      toast.error('Please fix the errors in the form');
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -123,11 +251,25 @@ const Partner = () => {
         city: '',
         message: ''
       });
+      setErrors({});
+      setTouched({});
     } catch (error) {
       toast.error('Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Helper to get input class based on error state
+  const getInputClass = (fieldName) => {
+    const baseClass = "w-full px-4 py-3 border rounded-xl focus:ring-2 outline-none transition-colors";
+    if (touched[fieldName] && errors[fieldName]) {
+      return `${baseClass} border-red-400 focus:border-red-400 focus:ring-red-100`;
+    }
+    if (touched[fieldName] && !errors[fieldName] && formData[fieldName]) {
+      return `${baseClass} border-green-400 focus:border-green-400 focus:ring-green-100`;
+    }
+    return `${baseClass} border-gray-200 focus:border-purple-400 focus:ring-purple-100`;
   };
 
   const selectedProgram = PARTNER_PROGRAMS.find(p => p.id === activeProgram);
@@ -263,54 +405,75 @@ const Partner = () => {
             <p className="text-gray-500">Fill out the form and our team will get in touch</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl p-6 sm:p-8">
+          <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl p-6 sm:p-8" noValidate>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('name')}
+                  placeholder="Enter your full name"
+                  maxLength={50}
+                  data-testid="name-input"
                 />
+                <ValidationError error={touched.name && errors.name} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('email')}
+                  placeholder="your@email.com"
+                  data-testid="email-input"
                 />
+                <ValidationError error={touched.email && errors.email} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('phone')}
+                  placeholder="+91 98765 43210"
+                  maxLength={15}
+                  data-testid="phone-input"
                 />
+                <ValidationError error={touched.phone && errors.phone} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Program *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Program <span className="text-red-500">*</span>
+                </label>
                 <select
                   name="program_type"
                   value={formData.program_type}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none bg-white"
+                  onBlur={handleBlur}
+                  className={`${getInputClass('program_type')} bg-white`}
+                  data-testid="program-select"
                 >
                   {PARTNER_PROGRAMS.map(p => (
                     <option key={p.id} value={p.id}>{p.title}</option>
                   ))}
                 </select>
+                <ValidationError error={touched.program_type && errors.program_type} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Organization/College</label>
@@ -319,19 +482,30 @@ const Partner = () => {
                   name="organization"
                   value={formData.organization}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('organization')}
+                  placeholder="Enter organization name"
+                  maxLength={100}
+                  data-testid="organization-input"
                 />
+                <ValidationError error={touched.organization && errors.organization} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  City <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('city')}
+                  placeholder="Enter your city"
+                  maxLength={50}
+                  data-testid="city-input"
                 />
+                <ValidationError error={touched.city && errors.city} />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Why do you want to partner with us?</label>
@@ -339,9 +513,14 @@ const Partner = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none resize-none"
+                  className={`${getInputClass('message')} resize-none`}
+                  placeholder="Tell us about yourself and why you want to partner with Alaxico..."
+                  maxLength={1000}
+                  data-testid="message-textarea"
                 />
+                <ValidationError error={touched.message && errors.message} />
               </div>
             </div>
             <div className="mt-6">
@@ -349,6 +528,7 @@ const Partner = () => {
                 type="submit" 
                 disabled={isSubmitting}
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 text-lg"
+                data-testid="submit-partner-button"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 <ArrowRight className="ml-2 w-5 h-5" />

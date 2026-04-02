@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Users, Package, Percent, Phone, Mail, ArrowRight, CheckCircle2, FileText, Truck, ShieldCheck, HeadphonesIcon, IndianRupee, Clock, Award, Target, Handshake } from 'lucide-react';
+import { Building2, Users, Package, Percent, Phone, Mail, ArrowRight, CheckCircle2, FileText, Truck, ShieldCheck, HeadphonesIcon, IndianRupee, Clock, Award, Target, Handshake, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import api from '../utils/api';
+import { validators, inputFilters } from '../utils/formValidation';
 
 const BULK_PRICING_TIERS = [
   { quantity: '10-50 units', discount: '10%', savings: 'Save up to ₹5,000' },
@@ -28,6 +29,17 @@ const CUSTOMER_TYPES = [
   { icon: Target, title: 'Corporate', description: 'Employee wellness and first aid equipment' },
 ];
 
+// Validation Error Component
+const ValidationError = ({ error }) => {
+  if (!error) return null;
+  return (
+    <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
+      <AlertCircle className="w-4 h-4" />
+      <span>{error}</span>
+    </div>
+  );
+};
+
 const B2B = () => {
   const [formData, setFormData] = useState({
     business_name: '',
@@ -39,14 +51,124 @@ const B2B = () => {
     products_interested: '',
     message: ''
   });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Validate a single field
+  const validateField = (name, value) => {
+    let result = { isValid: true, error: null };
+    
+    switch (name) {
+      case 'business_name':
+        result = validators.businessName(value, 'Business name');
+        break;
+      case 'contact_person':
+        result = validators.name(value, 'Contact person');
+        break;
+      case 'email':
+        result = validators.email(value);
+        break;
+      case 'phone':
+        result = validators.phone(value);
+        break;
+      case 'business_type':
+        result = validators.required(value, 'Business type');
+        break;
+      case 'products_interested':
+        result = validators.productsInterested(value);
+        break;
+      case 'message':
+        result = validators.message(value);
+        break;
+      default:
+        break;
+    }
+    
+    return result;
+  };
+
+  // Handle input change with filtering
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    let filteredValue = value;
+
+    // Apply input filters based on field type
+    switch (name) {
+      case 'contact_person':
+        filteredValue = inputFilters.nameOnly(value);
+        break;
+      case 'phone':
+        filteredValue = inputFilters.phoneOnly(value);
+        break;
+      case 'business_name':
+        filteredValue = inputFilters.businessNameOnly(value);
+        break;
+      default:
+        filteredValue = value;
+    }
+
+    setFormData(prev => ({ ...prev, [name]: filteredValue }));
+    
+    // Validate on change if field was already touched
+    if (touched[name]) {
+      const result = validateField(name, filteredValue);
+      setErrors(prev => ({ ...prev, [name]: result.error }));
+    }
+  };
+
+  // Handle field blur - mark as touched and validate
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const result = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: result.error }));
+  };
+
+  // Validate entire form
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    // Required fields validation
+    const requiredFields = ['business_name', 'contact_person', 'email', 'phone', 'business_type'];
+    
+    requiredFields.forEach(field => {
+      const result = validateField(field, formData[field]);
+      if (!result.isValid) {
+        newErrors[field] = result.error;
+        isValid = false;
+      }
+    });
+
+    // Optional fields validation (only if they have values)
+    ['products_interested', 'message'].forEach(field => {
+      if (formData[field]) {
+        const result = validateField(field, formData[field]);
+        if (!result.isValid) {
+          newErrors[field] = result.error;
+          isValid = false;
+        }
+      }
+    });
+
+    setErrors(newErrors);
+    // Mark all fields as touched
+    const allTouched = {};
+    Object.keys(formData).forEach(key => { allTouched[key] = true; });
+    setTouched(allTouched);
+
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      toast.error('Please fix the errors in the form');
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -64,11 +186,25 @@ const B2B = () => {
         products_interested: '',
         message: ''
       });
+      setErrors({});
+      setTouched({});
     } catch (error) {
       toast.error('Failed to submit enquiry. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Helper to get input class based on error state
+  const getInputClass = (fieldName) => {
+    const baseClass = "w-full px-4 py-3 border rounded-xl focus:ring-2 outline-none transition-colors";
+    if (touched[fieldName] && errors[fieldName]) {
+      return `${baseClass} border-red-400 focus:border-red-400 focus:ring-red-100`;
+    }
+    if (touched[fieldName] && !errors[fieldName] && formData[fieldName]) {
+      return `${baseClass} border-green-400 focus:border-green-400 focus:ring-green-100`;
+    }
+    return `${baseClass} border-gray-200 focus:border-purple-400 focus:ring-purple-100`;
   };
 
   return (
@@ -209,64 +345,86 @@ const B2B = () => {
             <p className="text-gray-500 text-lg">Fill out the form and our team will contact you within 24 hours</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl p-6 sm:p-8 lg:p-10">
+          <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl p-6 sm:p-8 lg:p-10" noValidate>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Business Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="business_name"
                   value={formData.business_name}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('business_name')}
                   placeholder="Your Hospital/Clinic Name"
+                  maxLength={100}
+                  data-testid="business-name-input"
                 />
+                <ValidationError error={touched.business_name && errors.business_name} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Contact Person *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Contact Person <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="contact_person"
                   value={formData.contact_person}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('contact_person')}
                   placeholder="Full Name"
+                  maxLength={50}
+                  data-testid="contact-person-input"
                 />
+                <ValidationError error={touched.contact_person && errors.contact_person} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('email')}
                   placeholder="business@example.com"
+                  data-testid="email-input"
                 />
+                <ValidationError error={touched.email && errors.email} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('phone')}
                   placeholder="+91 98765 43210"
+                  maxLength={15}
+                  data-testid="phone-input"
                 />
+                <ValidationError error={touched.phone && errors.phone} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Business Type *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Type <span className="text-red-500">*</span>
+                </label>
                 <select
                   name="business_type"
                   value={formData.business_type}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none bg-white"
+                  onBlur={handleBlur}
+                  className={`${getInputClass('business_type')} bg-white`}
+                  data-testid="business-type-select"
                 >
                   <option value="">Select type</option>
                   <option value="hospital">Hospital</option>
@@ -276,6 +434,7 @@ const B2B = () => {
                   <option value="pharmacy">Pharmacy</option>
                   <option value="other">Other</option>
                 </select>
+                <ValidationError error={touched.business_type && errors.business_type} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Estimated Quantity</label>
@@ -284,6 +443,7 @@ const B2B = () => {
                   value={formData.estimated_quantity}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none bg-white"
+                  data-testid="quantity-select"
                 >
                   <option value="">Select quantity</option>
                   <option value="10-50">10-50 units</option>
@@ -299,9 +459,13 @@ const B2B = () => {
                   name="products_interested"
                   value={formData.products_interested}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none"
+                  onBlur={handleBlur}
+                  className={getInputClass('products_interested')}
                   placeholder="e.g., Nebulizers, BP Monitors, Hospital Beds"
+                  maxLength={500}
+                  data-testid="products-input"
                 />
+                <ValidationError error={touched.products_interested && errors.products_interested} />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Additional Message</label>
@@ -309,10 +473,14 @@ const B2B = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none resize-none"
+                  className={`${getInputClass('message')} resize-none`}
                   placeholder="Tell us more about your requirements..."
+                  maxLength={1000}
+                  data-testid="message-textarea"
                 />
+                <ValidationError error={touched.message && errors.message} />
               </div>
             </div>
             <div className="mt-6">
@@ -320,6 +488,7 @@ const B2B = () => {
                 type="submit" 
                 disabled={isSubmitting}
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 text-lg"
+                data-testid="submit-b2b-button"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Enquiry'}
                 <ArrowRight className="ml-2 w-5 h-5" />
