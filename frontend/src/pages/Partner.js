@@ -364,8 +364,8 @@ const Partner = () => {
                       Benefits
                     </h4>
                     <ul className="space-y-3">
-                      {selectedProgram.benefits.map((benefit, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
+                      {selectedProgram.benefits.map((benefit) => (
+                        <li key={`benefit-${benefit.substring(0, 20)}`} className="flex items-start gap-3">
                           <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                           <span className="text-gray-600">{benefit}</span>
                         </li>
@@ -379,7 +379,7 @@ const Partner = () => {
                     </h4>
                     <ul className="space-y-3">
                       {selectedProgram.requirements.map((req, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
+                        <li key={`req-${req.substring(0, 20)}`} className="flex items-start gap-3">
                           <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                             <span className="text-xs font-medium text-purple-600">{idx + 1}</span>
                           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { ShoppingCart, Star, Package, ChevronDown, ChevronUp, Check, Truck, Shield, Award, Clock, Heart, Share2, Minus, Plus, Zap, ThermometerSun, Timer, Volume2, BadgeCheck, Copy, Facebook, Twitter, MessageCircle, Camera, Video, X, Mail, Play } from 'lucide-react';
@@ -47,11 +47,8 @@ const ProductDetail = () => {
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const imageInputRef = useRef(null);
 
-  useEffect(() => {
-    fetchProductData();
-  }, [id]);
-
-  const fetchProductData = async () => {
+  // Memoize fetchProductData to fix hook dependency
+  const fetchProductData = useCallback(async () => {
     try {
       const [productRes, reviewsRes, relatedRes] = await Promise.all([
         api.get(`/products/${id}`),
@@ -86,7 +83,11 @@ const ProductDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, user, addToRecentlyViewed]);
+
+  useEffect(() => {
+    fetchProductData();
+  }, [fetchProductData]);
 
   const handleAddToCart = async () => {
     try {
@@ -809,7 +810,7 @@ const ProductDetail = () => {
                       <p className="text-xs text-gray-500 mt-1">Upload up to 5 photos of the product</p>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {reviewImages.map((img, index) => (
-                          <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
+                          <div key={`review-img-${img.substring(img.length - 20)}`} className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
                             <img src={img} alt={`Review ${index + 1}`} className="w-full h-full object-cover" />
                             <button
                               type="button"

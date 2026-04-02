@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -49,18 +49,8 @@ const Dashboard = () => {
   const [organizationName, setOrganizationName] = useState('');
   const [documentInfo, setDocumentInfo] = useState('');
 
-  useEffect(() => {
-    if (authLoading) return;
-    
-    if (!user) {
-      navigate('/login?redirect=/dashboard');
-      return;
-    }
-    fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, authLoading]);
-
-  const fetchData = async () => {
+  // Memoize fetchData to fix hook dependency
+  const fetchData = useCallback(async () => {
     try {
       const [ordersRes, enquiriesRes, verificationRes] = await Promise.all([
         api.get('/orders/my-orders'),
@@ -75,7 +65,17 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    
+    if (!user) {
+      navigate('/login?redirect=/dashboard');
+      return;
+    }
+    fetchData();
+  }, [user, authLoading, navigate, fetchData]);
 
   const handleSubmitVerification = async (e) => {
     e.preventDefault();
@@ -227,8 +227,8 @@ const Dashboard = () => {
                           
                           {/* Order Items */}
                           <div className="space-y-2 mb-3">
-                            {order.items.map((item, idx) => (
-                              <div key={idx} className="flex justify-between text-sm text-gray-600">
+                            {order.items.map((item) => (
+                              <div key={`${order.id}-${item.product_id || item.product_name}`} className="flex justify-between text-sm text-gray-600">
                                 <span>{item.product_name} x {item.quantity}</span>
                                 <span>₹{(item.price * item.quantity).toLocaleString()}</span>
                               </div>

@@ -1100,8 +1100,8 @@ const Admin = () => {
                         <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                           <h4 className="font-bold text-gray-700 text-sm mb-3">📦 ORDER ITEMS:</h4>
                           <div className="space-y-2">
-                            {order.items?.map((item, idx) => (
-                              <div key={idx} className="flex justify-between py-2 border-b border-gray-200 last:border-0">
+                            {order.items?.map((item) => (
+                              <div key={`${order.id}-${item.product_id || item.product_name}`} className="flex justify-between py-2 border-b border-gray-200 last:border-0">
                                 <div>
                                   <p className="text-gray-900 font-medium text-sm">{item.product_name}</p>
                                   <p className="text-gray-500 text-xs">Qty: {item.quantity}</p>
@@ -1434,7 +1434,7 @@ const Admin = () => {
                         <div className="flex flex-wrap gap-2 mt-3">
                           <span className="text-xs text-gray-500 w-full">Attached Photos:</span>
                           {review.images.map((img, idx) => (
-                            <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-400">
+                            <a key={`${review.id}-img-${img.substring(img.length - 15)}`} href={img} target="_blank" rel="noopener noreferrer" className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-400">
                               <img src={img} alt={`Review photo ${idx + 1}`} className="w-full h-full object-cover" />
                             </a>
                           ))}

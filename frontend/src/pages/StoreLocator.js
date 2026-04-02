@@ -195,9 +195,9 @@ const StoreLocator = () => {
 
                   {/* Services */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {store.services.map((service, idx) => (
+                    {store.services.map((service) => (
                       <span 
-                        key={idx}
+                        key={`${store.id}-${service}`}
                         className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
                       >
                         {service}
