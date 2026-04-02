@@ -73,8 +73,11 @@ const ProductDetail = () => {
         try {
           const likedRes = await api.get(`/products/${id}/liked`);
           setIsLiked(likedRes.data.liked);
-        } catch (e) {
-          // Ignore if not logged in
+        } catch (likeError) {
+          // User not logged in or like status unavailable - this is expected
+          if (likeError.response?.status !== 401) {
+            console.error('Error checking like status:', likeError);
+          }
         }
       }
     } catch (error) {

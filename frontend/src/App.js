@@ -127,7 +127,10 @@ function AppContent() {
         const response = await api.get('/cart');
         setCartCount(response.data.items?.length || 0);
       } catch (error) {
-        // User not logged in or error fetching cart
+        // User not logged in or error fetching cart - this is expected for guests
+        if (error.response?.status !== 401) {
+          console.error('Error fetching cart count:', error);
+        }
       }
     };
     fetchCartCount();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { X, Plus, Check, ArrowRight, Scale, ShoppingCart, Star, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -12,23 +12,29 @@ const Compare = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
 
-  useEffect(() => {
-    fetchProducts();
-    // Load compare list from localStorage
-    const saved = localStorage.getItem('compareList');
-    if (saved) {
-      setCompareList(JSON.parse(saved));
-    }
-  }, []);
-
-  const fetchProducts = async () => {
+  // Memoize fetchProducts to prevent dependency warnings
+  const fetchProducts = useCallback(async () => {
     try {
       const response = await api.get('/products');
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+    // Load compare list from localStorage
+    const saved = localStorage.getItem('compareList');
+    if (saved) {
+      try {
+        setCompareList(JSON.parse(saved));
+      } catch (error) {
+        console.error('Error parsing compareList:', error);
+        localStorage.removeItem('compareList');
+      }
+    }
+  }, [fetchProducts]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);

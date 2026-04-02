@@ -20,7 +20,7 @@ export const useRecentlyViewed = () => {
     }
   }, []);
 
-  // Add product to recently viewed
+  // Add product to recently viewed - memoized with proper dependencies
   const addToRecentlyViewed = useCallback((product) => {
     if (!product || !product.id) return;
 
@@ -39,7 +39,7 @@ export const useRecentlyViewed = () => {
       
       return updated;
     });
-  }, []);
+  }, []); // No external dependencies needed - uses functional setState
 
   // Clear all recently viewed
   const clearRecentlyViewed = useCallback(() => {

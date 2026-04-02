@@ -81,13 +81,13 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { icon: ShieldCheck, title: 'ISO Certified', desc: 'Quality Assured', color: 'text-purple-600' },
-              { icon: Truck, title: 'Fast Delivery', desc: 'Pan India', color: 'text-purple-600' },
-              { icon: Award, title: 'Warranty', desc: 'On All Products', color: 'text-purple-600' },
-              { icon: UserCheck, title: '24/7 Support', desc: 'Expert Help', color: 'text-purple-600' },
-            ].map((feature, index) => (
+              { id: 'iso', icon: ShieldCheck, title: 'ISO Certified', desc: 'Quality Assured', color: 'text-purple-600' },
+              { id: 'delivery', icon: Truck, title: 'Fast Delivery', desc: 'Pan India', color: 'text-purple-600' },
+              { id: 'warranty', icon: Award, title: 'Warranty', desc: 'On All Products', color: 'text-purple-600' },
+              { id: 'support', icon: UserCheck, title: '24/7 Support', desc: 'Expert Help', color: 'text-purple-600' },
+            ].map((feature) => (
               <div 
-                key={index}
+                key={feature.id}
                 className="flex items-center space-x-3 p-3 sm:p-4 rounded-xl bg-white border border-purple-100 hover:border-purple-200 hover:shadow-sm transition-all"
               >
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -205,11 +205,11 @@ const Home = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {[
-              { icon: Award, title: 'Quality Assured', desc: 'All products are quality checked and certified' },
-              { icon: TrendingUp, title: 'Best Prices', desc: 'Competitive pricing with bulk order discounts' },
-              { icon: Users, title: 'Expert Support', desc: 'Dedicated support team for all your needs' },
-            ].map((item, i) => (
-              <div key={i} className="text-center p-4 sm:p-6 lg:p-8 bg-purple-50 rounded-xl sm:rounded-2xl border border-purple-100 hover:border-purple-200 transition-all duration-300 hover:shadow-lg">
+              { id: 'quality', icon: Award, title: 'Quality Assured', desc: 'All products are quality checked and certified' },
+              { id: 'prices', icon: TrendingUp, title: 'Best Prices', desc: 'Competitive pricing with bulk order discounts' },
+              { id: 'experts', icon: Users, title: 'Expert Support', desc: 'Dedicated support team for all your needs' },
+            ].map((item) => (
+              <div key={item.id} className="text-center p-4 sm:p-6 lg:p-8 bg-purple-50 rounded-xl sm:rounded-2xl border border-purple-100 hover:border-purple-200 transition-all duration-300 hover:shadow-lg">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 lg:mb-6 bg-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center">
                   <item.icon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-purple-600" />
                 </div>
