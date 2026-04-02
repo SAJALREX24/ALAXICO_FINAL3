@@ -1,24 +1,27 @@
-# Test Credentials
+# Test Credentials for Alaxico Medical Equipment Platform
 
 ## Admin Account
-- **Email**: admin@medequipmart.com
-- **Password**: admin123
+- **Email:** alaxicohealthcare@gmail.com
+- **Password:** Sha@2002
+- **Role:** Admin
+- **Access:** Full admin panel access at /admin
 
-## Test Users
-- **Hospital User**: hospital@example.com / demo1234
-- **Doctor User**: doctor@example.com / demo1234
+## Test User Accounts
 
-## Razorpay Test Cards
-For testing payments in Test Mode, use these card details:
+### Hospital User
+- **Email:** hospital@example.com
+- **Password:** demo1234
+- **Role:** User (Hospital buyer type)
+- **Organization:** City General Hospital
 
-| Field | Value |
-|-------|-------|
-| Card Number | 4111 1111 1111 1111 |
-| Expiry | Any future date (e.g., 12/26) |
-| CVV | Any 3 digits (e.g., 123) |
-| Name | Any name |
-| OTP | 1234 |
+### Doctor User
+- **Email:** doctor@example.com
+- **Password:** demo1234
+- **Role:** User (Doctor buyer type)
 
-## UPI Test
+## Payment Testing (Razorpay Test Mode)
+- Card Number: 4111 1111 1111 1111
+- Expiry: Any future date
+- CVV: Any 3 digits
 - UPI ID: success@razorpay (for successful payments)
 - UPI ID: failure@razorpay (for failed payments)

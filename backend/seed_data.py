@@ -356,9 +356,9 @@ CATEGORIES = [
 DEFAULT_USERS = [
     {
         "id": str(uuid.uuid4()),
-        "email": "admin@medequipmart.com",
-        "password": bcrypt.hashpw("admin123".encode(), bcrypt.gensalt()).decode(),
-        "name": "Admin User",
+        "email": "alaxicohealthcare@gmail.com",
+        "password": bcrypt.hashpw("Sha@2002".encode(), bcrypt.gensalt()).decode(),
+        "name": "Alaxico Admin",
         "role": "admin",
         "is_verified": True,
         "verification_status": "verified",
@@ -421,7 +421,7 @@ async def seed_database():
     for p in ALAXICO_PRODUCTS:
         print(f"   • {p['name'][:50]} - ₹{p['price']}")
     print("\n👤 Login Credentials:")
-    print("   Admin: admin@medequipmart.com / admin123")
+    print("   Admin: alaxicohealthcare@gmail.com / Sha@2002")
     print("   Hospital: hospital@example.com / demo1234")
     print("   Doctor: doctor@example.com / demo1234")
     print("="*50)
