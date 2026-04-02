@@ -222,7 +222,7 @@ const SalesDashboard = () => {
               </thead>
               <tbody>
                 {stats.top_products.map((product, index) => (
-                  <tr key={index} className="border-b border-slate-100 hover:bg-slate-50">
+                  <tr key={product.id || product.name} className="border-b border-slate-100 hover:bg-slate-50">
                     <td className="py-3 px-3">
                       <div className="flex items-center space-x-2">
                         <span className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold`} style={{ backgroundColor: COLORS[index] }}>

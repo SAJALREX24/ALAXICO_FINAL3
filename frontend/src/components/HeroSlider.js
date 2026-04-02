@@ -98,9 +98,9 @@ const HeroSlider = () => {
                         {/* Features - Hidden on mobile */}
                         {slide.features && (
                           <div className="hidden sm:flex flex-wrap gap-2 mb-4 md:mb-5">
-                            {slide.features.map((feature, idx) => (
+                            {slide.features.map((feature) => (
                               <span 
-                                key={idx} 
+                                key={`${slide.id}-feature-${feature}`} 
                                 className="bg-white/20 backdrop-blur-sm text-white text-xs md:text-sm px-3 py-1 rounded-full border border-white/30"
                               >
                                 {feature}
@@ -150,9 +150,9 @@ const HeroSlider = () => {
                         </p>
                         {slide.features && (
                           <div className="hidden sm:flex flex-wrap gap-2 mb-4 md:mb-5">
-                            {slide.features.map((feature, idx) => (
+                            {slide.features.map((feature) => (
                               <span 
-                                key={idx} 
+                                key={`${slide.id}-feat-${feature}`} 
                                 className="bg-white/20 backdrop-blur-sm text-white text-xs md:text-sm px-3 py-1 rounded-full border border-white/30"
                               >
                                 {feature}
@@ -195,17 +195,17 @@ const HeroSlider = () => {
 
       {/* Dots Indicator - Larger touch targets */}
       <div className="absolute bottom-3 sm:bottom-5 lg:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 lg:gap-3 z-10">
-        {SLIDES.map((_, index) => (
+        {SLIDES.map((slide) => (
           <button
-            key={index}
-            onClick={() => scrollTo(index)}
+            key={`dot-${slide.id}`}
+            onClick={() => scrollTo(SLIDES.findIndex(s => s.id === slide.id))}
             className={`transition-all duration-300 rounded-full ${
-              index === selectedIndex
+              SLIDES.findIndex(s => s.id === slide.id) === selectedIndex
                 ? 'w-5 sm:w-7 lg:w-8 h-1.5 sm:h-2.5 lg:h-3 bg-purple-600'
                 : 'w-1.5 sm:w-2.5 lg:w-3 h-1.5 sm:h-2.5 lg:h-3 bg-white/70 hover:bg-white'
             }`}
-            aria-label={`Go to slide ${index + 1}`}
-            data-testid={`hero-dot-${index}`}
+            aria-label={`Go to slide ${slide.id}`}
+            data-testid={`hero-dot-${slide.id}`}
           />
         ))}
       </div>

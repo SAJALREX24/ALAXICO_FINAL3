@@ -127,8 +127,8 @@ const ProductBundles = () => {
 
                 {/* Products List */}
                 <div className="space-y-1 mb-4">
-                  {bundle.products.slice(0, 3).map((product, idx) => (
-                    <div key={idx} className="flex items-center text-xs text-gray-600">
+                  {bundle.products.slice(0, 3).map((product) => (
+                    <div key={`${bundle.id}-${product}`} className="flex items-center text-xs text-gray-600">
                       <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2" />
                       {product}
                     </div>

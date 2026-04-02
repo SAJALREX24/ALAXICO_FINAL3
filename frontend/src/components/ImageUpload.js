@@ -174,7 +174,7 @@ const ImageUpload = ({
           <div className="flex flex-wrap gap-2">
             {existingImages.map((img, index) => (
               <div 
-                key={index} 
+                key={`img-${img.substring(img.length - 20)}`} 
                 className="relative group w-20 h-20 rounded-lg overflow-hidden border border-gray-200"
               >
                 <img 

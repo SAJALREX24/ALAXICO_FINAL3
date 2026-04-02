@@ -3,30 +3,35 @@ import { X, Truck, Gift, CreditCard, Percent, Clock } from 'lucide-react';
 
 const PROMO_MESSAGES = [
   {
+    id: 'discount-50',
     icon: Percent,
     text: "UP TO 50% OFF on Selected Products",
     highlight: "50% OFF",
     color: "text-yellow-300"
   },
   {
+    id: 'prepaid-5',
     icon: CreditCard,
     text: "Extra 5% OFF on Prepaid Orders",
     highlight: "5% OFF",
     color: "text-green-300"
   },
   {
+    id: 'free-gifts',
     icon: Gift,
     text: "Free Gifts on Orders Above ₹1499",
     highlight: "Free Gifts",
     color: "text-pink-300"
   },
   {
+    id: 'free-delivery',
     icon: Truck,
     text: "FREE Delivery on Orders Above ₹999",
     highlight: "FREE Delivery",
     color: "text-blue-300"
   },
   {
+    id: 'same-day',
     icon: Clock,
     text: "Same Day Dispatch for Orders Before 2 PM",
     highlight: "Same Day",
@@ -72,9 +77,9 @@ const PromoBanner = () => {
         <div className="flex items-center justify-center">
           {/* Left dots indicator */}
           <div className="hidden sm:flex items-center space-x-1 mr-4">
-            {PROMO_MESSAGES.map((_, idx) => (
+            {PROMO_MESSAGES.map((promo, idx) => (
               <button
-                key={idx}
+                key={promo.id}
                 onClick={() => setCurrentIndex(idx)}
                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                   idx === currentIndex ? 'bg-white w-4' : 'bg-white/40 hover:bg-white/60'
@@ -99,9 +104,9 @@ const PromoBanner = () => {
 
           {/* Right dots indicator */}
           <div className="hidden sm:flex items-center space-x-1 ml-4">
-            {PROMO_MESSAGES.map((_, idx) => (
+            {PROMO_MESSAGES.map((promo, idx) => (
               <button
-                key={idx}
+                key={`right-${promo.id}`}
                 onClick={() => setCurrentIndex(idx)}
                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                   idx === currentIndex ? 'bg-white w-4' : 'bg-white/40 hover:bg-white/60'
