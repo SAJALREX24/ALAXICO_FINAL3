@@ -2,119 +2,112 @@
 
 A professional, trustworthy, and scalable medical equipment e-commerce platform targeting hospitals, clinics, doctors, diagnostic centers, distributors, and individual buyers.
 
-## 🚀 Tech Stack
+![Alaxico](https://customer-assets.emergentagent.com/job_init-point/artifacts/zs61d4n7_M1.jpeg)
 
-- **Frontend**: React 18, Tailwind CSS, Shadcn/UI, Lucide Icons
-- **Backend**: FastAPI, Pydantic, Python 3.11+
-- **Database**: MongoDB (Motor async driver)
-- **Authentication**: JWT + Google OAuth
-- **Payments**: Razorpay (Cards, UPI, NetBanking), COD, Bank Transfer, Pay Later
-
-## 📦 Features
+## 🚀 Features
 
 ### Customer Features
-- 🏠 Professional homepage with hero slider, promotions, trust indicators
-- 🛒 Full e-commerce: Products, Cart, Checkout
-- 💳 Multiple payment methods (Razorpay, UPI, COD, Bank Transfer)
-- 👤 User accounts with order history
-- ⭐ Verified customer reviews with photo/video uploads
-- 📱 Full mobile responsiveness
-- 💬 WhatsApp chat integration
+- 🏠 **Professional Homepage** - Hero slider, promotional banners, trust indicators
+- 🛒 **Full E-Commerce** - Products, cart, checkout with multiple payment methods
+- 💳 **Multiple Payments** - Razorpay (Cards, UPI, NetBanking), COD, Bank Transfer, Pay Later
+- 👤 **User Accounts** - Registration, login, order history
+- ⭐ **Reviews System** - Verified reviews with photo/video uploads
+- 📱 **Fully Responsive** - Works on all devices
+- 💬 **WhatsApp Integration** - Floating chat widget for support
 
 ### Business Features
-- 💼 B2B bulk order enquiries with tiered pricing
-- 🤝 Partner programs (Distributor, Affiliate, Healthcare, Campus)
-- 📍 Store locator
-- 🔧 Product comparison tool
-- 📊 Equipment recommendation quiz
+- 💼 **B2B Section** - Bulk pricing tiers (10-25% discounts), enquiry form
+- 🤝 **Partner Programs** - Distributor, Affiliate, Healthcare, Campus Ambassador
+- 📍 **Store Locator** - Find Alaxico locations
+- 🔧 **Product Comparison** - Compare up to 4 products
+- 📊 **Equipment Quiz** - Recommendation tool
 
 ### Admin Panel
-- 📦 Product management (CRUD with rich content)
-- 📋 Order management (Retail & Bulk)
-- 👥 User & verification management
-- ⭐ Review moderation
-- 📈 Sales analytics dashboard
-- 💼 B2B enquiries management
-- 🤝 Partner applications management
+- 📦 **Product Management** - Full CRUD with rich content editing
+- 📋 **Order Management** - Track and manage all orders
+- 💼 **B2B Enquiries** - View and respond to business enquiries
+- 🤝 **Partner Applications** - Manage partner requests
+- ⭐ **Review Moderation** - Approve/reject customer reviews
+- 📈 **Analytics Dashboard** - Sales stats and insights
 
-## 🛠️ Setup Instructions
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | React 18, Tailwind CSS, Shadcn/UI, Lucide Icons |
+| **Backend** | FastAPI, Pydantic, Python 3.11+ |
+| **Database** | MongoDB (Motor async driver) |
+| **Auth** | JWT + Google OAuth |
+| **Payments** | Razorpay |
+
+## 📦 Quick Start
 
 ### Prerequisites
 - Node.js 18+
 - Python 3.11+
 - MongoDB 6.0+
+- Yarn
 
-### Backend Setup
+### Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/your-username/alaxico.git
+cd alaxico
+
+# Backend setup
 cd backend
-
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
-# Copy environment file and configure
-cp .env.example .env
-# Edit .env with your values
-
-# Seed the database
-python seed_data.py
-
-# Run the server
+cp .env.example .env      # Edit with your values
+python seed_data.py       # Seed database
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
-```
 
-### Frontend Setup
-
-```bash
+# Frontend setup (new terminal)
 cd frontend
-
-# Install dependencies
 yarn install
-
-# Copy environment file and configure
-cp .env.example .env
-# Edit .env with your backend URL
-
-# Run the development server
+cp .env.example .env      # Edit if needed
 yarn start
 ```
 
-## 🔐 Environment Variables
+### Access
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8001/api
+- **API Docs**: http://localhost:8001/docs
 
-### Backend (.env)
+## 🔑 Configuration
 
-| Variable | Description | Example |
-|----------|-------------|----------|
-| MONGO_URL | MongoDB connection string | mongodb://localhost:27017/medequip_db |
-| DB_NAME | Database name | medequip_db |
-| JWT_SECRET | Secret key for JWT tokens | your-secret-key |
-| CORS_ORIGINS | Allowed origins (comma-separated) | https://alaxico.com |
-| RAZORPAY_KEY_ID | Razorpay Key ID | rzp_test_xxx or rzp_live_xxx |
-| RAZORPAY_KEY_SECRET | Razorpay Key Secret | your_secret |
-| CLOUDINARY_CLOUD_NAME | Cloudinary cloud name | your_cloud |
-| CLOUDINARY_API_KEY | Cloudinary API key | your_key |
-| CLOUDINARY_API_SECRET | Cloudinary API secret | your_secret |
-| WHATSAPP_NUMBER | WhatsApp business number | +917617617178 |
+### Backend Environment Variables
 
-### Frontend (.env)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MONGO_URL` | ✅ | MongoDB connection string |
+| `DB_NAME` | ✅ | Database name |
+| `JWT_SECRET` | ✅ | Secret for JWT tokens |
+| `CORS_ORIGINS` | ✅ | Allowed origins (comma-separated) |
+| `RAZORPAY_KEY_ID` | ✅ | Razorpay Key ID |
+| `RAZORPAY_KEY_SECRET` | ✅ | Razorpay Key Secret |
+| `WHATSAPP_NUMBER` | ✅ | Support WhatsApp number |
+| `CLOUDINARY_*` | ❌ | For image uploads (optional) |
 
-| Variable | Description | Example |
-|----------|-------------|----------|
-| REACT_APP_BACKEND_URL | Backend API URL | https://api.alaxico.com |
+### Frontend Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `REACT_APP_BACKEND_URL` | ✅ | Backend API URL |
 
 ## 🧪 Test Credentials
 
+After running `seed_data.py`:
+
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@medequipmart.com | admin123 |
-| Hospital | hospital@example.com | demo1234 |
-| Doctor | doctor@example.com | demo1234 |
+| **Admin** | admin@medequipmart.com | admin123 |
+| **User** | hospital@example.com | demo1234 |
+| **User** | doctor@example.com | demo1234 |
 
-## 💳 Razorpay Test Cards
+### Razorpay Test Cards
 
 | Card Number | Expiry | CVV | OTP |
 |-------------|--------|-----|-----|
@@ -125,38 +118,34 @@ yarn start
 ```
 /app
 ├── backend/
-│   ├── server.py          # FastAPI application
-│   ├── seed_data.py       # Database seeding script
-│   ├── requirements.txt   # Python dependencies
-│   └── .env              # Environment variables
+│   ├── server.py           # FastAPI application
+│   ├── seed_data.py        # Database seeding
+│   ├── requirements.txt    # Python dependencies
+│   └── .env.example        # Environment template
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/        # React page components
-│   │   ├── components/   # Reusable UI components
-│   │   ├── contexts/     # React contexts (Auth, Cart)
-│   │   └── lib/          # Utilities and helpers
-│   ├── package.json      # Node dependencies
-│   └── .env             # Environment variables
-└── memory/
-    └── PRD.md           # Product Requirements Document
+│   │   ├── pages/          # React pages
+│   │   ├── components/     # UI components
+│   │   ├── contexts/       # React contexts
+│   │   └── lib/            # Utilities
+│   ├── package.json        # Node dependencies
+│   └── .env.example        # Environment template
+├── memory/
+│   └── PRD.md              # Product requirements
+├── README.md               # This file
+└── SETUP.md                # Detailed setup guide
 ```
 
-## 🚀 Deployment
+## 🚀 Deployment Checklist
 
-### Pre-deployment Checklist
+Before deploying to production:
 
-- [ ] Set strong JWT_SECRET
-- [ ] Configure CORS_ORIGINS with your domain
-- [ ] Add Razorpay Live keys (after approval)
+- [ ] Change `JWT_SECRET` to a strong random string
+- [ ] Set `CORS_ORIGINS` to your domain(s)
+- [ ] Switch Razorpay to Live Mode keys
 - [ ] Configure Cloudinary for image uploads
-- [ ] Set up MongoDB Atlas or production database
-
-### Deployment Options
-
-1. **Emergent Platform** - One-click deploy
-2. **Vercel** (Frontend) + **Railway** (Backend)
-3. **Docker** - Containerized deployment
-4. **VPS** - Traditional server deployment
+- [ ] Set up production MongoDB (Atlas recommended)
+- [ ] Enable HTTPS
 
 ## 📞 Support
 

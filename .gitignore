@@ -29,8 +29,21 @@ next-env.d.ts
 /build
 dist/
 dist
+frontend/build/
 
-# Credentials and tokens (but NOT .env files)
+# Environment files with secrets
+backend/.env
+frontend/.env
+.env
+.env.local
+.env.*.local
+
+# Keep example files
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Credentials and tokens
 *token.json*
 *credentials.json*
 
@@ -40,16 +53,21 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 dump.rdb
+*.log
 
 # System files
 .DS_Store
 *.pem
+Thumbs.db
 
 # Python
 __pycache__/
-*pyc*
+*.pyc
+*.pyo
 venv/
 .venv/
+*.egg-info/
+.eggs/
 
 # Development tools
 chainlit.md
@@ -59,9 +77,6 @@ chainlit.md
 
 # Deployment
 .vercel
-
-# Data and databases
-agenthub/agents/youtube/db
 
 # Archive files and large assets
 **/*.zip
@@ -78,12 +93,11 @@ agenthub/agents/youtube/db
 # Mobile development
 android-sdk/
 
-# Test credentials (contains passwords)
+# Test files with credentials
 memory/test_credentials.md
+test_result.md
 
-# Environment files with secrets (keep .env.example)
-backend/.env
-frontend/.env
-.env
-.env.local
-.env.*.local
+# Test reports
+test_reports/
+*.test.py
+*_test.py
